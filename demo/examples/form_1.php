@@ -20,11 +20,8 @@ $items_test = array(
 );
 
 foreach(Tag::createChoiceTag($items_test, 'tickets', 'checkbox') as $item) {
-  $itemContent.=$item;
+  $itemContent.= $item . $br;
 }
 $itemContent.= Tag::createInputTag('submit', 'submit', 'Submit');
 
 echo $formTag = Tag::createFormTag($_SERVER['PHP_SELF'], $itemContent);
-echo $br.$hr.$br;
-echo $h2 = Tag::createTag('h2')->setContent('POST');
-echo $preTag = Tag::createTag('pre')->setContent(var_export($_POST,1));
