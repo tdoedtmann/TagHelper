@@ -1,0 +1,18 @@
+# __VERZEICHNISSE__
+temp
+## eclipse
+.settings/
+.cache/
+
+
+# __DATEIEN__
+## ecplise
+.buildpath
+.project
+.settings/
+
+
+# __DATEIENDUNGEN__
+##eclipse
+.DS_Store
+.*.DS_Store
