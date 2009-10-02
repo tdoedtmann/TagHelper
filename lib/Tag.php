@@ -46,7 +46,7 @@ class Tag {
 	 */
 	static public function createTag($name, $attributes=array()) {
 		if (false === array_search($name, trimExplode(STANDALONE_TAGS))) {
-			$tag = new MultiTag($name);
+			$tag = new ModularTag($name);
 		} else {
 			$tag = new StandaloneTag($name);
 		}
@@ -80,7 +80,7 @@ class Tag {
    * @param array $params Additional parameter like 'class' 
    * @return unknown
    */
-  function createFormTag($action, $content, $attributes=array()) {
+  static public function createFormTag($action, $content, $attributes=array()) {
 		$searchAttributes = array('method'=>false);
 		self::hasAttributes($attributes, &$searchAttributes);
   	
@@ -171,7 +171,7 @@ class Tag {
 	 */
 	static public function createLabeledInputTag($labelContent, $type, $name, $value, $inputAttributes=array(), $labelAttributes=array()) {
 		/**
-		 * :TODO: das 'checked'-Attribute muss noch in das <input>-Tag kommen!
+		 * :TODO: Die Reihenfolge in der das <input>- und das <label>-Tag ausgeliefert wird, muss editierbar sein!
 		 */
 		$input = self::createInputTag($type, $name, $value, $inputAttributes);
 		if ($input->getAttribute('id') instanceof Attribute) {
@@ -184,7 +184,8 @@ class Tag {
 		} else {
 			throw new TagException('Beim erstellen eines <label>-Tag wird ein id-Attribute benötigt!');
 		}
-		return $label.$input;
+		//return $label.$input;
+		return $input.$label;
 	} 
 
  /**

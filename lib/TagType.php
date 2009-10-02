@@ -30,7 +30,7 @@ function trimExplode($string, $delim=',', $onlyNonEmptyValues=0)    {
 	}
 	reset($newtemp);
 	return $newtemp;
-}
+} 
 
 /**********************************************************************
  * Exception-Klassen
@@ -251,7 +251,7 @@ class AbstractTag implements TagInterface {
 	} 
 	
 	/**
-	 * Ist dieser Wert gesetzt, so wird der Inhalt, der innerhalb eines MultiTags (z.B. <p>-Tag) steht, mit der htmlentities()-Funktion aufgerufen.
+	 * Ist dieser Wert gesetzt, so wird der Inhalt, der innerhalb eines ModularTags (z.B. <p>-Tag) steht, mit der htmlentities()-Funktion aufgerufen.
 	 * 
 	 * @return Tag $this
 	 */
@@ -263,7 +263,7 @@ class AbstractTag implements TagInterface {
 	/**
 	 * Rendern den Anfang des Tags.
 	 * Dies behinhaltend das öffnenden des Tags und die Auflistung der Attribute, z.B. '<a href="http://www.timo-strotmann.de" target="_blank"'.
-	 * Zu beachten ist, das das öffnede Tag nicht nicht geschlossen wird, dies liegt daran, das ein StandaloneTag mit ' />' und ein MultiTag mit '>' geschlossen wird!
+	 * Zu beachten ist, das das öffnede Tag nicht nicht geschlossen wird, dies liegt daran, das ein StandaloneTag mit ' />' und ein ModularTag mit '>' geschlossen wird!
 	 * 
 	 * @return string
 	 */
@@ -348,7 +348,7 @@ class StandaloneTag extends AbstractTag {
  * 
  * @author Timo Strotmann
  */
-class MultiTag extends AbstractTag {
+class ModularTag extends AbstractTag {
 	
 	protected $content = '';
 	
