@@ -261,6 +261,15 @@ class AbstractTag implements TagInterface {
 	} 
 	
 	/**
+	 * Gibt TRUE zurück, wenn der Inhalt des Tags mit der htmlentities()-Funktion von PHP aufgerufen werden soll, andernfalls FALSE.
+	 * 
+	 * @return boolean
+	 */
+	public function getHtmlentities() {
+		return $this->displayContentWithHtmlEntities;
+	} 
+	
+	/**
 	 * Rendern den Anfang des Tags.
 	 * Dies behinhaltend das öffnenden des Tags und die Auflistung der Attribute, z.B. '<a href="http://www.timo-strotmann.de" target="_blank"'.
 	 * Zu beachten ist, das das öffnede Tag nicht nicht geschlossen wird, dies liegt daran, das ein StandaloneTag mit ' />' und ein ModularTag mit '>' geschlossen wird!
