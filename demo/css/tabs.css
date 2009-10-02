@@ -32,7 +32,7 @@
 	text-decoration: none !important;
 	/*border: 0.2em solid transparent;*/
 	text-align: center;
-	width: 160px;
+	width: 100px;
 }
 .tabs .ui-tabs-nav li.ui-tabs-selected a, 
 .ui-tabs .ui-tabs-nav li.ui-state-disabled a,
