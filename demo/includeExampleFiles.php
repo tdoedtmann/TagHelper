@@ -5,6 +5,11 @@
 			if (in_array($file, $ignoreFiles)) {
 				continue;
 			}
+			
+			if (isset($_GET['exampleType']) && $_GET['exampleType'] != substr($file, 0, strlen($_GET['exampleType']))) {
+				continue;
+			}
+			
 			$display = (!isset($display)) ? 'block' : 'none';
 			$pathInfo = pathinfo($file);
 			if ($pathInfo['extension'] == 'php') {
@@ -23,14 +28,20 @@
 								<ul class="tabMenu">
 									<li class="tabMenuItem"><a href="#tabContent_1_<?php echo $index?>">Example</a></li>
 									<li class="tabMenuItem"><a href="#tabContent_2_<?php echo $index?>">Code</a></li>
-									<li class="tabMenuItem"><a href="#tabContent_3_<?php echo $index?>">POST</a></li>
-									<li class="tabMenuItem"><a href="#tabContent_4_<?php echo $index?>">GET</a></li>
+									<?php if (!empty($_POST[$fileName])): ?>								
+										<li class="tabMenuItem"><a href="#tabContent_3_<?php echo $index?>">POST</a></li>
+									<?php endif; ?>
+
+									<?php if (!empty($_GET)): ?>								
+										<li class="tabMenuItem"><a href="#tabContent_4_<?php echo $index?>">GET</a></li>
+									<?php endif; ?>
+									
 								</ul>
 								<br style="clear: both;" />
 								
 								<div id="tabContent_1_<?php echo $index?>" class="ui-tabs-hide" style="overflow:auto;">
 									<div id="exampleTabConent_<?php echo $index?>">
-										<p><?php include_once $path.$file; ?></p>
+										<?php include_once $path.$file; ?>
 									</div>
 								</div>
 								<div id="tabContent_2_<?php echo $index?>">
@@ -41,14 +52,17 @@
 									</div>
 								</div>
 								
+								<?php if (!empty($_POST[$fileName])): ?>								
 								<div id="tabContent_3_<?php echo $index?>">
 									<div id="postTabConent_<?php echo $index?>" style="overflow:auto;">
 										<pre>
-<?php echo var_export($_POST,1); ?>
+<?php echo var_export($_POST[$fileName],1); ?>
 										</pre>
 									</div>
 								</div>
+								<?php endif; ?>
 								
+								<?php if (!empty($_GET)): ?>								
 								<div id="tabContent_4_<?php echo $index?>">
 									<div id="getTabConent_<?php echo $index?>" style="overflow:auto;">
 										<pre>
@@ -56,6 +70,7 @@
 										</pre>
 									</div>
 								</div>
+								<?php endif; ?>
 								
 							</div>
 							<br style="clear: both;" />
