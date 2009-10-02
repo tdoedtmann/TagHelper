@@ -1,0 +1,15 @@
+@CHARSET "UTF-8";
+
+.pointer {
+	cursor: pointer;
+}
+	
+.toggle {
+}
+
+
+fieldset {
+	margin: 0px;
+	padding: 10px;
+	border: none;
+}
