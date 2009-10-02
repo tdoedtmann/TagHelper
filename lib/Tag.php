@@ -280,7 +280,7 @@ class Tag {
 			switch($listType) {
 				case 'ul':
 				case 'ol':
-					if ($value instanceof Tag) {
+					if ($value instanceof AbstractTag) {
 						// Es wurde ein Array mit Tags (<li>-Tags) übergeben (hoffentlich)
 						if ('li' == $value->getName()) {
 							$items[] = $value;
@@ -301,6 +301,7 @@ class Tag {
 					break;
 				
 				case 'dl':
+					// :TODO: <dl>-Listen müssen noch umgesetzt werden
 					break;
 				
 				default:
@@ -416,6 +417,14 @@ class Tag {
 			throw new TagException('Die PrefixId muss ein String sein!');		
 		}
 	} 
+	
+	/**
+	 * Gibt die prefixId zurück.
+	 * @return string
+	 */
+	static public function getPrefixId() {
+		return self::$prefixId;
+	}
 	
 	/**
 	 * Setzen die Default-Größe für das 'cols'-Attribute beim <textarea>-Tag.
