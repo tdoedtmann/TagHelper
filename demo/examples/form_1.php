@@ -18,7 +18,7 @@ $items_test = array(
     )
   )
 );
-
+Tag::setPrefixId(basename(__FILE__, '.php'));
 foreach(Tag::createChoiceTag($items_test, 'tickets', 'checkbox') as $item) {
   $itemContent.= $item . $br;
 }
