@@ -29,9 +29,90 @@ Released   : 20081016
 	<script type="text/javascript" src="js/jquery_ui-tabs.js"></script>
 	<script type="text/javascript" src="js/toggle.js"></script>
 	<script type="text/javascript" src="js/tabs.js"></script>
+
+
+	<!-- SyntaxHighlighter -->	
+	<script type="text/javascript" src="js/sh/shCore.js"></script>
+	<!--
+	<script type="text/javascript" src="js/sh/shBrushBash.js"></script>
+	<script type="text/javascript" src="js/sh/shBrushCpp.js"></script>
+	<script type="text/javascript" src="js/sh/shBrushCSharp.js"></script>
+	-->
+	<script type="text/javascript" src="js/sh/shBrushCss.js"></script>
+	<!--
+	<script type="text/javascript" src="js/sh/shBrushDelphi.js"></script>
+	<script type="text/javascript" src="js/sh/shBrushDiff.js"></script>
+	<script type="text/javascript" src="js/sh/shBrushGroovy.js"></script>
+	<script type="text/javascript" src="js/sh/shBrushJava.js"></script>
+	<script type="text/javascript" src="js/sh/shBrushJScript.js"></script>
+	-->
+	<script type="text/javascript" src="js/sh/shBrushPhp.js"></script>
+	<!--
+	<script type="text/javascript" src="js/sh/shBrushPlain.js"></script>
+	<script type="text/javascript" src="js/sh/shBrushPython.js"></script>
+	<script type="text/javascript" src="js/sh/shBrushRuby.js"></script>
+	<script type="text/javascript" src="js/sh/shBrushScala.js"></script>
+	<script type="text/javascript" src="js/sh/shBrushSql.js"></script>
+	<script type="text/javascript" src="js/sh/shBrushVb.js"></script>
+	-->
+	<script type="text/javascript" src="js/sh/shBrushXml.js"></script>
+	<link type="text/css" rel="stylesheet" href="css/sh/shCore.css" />
+	<link type="text/css" rel="stylesheet" href="css/sh/shThemeDefault.css" />
+	<script type="text/javascript">
+	/*<![CDATA[*/
+			SyntaxHighlighter.config.clipboardSwf = 'js/sh/clipboard.swf';
+			SyntaxHighlighter.all();
+	/*]]>*/
+	</script>
+
 </head>
 
 <body>
+
+<!--
+<pre class="brush: php; highlight: [5, 15]; html-script: true">
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en&quot;&gt;
+&lt;head&gt;
+	&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+	&lt;title&gt;SyntaxHighlighter Demo Page - &lt;?= htmlspecialchars($title)&nbsp;?&gt;&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+
+&lt;?
+/***********************************
+ ** Multiline block comments
+ **********************************/
+
+$stringWithUrl = &quot;http://alexgorbatchev.com&quot;;
+$stringWithOutUrl = 'hello world';
+	
+ob_start(&quot;parseOutputBuffer&quot;);		// Start Code Buffering
+session_start();
+	
+function parseOutputBuffer($buf) {
+	global $portal_small_code, $portal_gzcompress;
+	global $PHP_SELF, $HTTP_ACCEPT_ENCODING;
+
+	// cleaning out the code.
+	if($portal_small_code &amp;&amp;&nbsp;!$portal_gzcompress) {
+		$buf = str_replace(&quot;	&quot;, &quot;&quot;, $buf);
+		$buf = str_replace(&quot;\n&quot;, &quot;&quot;, $buf);
+		$buf = str_replace(chr(13), &quot;&quot;, $buf);
+	}
+}
+
+?&gt;
+
+&lt;!-- Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. --&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre><hr />
+-->
+
+
 	<!-- ----------------------------------------
 	---- HEADER ---------------------------------
 	-----------------------------------------	-->
@@ -68,63 +149,61 @@ Released   : 20081016
 	</div>
 	
 	
-	
-<!-- end #bg2 -->
-<div id="bg3">
-	<div id="bg4">
-		<div id="bg5">
-			<div id="page">
-				<div id="content">
-					<?php include_once 'includeExampleFiles.php'?>
+	<div id="bg3">
+		<div id="bg4">
+			<div id="bg5">
+				<div id="page">
+				
+					<!-- ----------------------------------------
+					---- CONTENT --------------------------------
+					-----------------------------------------	-->
+					<div id="content">
+						<?php include_once 'includeExampleFiles.php'?>
+					</div>
+
+					<!-- ----------------------------------------
+					---- SUBMENU --------------------------------
+					-----------------------------------------	-->
+					<div id="sidebar">
+						<ul>
+							<li>
+								<h2>Examples</h2>
+								<?php include_once 'includeExampleMenu.php'?>
+							</li>
+							<!--
+							<li>
+								<h2>That's me</h2>
+								<p>Framework um (X)HTML-Tags zu erstellen.</p>
+							</li>
+							-->
+						</ul>
+					</div>
+					<!-- end #sidebar -->
+					<div style="clear: both; height: 40px;">&nbsp;</div>
 				</div>
-				<!-- end #content -->
-				<div id="sidebar">
-					<ul>
-						<li>
-							<h2>Tempus aliquam</h2>
-							<p>Sed vel quam. Vestibulum pellentesque. Morbi sit amet magna ac lacus dapibus interdum. Donec pede nisl, gravida iaculis, auctor vitae, bibendum sit amet aliquam. <a href="#">Read more&hellip;</a></p>
-						</li>
-						<li>
-							<h2>Examples</h2>
-							<?php include_once 'includeExampleMenu.php'?>
-						</li>
-					</ul>
-				</div>
-				<!-- end #sidebar -->
-				<div style="clear: both; height: 40px;">&nbsp;</div>
+				<!-- end #page -->
 			</div>
-			<!-- end #page -->
 		</div>
 	</div>
-</div>
 
-<!-- end #bg3 -->
-<div id="footer">
-	<p>&copy; 2009 <a href="http://www.timo-strotmann.de/">Timo Strotmann</a></p>
-</div>
-<!-- end #footer -->
+
+	<!-- ----------------------------------------
+	---- FOOTER ---------------------------------
+	-----------------------------------------	-->
+	<div id="footer">
+		<p>&copy; 2009 <a href="http://www.timo-strotmann.de/">Timo Strotmann</a></p>
+	</div>
+	<!-- end #footer -->
 </body>
 </html>
 
 
 
-
-
-
-
-
 <?php 
-/*****************************************************************************************************
- *****************************************************************************************************
- ************************************   T E S T A U S G A B E N   ************************************
- *****************************************************************************************************
- *****************************************************************************************************/
-
 //var_dump(get_html_translation_table(HTML_ENTITIES));
 
 $br = Tag::createTag('br');
 $hr = Tag::createTag('hr');
-
 
 /*
 $for = 'diesunddas';
@@ -143,49 +222,12 @@ echo $preTag->setContent($f);
 echo $hr;
 */
 
-
 /*
-$a = Tag::createTag('a');
-$a->addAttribute(new Attribute('href', 'http://www.saltation.de', $a->getName()))
-  ->addAttribute(new Attribute('shape', 'rect', $a->getName()))
-  ->addAttribute(new Attribute('target', '_blank', $a->getName()))
-  ->setContent($hr.'Blähbauch'.$hr);
-echo $br.$a;
-var_dump($a->display());
-
-$a->setHtmlentities(false);
-echo $br.$a;
-var_dump($a->display());
-
-
 $preTag = Tag::createTag('pre');
 $data = array(
-	array('name'=>'width', 'value'=>'10'),
-	array('name'=>'style', 'value'=>'color:#333')
+	'width'=>'10',
+	'style'=>'color:#333'
 );
-$preTag->addAttributes(AttributeFactory::createAttributes($preTag->getName(), $data));
-
-
-
-
-$preTag->setContent("=======================\n= Ein anderes <a>-Tag =\n=======================\n");
-echo $br.$br.$preTag.$br.$br;
-
-
-
-$aTag = Tag::createTag('a');
-$aTag->setContent('Me, Myself & I')
-     ->addAttribute(AttributeFactory::createAttribute('href', 'http://www.timo-strotmann.de', $aTag->getName()))
-     ->addAttribute(AttributeFactory::createAttribute('shape', 'circle', $aTag->getName()))
-     ->addAttribute(AttributeFactory::createAttribute('target', '_blank', $aTag->getName()))
-     ->addAttribute(AttributeFactory::createAttribute('style', 'color:black; text-decoration:none;', $aTag->getName()));
-echo $aTag;
-var_dump($aTag->display());
-
-$aTag->setHtmlentities(false);
-echo $br.$aTag;
-var_dump($aTag->display());
-
+echo $preTag->addAttributes(AttributeFactory::createAttributes($preTag->getName(), $data));
 */
-
 ?>					
