@@ -19,7 +19,7 @@
 				<div class="post">
 					<div class="title">
 						<h2><a href="#"><span class="pointer toggle" id="toggleTabBox_<?php echo $index?>" onclick="toogleBox(this, 'boxTabContent_<?php echo $index?>');"><?php echo (($display=='block') ? '[&minus;]' : '[+]')?> <?php echo $title?></span></a></h2>
-						<p>10.11.08</p>
+						<p><?php echo date('d.m.Y', filemtime($path.$file));?></p>
 					</div>
 					<div class="entry">
 					
@@ -46,8 +46,8 @@
 								</div>
 								<div id="tabContent_2_<?php echo $index?>">
 									<div id="sourceTabConent_<?php echo $index?>" style="overflow:auto;">
-										<pre>
-<?php echo str_replace(array("<?php", "?>"), array("&lt;?php", "&gt;"), file_get_contents($path.$file)); ?>
+										<pre class="brush: php; tab-size: 2; wrap-lines: false">
+<?php echo htmlspecialchars(file_get_contents($path.$file)); ?>
 										</pre>
 									</div>
 								</div>
@@ -55,9 +55,7 @@
 								<?php if (!empty($_POST[$fileName])): ?>								
 								<div id="tabContent_3_<?php echo $index?>">
 									<div id="postTabConent_<?php echo $index?>" style="overflow:auto;">
-										<pre>
-<?php echo var_export($_POST[$fileName],1); ?>
-										</pre>
+										<?php echo viewArray($_POST[$fileName]); ?>
 									</div>
 								</div>
 								<?php endif; ?>
@@ -65,9 +63,7 @@
 								<?php if (!empty($_GET)): ?>								
 								<div id="tabContent_4_<?php echo $index?>">
 									<div id="getTabConent_<?php echo $index?>" style="overflow:auto;">
-										<pre>
-<?php echo var_export($_GET,1); ?>
-										</pre>
+										<?php echo viewArray($_GET); ?>
 									</div>
 								</div>
 								<?php endif; ?>
