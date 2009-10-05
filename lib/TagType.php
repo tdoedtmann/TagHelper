@@ -22,15 +22,46 @@ define('ENCODING',											'UTF-8');
 
 function trimExplode($string, $delim=',', $onlyNonEmptyValues=0)    {
 	$temp = explode($delim,$string);
-	$newtemp=array();
-	while(list($key,$val)=each($temp))      {
-		if (!$onlyNonEmptyValues || strcmp('',trim($val)))      {
-			$newtemp[]=trim($val);
+	$newtemp = array();
+	while (list($key, $val) = each($temp))      {
+		if (!$onlyNonEmptyValues || strcmp('', trim($val)))      {
+			$newtemp[] = trim($val);
 		}
 	}
 	reset($newtemp);
 	return $newtemp;
 } 
+
+function viewArray($array)  {
+	if (!is_array($array)) {
+		return false;
+	}
+		
+	if (!count($array)) {
+		$tableContent.= Tag::createTag('tr')->setContent(
+			Tag::createTag('td')->setContent(
+				Tag::createTag('strong')->setContent(htmlspecialchars("EMPTY!"))));
+				
+	} else {
+		while (list($key, $val) = each($array)) {
+			$td1 = Tag::createTag('td', array('valign'=>'top'))->setContent(htmlspecialchars((string)$key));
+
+			$tdValue = (is_array($array[$key])) ? viewArray($array[$key]) : Tag::createTag('span', array('style'=>'color:red;'))->setContent(nl2br(htmlspecialchars((string)$val)) . Tag::createTag('br'));
+			$td2 = Tag::createTag('td', array('valign'=>'top'))->setContent($tdValue);
+			
+			$tableContent.= Tag::createTag('tr')->setContent($td1 . $td2);
+		}
+	}
+			
+	$tableAttr = array(
+		'cellpadding' => '1',
+		'cellspacing' => '0',
+		'border'      => '1'
+	);
+	return Tag::createTag('table', $tableAttr)->setContent($tableContent);
+}
+
+
 
 /**********************************************************************
  * Exception-Klassen
@@ -115,7 +146,7 @@ class AbstractTag implements TagInterface {
 	protected $attributes = null;
 	protected $isInlineTag = true;
 	
-	protected $displayContentWithHtmlEntities = true;
+	protected $displayContentWithHtmlEntities = false;
 	
 	/**
 	 * Konstruktor von AbstractTag.

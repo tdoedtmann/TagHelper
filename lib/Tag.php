@@ -424,7 +424,7 @@ class Tag {
 	 */
 	static public function getPrefixId() {
 		return self::$prefixId;
-	}
+	} 
 	
 	/**
 	 * Setzen die Default-Größe für das 'cols'-Attribute beim <textarea>-Tag.
@@ -484,6 +484,92 @@ class Tag {
 		}
 		return $has;
 	} 
+
 	
+	static public function createTagsByArray($array) {
+		/**
+		 * 1.) Gibt es für den Key eine Factory?
+		 * 1.1.) Wenn ja, dann 
+		 */
+		
+		$content = '';
+		foreach ($array as $key => $factoryArray) {
+			foreach ($factoryArray as $factory => $factoryData) {
+					// Umwandeln von 'dies_ist_eine_funktion' zu 'DiesIstEineFunktion'
+				$factoryCamelCase = str_replace(' ', '', ucwords(str_replace('_', ' ', $factory)));
+				$factoryName = 'create'. $factoryCamelCase . 'Tag';
+				
+				if (in_array($factoryName, get_class_methods('Tag')) ) {
+					// Es existiert eine passende Factory-Methode
+//					$content.= '<h3>Factory: '.$factoryName.'</h3>';
+					
+					switch($factoryName) {
+						case 'createATag':
+							$content.= Tag::createATag($factoryData['href'], $factoryData['content'], $factoryData['attributes']);
+							break;
+							
+						case 'createFormTag':
+	//						$content.= Tag::createFormTag($action, $factoryData['content'], $factoryData['attributes']);
+							throw new TagException('Diese Factory (Tag::'.$factoryName.') wird mit dieser noch nicht unterstürzt!');
+							break;
+						
+						case 'createInputTag':
+							$content.= Tag::createInputTag($factoryData['type'], $factoryData['name'], $value, $factoryData['attributes']);
+							break;
+						
+						case 'createLabelTag':
+	//						$content.= Tag::createLabelTag($for, $factoryData['content'], $factoryData['attributes']);
+							throw new TagException('Diese Factory (Tag::'.$factoryName.') wird mit dieser noch nicht unterstürzt!');
+							break;
+						
+						case 'createLabeledInputTag':
+	//						$content.= Tag::createLabeledInputTag($labelContent, $factoryData['type'], $factoryData['name'], $value, $inputAttributes, $labelAttributes);
+							throw new TagException('Diese Factory (Tag::'.$factoryName.') wird mit dieser noch nicht unterstürzt!');
+							break;
+						
+						case 'createTextareaTag':
+	//						$content.= Tag::createTextareaTag($factoryData['name'], $factoryData['content'], $factoryData['attributes']);
+							throw new TagException('Diese Factory (Tag::'.$factoryName.') wird mit dieser noch nicht unterstürzt!');
+							break;
+						
+						case 'createFieldsetTag':
+	//						$content.= Tag::createFieldsetTag($fieldsetContent, $legendContent, $fieldsetAttributes, $legendAttributes);
+							throw new TagException('Diese Factory (Tag::'.$factoryName.') wird mit dieser noch nicht unterstürzt!');
+							break;
+						
+						case 'createListTag':
+							$content.= Tag::createListTag($factoryData['content'], $factoryData['type'], $factoryData['attributes']);
+							break;
+						
+						case 'createChoiceTag':
+							Tag::createChoiceTag($factoryData['content'], $factoryData['name'], $factoryData['type'], $factoryData['attributes']);
+							$br = Tag::createTag('br');
+							foreach(Tag::createChoiceTag($factoryData['content'], $factoryData['name'], $factoryData['type'], $factoryData['attributes']) as $item) {
+								$content.= $item . $br;
+							}
+							
+							break;
+							
+						default:
+							throw new TagException('Diese Factory (Tag::'.$factoryName.') ist nicht vorhanden!');
+					}
+					
+				} else {
+					// Keine Factory-Methode vorhanden.
+//					$content.= '<h3>Self: '.$factory.'</h3>';
+					
+					if (is_array($factoryData)) {
+						// Es sind weitere Daten/Konfigurationen vorhanden.
+						
+					} else {
+						// Es handelt sich anscheinend um ein Standalone-Tag
+						$content.= Tag::createTag($factory);
+					}
+				}
+			}
+		}
+		
+		return $content;
+	} 
 } 
 
