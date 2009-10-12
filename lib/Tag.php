@@ -110,12 +110,15 @@ class Tag {
 	 * @param $attributes
 	 * @return Tag
 	 */
-	static public function createInputTag($type, $name, $value, $attributes=array()) {
+	static public function createInputTag($type, $name, $value='', $attributes=array()) {
 		$searchAttributes = array('id'=>false, 'class'=>false);
 		self::hasAttributes($attributes, &$searchAttributes);
 
 		$attributes['type'] = $type;
-		$attributes['value'] = $value;
+		
+		if (is_int($value) || !empty($value)) {
+			$attributes['value'] = $value;
+		}
 		
 			// ID-Attribute
 		$name = preg_replace('/\s/', '_', $name);														// Alle Whitespaces durch einen '_' ersetzten, da Whitespaces im 'name'- und 'id'-Attribute nicht zulässig bzw. 'unschön' sind
@@ -348,13 +351,18 @@ class Tag {
 				
 				self::addIdAttribute($inputAttributes, $inputValue);
 				
+				// :ACHTUNG: Folgendes ist NUR bei einer "Mehrfachauswahl" zubeachten!
 					// Wenn eine PrefixId gesetzt ist, wird $name schon ein eckige Klammern ('[]') gepackt,
 					// also müssen die Klammern für die $name nicht so '[]' sondern so '][' angefügt werden!
 					// Mit PrefixId: dummy[$name] => dummy[$name.']['.] => dummy[$name][]
-				if (self::hasPrefixId()) {
-					$inputName = $name.'][';						 	// 'name'-Attribute im <input>-Tag
+				if ($type == 'radio') {
+					$inputName = $name;
 				} else {
-					$inputName = $name.'[]';
+					if (self::hasPrefixId()) {
+						$inputName = $name.'][';						 	// 'name'-Attribute im <input>-Tag
+					} else {
+						$inputName = $name.'[]';
+					}
 				}
 
 				$itemObj[] = self::createLabeledInputTag($label, $type, $inputName, $inputValue, $inputAttributes);
@@ -395,7 +403,7 @@ class Tag {
 	 * @param array $attributes Attribute, die dem Tag hinzugefügt werden sollen
 	 * @return Tag
 	 */
-	static private function createContentTag($tagName, $content, $attributes=array()) {
+	static  public function createContentTag($tagName, $content, $attributes=array()) {
 		$tag = Tag::createTag($tagName);
 		$tag->addAttributes(AttributeFactory::createAttributes($tag->getName(), $attributes))
 				->setContent($content);
