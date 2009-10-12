@@ -68,57 +68,12 @@ Released   : 20081016
 </head>
 
 <body>
-
-<!--
-<pre class="brush: php; highlight: [5, 15]; html-script: true">
-&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
-&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en&quot;&gt;
-&lt;head&gt;
-	&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
-	&lt;title&gt;SyntaxHighlighter Demo Page - &lt;?= htmlspecialchars($title)&nbsp;?&gt;&lt;/title&gt;
-&lt;/head&gt;
-
-&lt;body&gt;
-
-&lt;?
-/***********************************
- ** Multiline block comments
- **********************************/
-
-$stringWithUrl = &quot;http://alexgorbatchev.com&quot;;
-$stringWithOutUrl = 'hello world';
-	
-ob_start(&quot;parseOutputBuffer&quot;);		// Start Code Buffering
-session_start();
-	
-function parseOutputBuffer($buf) {
-	global $portal_small_code, $portal_gzcompress;
-	global $PHP_SELF, $HTTP_ACCEPT_ENCODING;
-
-	// cleaning out the code.
-	if($portal_small_code &amp;&amp;&nbsp;!$portal_gzcompress) {
-		$buf = str_replace(&quot;	&quot;, &quot;&quot;, $buf);
-		$buf = str_replace(&quot;\n&quot;, &quot;&quot;, $buf);
-		$buf = str_replace(chr(13), &quot;&quot;, $buf);
-	}
-}
-
-?&gt;
-
-&lt;!-- Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. --&gt;
-
-&lt;/body&gt;
-&lt;/html&gt;
-</pre><hr />
--->
-
-
 	<!-- ----------------------------------------
 	---- HEADER ---------------------------------
 	-----------------------------------------	-->
 	<div id="bg1">
 		<div id="header">
-			<h1><a href="#">(X)HTML-Tag-Classes<sup>1.0</sup></a></h1>
+			<h1><a href="#">(X)HTML-Tag-Classes<sup>0.1</sup></a></h1>
 			<h2>By <a href="http://www.timo-strotmann.de/">Timo Strotmann</a></h2>
 		</div>
 	</div>
@@ -201,11 +156,11 @@ function parseOutputBuffer($buf) {
 
 <?php 
 //var_dump(get_html_translation_table(HTML_ENTITIES));
+/*
 
 $br = Tag::createTag('br');
 $hr = Tag::createTag('hr');
 
-/*
 $for = 'diesunddas';
 $content =' Nase';
 $label = Tag::createLabelTag($for, $content);
