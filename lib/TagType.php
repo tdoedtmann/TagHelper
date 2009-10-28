@@ -410,12 +410,12 @@ class ModularTag extends AbstractTag {
 	 */
 	public function display() {
 		$tag = parent::display();
-		
+
 		if ($this->displayContentWithHtmlEntities) {
-			return $tag . ">\n\t" . htmlentities($this->content, ENT_NOQUOTES, ENCODING) . "\n</" . $this->name . '>';
-		} else {
-			return $tag . ">\n\t" . $this->content . "\n</" . $this->name . '>';
-		}
+      return $tag . ">" . htmlentities($this->content, ENT_NOQUOTES, ENCODING) . "</" . $this->name . '>';
+    } else {
+      return $tag . ">" . $this->content . "</" . $this->name . '>';
+    }
 	} 
 } 
 
