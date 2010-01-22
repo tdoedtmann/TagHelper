@@ -56,13 +56,24 @@ class Tag {
 		
 		return $tag;
 	} 
+
+	/**
+	 * Alias für createTag()
+	 * 
+   * @param string $name Name des Tags, z.B. 'a', 'input', 'br' etc.
+   * @param array $attributes Array mit den zu erstellenden Attributen.
+	 * @return Tag
+	 */
+  static public function create($name, $attributes=array()) {
+    return Tag::createTag($name, $attributes);
+  } 
 	
 	/**
 	 * Erstellt ein <a>-Tag und fügt dem den übergebenen Inhalt, sowie die übergebenen Attribute hinzu.
 	 * 
-	 * @param string $href Wert des href-Attribute
-	 * @param $content Text, der Links
-	 * @param $attributes Zusätliche Attribute für das Tag
+   * @param string $href Wert des href-Attribute
+   * @param string $content Text, der Links
+   * @param array $attributes Zusätliche Attribute für das Tag
 	 * @return Tag
 	 */
 	static public function createATag($href, $content, $attributes=array()) {
@@ -70,6 +81,18 @@ class Tag {
 		$tag = self::createTag('a', $attributes);
 		$tag->setContent($content);
 		return $tag;
+	} 
+	
+	/**
+	 * Alias für createATag()
+	 * 
+   * @param string $href Wert des href-Attribute
+   * @param string $content Text, der Links
+   * @param array $attributes Zusätliche Attribute für das Tag
+	 * @return Tag
+	 */
+	static public function a($href, $content, $attributes=array()) {
+		return Tag::createATag($href, $content, $attributes);
 	} 
 	
  /**
@@ -82,7 +105,7 @@ class Tag {
    */
   static public function createFormTag($action, $content, $attributes=array()) {
 		$searchAttributes = array('method'=>false);
-		self::hasAttributes($attributes, &$searchAttributes);
+		self::hasAttributes($attributes, $searchAttributes);
   	
       // If params isn't a array or in params don't exist the 'method', than set 'method="post"'
 		if (!$searchAttributes['method']) {
@@ -101,18 +124,30 @@ class Tag {
 		$tag->setHtmlentities(false);
 		return $tag;
   } 
-	
+
+  /**
+   * Alias für createFormTag()
+   * 
+   * @param string $action URL an der das <form> versendet wird
+   * @param string $formContent Content zwischen dem <form>- und </form>-Tag
+   * @param array $params Additional parameter like 'class' 
+   * @return Tag
+   */
+  static public function form($action, $content, $attributes=array()) {
+  	return Tag::createFormTag($action, $content, $attributes);
+  } 
+  
 	/**
 	 * Erstellt ein <input>-Tag.
 	 * 
-	 * @param $type
-	 * @param $name
-	 * @param $attributes
+	 * @param string $type
+	 * @param string $name
+	 * @param array $attributes
 	 * @return Tag
 	 */
 	static public function createInputTag($type, $name, $value='', $attributes=array()) {
 		$searchAttributes = array('id'=>false, 'class'=>false);
-		self::hasAttributes($attributes, &$searchAttributes);
+		self::hasAttributes($attributes, $searchAttributes);
 
 		$attributes['type'] = $type;
 		
@@ -136,6 +171,18 @@ class Tag {
 		
 		return self::createTag('input', $attributes);
 	} 
+
+	/**
+	 * Alias für createInputTag()
+   * 
+   * @param string $type
+   * @param string $name
+   * @param array $attributes
+   * @return Tag
+	 */
+  static public function input($type, $name, $value='', $attributes=array()) {
+    return Tag::createInputTag($type, $name, $value, $attributes);
+  } 
 	
 	/**
 	 * Erstellt ein <label>-Tag
@@ -147,7 +194,7 @@ class Tag {
 	 */		
 	static public function createLabelTag($for, $content, $attributes=array()) {
 		$searchAttributes = array('class'=>false);
-		self::hasAttributes($attributes, &$searchAttributes);
+		self::hasAttributes($attributes, $searchAttributes);
 		
 		$for = preg_replace('/\s/', '_', $for);															// Alle Whitespaces durch einen '_' ersetzten, da Whitespaces im 'name'- und 'id'-Attribute nicht zulässig bzw. 'unschön' sind
 		$attributes['for'] =  (self::hasPrefixId()) ? self::$prefixId . '_' . $for : $for;
@@ -160,6 +207,18 @@ class Tag {
 		$tag = self::createContentTag('label', $content, $attributes);
 		return $tag->setHtmlentities(false);
 	} 
+
+  /**
+   * Alias für createLabelTag()
+   * 
+   * @param string $for
+   * @param string $content
+   * @param array $attributes
+   * @return Tag
+   */   
+  static public function label($for, $content, $attributes=array()) {
+  	return Tag::createLabelTag($for, $content, $attributes);
+  } 
 	
 	/**
 	 * Erstellt ein <input>-Tag und das zugehörige <label>-Tag.
@@ -187,10 +246,25 @@ class Tag {
 		} else {
 			throw new TagException('Beim erstellen eines <label>-Tag wird ein id-Attribute benötigt!');
 		}
-		//return $label.$input;
+		
 		return $input.$label;
 	} 
-
+	
+  /**
+   * Alias für createLabeledInputTag()
+   * 
+   * @param string $labelContent Beschriftung des Label-Tags
+   * @param string $type Type des Input-Tags, z.B. 'checkbox'
+   * @param string $name Name des Input-Tags
+   * @param string $value Wert Input-Tags, welcher übermittelt wird
+   * @param array $inputAttributes Optionale Attribute die dem Input-Tag hinzugefügt werden können
+   * @param array $labelAttributes Optionale Attribute die dem Label-Tag hinzugefügt werden können
+   * @return string
+   */
+  static public function createLabeledInputTag($labelContent, $type, $name, $value, $inputAttributes=array(), $labelAttributes=array()) {
+    return Tag::createLabeledInputTag($labelContent, $type, $name, $value, $inputAttributes, $labelAttributes);
+  } 
+	
  /**
    * Erstellt ein <textarea>-Tag
    *
@@ -201,7 +275,7 @@ class Tag {
    */
   static public function createTextareaTag($name, $content='', $attributes=array()) {
 		$searchAttributes = array('id'=>false, 'class'=>false, 'cols'=>false, 'rows'=>false);
-		self::hasAttributes($attributes, &$searchAttributes);
+		self::hasAttributes($attributes, $searchAttributes);
 		
 			// Id-Attribute
 		$name = preg_replace('/\s/', '_', $name);														// Alle Whitespaces durch einen '_' ersetzten, da Whitespaces im 'name'- und 'id'-Attribute nicht zulässig bzw. 'unschön' sind
@@ -231,6 +305,18 @@ class Tag {
 		return $tag->setHtmlentities(false);
   } 
   
+ /**
+   * Alias für createTextareaTag()
+   *
+   * @param string $name Name des Tags, über dem der Inhalt ausgelesen werden kann (name-Attribute)
+   * @param string $content Content zwischen dem <textarea>- und </textarea>-Tag
+   * @param array $params Additional parameter like 'class' 
+   * @return unknown
+   */
+  static public function textarea($name, $content='', $attributes=array()) {
+    return Tag::createTextareaTag($name, $content, $attributes);
+  } 
+  
   /**
    * Erstellt ein <fieldset>-Tag. Bei Angabe eines $legendContent, wird zudem noch ein <legend>-Tag (in Form des Fieldset-Content) hinzugefügt.
    * 
@@ -242,7 +328,7 @@ class Tag {
    */
   static public function createFieldsetTag($fieldsetContent, $legendContent=NULL, $fieldsetAttributes=array(), $legendAttributes=array()) {
 		$searchAttributes = array('class'=>false);
-		self::hasAttributes($fieldsetAttributes, &$searchAttributes);
+		self::hasAttributes($fieldsetAttributes, $searchAttributes);
 		
       // Default CLASS-Attribute
 		if (!$searchAttributes['class']) {
@@ -258,6 +344,19 @@ class Tag {
 		
 		$fieldset = self::createContentTag('fieldset', $legend.$fieldsetContent, $fieldsetAttributes);
 		return $fieldset->setHtmlentities(false);
+  } 
+  
+  /**
+   * Alias für createFieldsetTag()
+   * 
+   * @param $legendContent
+   * @param $fieldsetContent
+   * @param $fieldsetAttributes
+   * @param $legendAttributes
+   * @return unknown_type
+   */
+  static public function fieldset($fieldsetContent, $legendContent=NULL, $fieldsetAttributes=array(), $legendAttributes=array()) {
+    return Tag::createFieldsetTag($fieldsetContent, $legendContent, $fieldsetAttributes, $legendAttributes);  
   } 
 
   /**
@@ -320,15 +419,54 @@ class Tag {
 		$tag = self::createContentTag($listType, $itemsContent, $attritbutes);
 		return $tag->setHtmlentities(false);
   } 
-
+  
+  /**
+   * Alias für createListTag(..., 'ul', ...)
+   * 
+   * @param $listItems
+   * @param $listType
+   * @param $listAttritbutes
+   * @param $itemAttributes
+   * @return unknown_type
+   */
+  static public function ul($listItems, $attritbutes=array()) {
+    return Tag::createListTag($listItems, 'ul', $attritbutes);
+  } 
+  
+  /**
+   * Alias für createListTag(..., 'ol', ...)
+   * 
+   * @param $listItems
+   * @param $listType
+   * @param $listAttritbutes
+   * @param $itemAttributes
+   * @return unknown_type
+   */
+  static public function ol($listItems, $attritbutes=array()) {
+    return Tag::createListTag($listItems, 'ol', $attritbutes);
+  } 
+  
+  /**
+   * Alias für createListTag(..., 'dl', ...)
+   * 
+   * @param $listItems
+   * @param $listType
+   * @param $listAttritbutes
+   * @param $itemAttributes
+   * @return unknown_type
+   */
+  static public function dl($listItems, $attritbutes=array()) {
+    return Tag::createListTag($listItems, 'dl', $attritbutes);
+  } 
+  
   /**
    *:TODO:
    *
-   * @param $items
-   * @param $name
-   * @param $type
-   * @param $attributes
-   * @return unknown_type
+   * @param array $items
+   * @param string $name
+   * @param string $type
+   * @param array $attributes
+   * @return Tag
    */
 	static public function createChoiceTag($items, $name, $type='radio', $attributes=array()) {
 		$itemObj = array();
@@ -349,7 +487,13 @@ class Tag {
 					}
 				}
 				
-				self::addIdAttribute($inputAttributes, $inputValue);
+		    $searchAttributes = array('id'=>false);
+		    self::hasAttributes($inputAttributes, $searchAttributes);
+		    
+		      // Default ID-Attribute
+		    if (false === $searchAttributes['id']) {
+					self::addIdAttribute($inputAttributes, $inputValue);
+		    }
 				
 				// :ACHTUNG: Folgendes ist NUR bei einer "Mehrfachauswahl" zubeachten!
 					// Wenn eine PrefixId gesetzt ist, wird $name schon ein eckige Klammern ('[]') gepackt,
@@ -371,6 +515,30 @@ class Tag {
 
 		return $itemObj;
 	} 
+	
+  /**
+   * Alias für createChoiceTag(..., ..., $type='radio', ...)
+   *
+   * @param array $items
+   * @param string $name
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function radio($items, $name, $attributes=array()) {
+  	return Tag::createChoiceTag($items, $name, 'radio', $attributes);
+  } 
+  
+  /**
+   * Alias für createChoiceTag(..., ..., $type='checkbox', ...)
+   *
+   * @param array $items
+   * @param string $name
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function checkbox($items, $name, $attributes=array()) {
+    return Tag::createChoiceTag($items, $name, 'checkbox', $attributes);
+  } 
   
   /**
    * Fügt das ID-Attribute den in $attributes übergebenen Attributen hinzu.
@@ -410,7 +578,19 @@ class Tag {
 
 		return $tag;
 	} 
-		
+	
+  /**
+   * Alias für createContentTag()
+   * 
+   * @param string $tagName Name des Tags, z.B. 'a', 'p', 'div'
+   * @param string $content Inhalt der zwischen den öffnenden und schließenden Tag stehen soll.
+   * @param array $attributes Attribute, die dem Tag hinzugefügt werden sollen
+   * @return Tag
+   */
+  static  public function content($tagName, $content, $attributes=array()) {
+    return Tag::createContentTag($tagName, $content, $attributes);
+  } 
+	
 	/**
 	 * Setzen der PrefixId.
 	 * Wenn diese angegeben ist, wird z.B. bei createInputTag() das ID-Attribute automatisch gesetzt (sofern nicht schon in dem Attribute-Array aufgeführt) und die PrefixId vorangestellt.
@@ -486,7 +666,6 @@ class Tag {
 				if (array_key_exists($attrName, $search)) {																			// und zwar nach denen, die in $search als Schlüssel aufgeführt wurden
 					$search[$attrName] = true;
 					$has = true;
-					break;
 				}
 			}
 		}

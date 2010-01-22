@@ -113,6 +113,90 @@ Released   : 20081016
 					---- CONTENT --------------------------------
 					-----------------------------------------	-->
 					<div id="content">
+
+<?php 
+
+/*
++----+----+----+
+| A1 | A2 | A3 | 
++----+----+----+
+| B1 | B2 | B3 | 
++----+----+----+
+| C1 | C2 | C3 | 
++----+----+----+
+| D1 | D2 | D3 | 
++----+----+----+
+$table_01 = array(
+  array('A1', 'A2', 'A3'),
+  array('B1', 'B2', 'B3'),
+  array('C1', 'C2', 'C3'),
+  array('D1', 'D2', 'D3')
+);
+
+
++----+----+----+----+
+| A1 |         | A4 |
++----+         +----+
+| B1 |   A2    | B4 |
++----+         +----+
+| C1 |         | C4 |
++----+----+----+----+
+| D1 |   D2    | D4 |
++----+----+----+----+
+$table_02[0][0]['content'] = 'A1';
+$table_02[0][1]['content'] = 'A2';
+$table_02[0][1]['attr'] = array('rowspan'=>3, 'colspan'=>2);
+$table_02[0][2]['content'] = 'A3';
+$table_02[0][3]['content'] = 'A4';
+
+$table_02[1][0]['content'] = 'B1';
+$table_02[1][1]['content'] = 'B4';
+
+$table_02[2][0]['content'] = 'C1';
+$table_02[2][1]['content'] = 'C4';
+
+$table_02[3][0]['content'] = 'D1';
+$table_02[3][1]['content'] = 'D2';
+$table_02[3][1]['attr'] = array('colspan'=>2);
+$table_02[3][2]['content'] = 'D4';
+*/
+/*
+$table_03 = array(
+  0 => array(
+    0 => array('content' => 'A1'),
+    1 => array(
+      'content' => 'A2',
+      'attr'    => array('rowspan'=>3, 'colspan'=>2)
+    ),
+    2 => array('content' => 'A3'),
+    3 => array('content' => 'A4'),
+  ),
+  
+  1 => array(
+    0 => array('content' => 'B1'),
+    1 => array('content' => 'B4'),
+  ),
+  
+  2 => array(
+    0 => array('content' => 'C1'),
+    1 => array('content' => 'C4'),
+  ),
+  
+  3 => array(
+    0 => array('content' => 'C1'),
+    1 => array(
+      'content' => 'C2',
+      'attr'    => array('colspan'=>2)
+    ),
+    2 => array('content' => 'A4'),
+  )
+);
+*/
+
+
+?>					
+					
+					
 						<?php include_once 'includeExampleFiles.php'?>
 					</div>
 
