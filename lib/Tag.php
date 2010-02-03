@@ -157,8 +157,8 @@ class Tag {
 		
 			// ID-Attribute
 		$name = preg_replace('/\s/', '_', $name);														// Alle Whitespaces durch einen '_' ersetzten, da Whitespaces im 'name'- und 'id'-Attribute nicht zulässig bzw. 'unschön' sind
-		if (!$searchAttributes['id']) {
-			self::addIdAttribute($attributes, $name);
+    if (!$searchAttributes['id']) {
+		  self::addIdAttribute($attributes, $name);
 		}
 		
 			// NAME-Attribute
@@ -261,7 +261,7 @@ class Tag {
    * @param array $labelAttributes Optionale Attribute die dem Label-Tag hinzugefügt werden können
    * @return string
    */
-  static public function createLabeledInputTag($labelContent, $type, $name, $value, $inputAttributes=array(), $labelAttributes=array()) {
+  static public function labeledInput($labelContent, $type, $name, $value, $inputAttributes=array(), $labelAttributes=array()) {
     return Tag::createLabeledInputTag($labelContent, $type, $name, $value, $inputAttributes, $labelAttributes);
   } 
 	
@@ -413,7 +413,7 @@ class Tag {
 
 		$itemsContent = '';
 		foreach($items as $item) {
-			$itemsContent.= "\n\t".$item->display();
+			$itemsContent.= $item->display();
 		}	
 			
 		$tag = self::createContentTag($listType, $itemsContent, $attritbutes);
@@ -548,8 +548,11 @@ class Tag {
    * @return void
    */
   static public function addIdAttribute(&$attributes, $value) {
-		$name = preg_replace('/\s/', '_', $value);														// Alle Whitespaces durch einen '_' ersetzten, da Whitespaces im 'name'- und 'id'-Attribute nicht zulässig bzw. 'unschön' sind
-		$attributes['id'] = ((self::hasPrefixId()) ? self::$prefixId.'_'  : '') . $value;
+    $id = preg_replace('/\s/', '_', $value);                            // Alle Whitespaces durch einen '_' ersetzten, da Whitespaces im 'name'- und 'id'-Attribute nicht zulässig bzw. 'unschön' sind
+    $id = preg_replace('/\]\[/', '_', $id);                             // Alle "][", welches in PHP zu einen Array geparst wird, durch einen '_' ersetzten
+    $id = preg_replace('/\[/', '_', $id);                               // 
+    $id = preg_replace('/\]/', '_', $id);                               // 
+    $attributes['id'] = ((self::hasPrefixId()) ? self::$prefixId.'_'  : '') . $id;
   } 
   
   /**
