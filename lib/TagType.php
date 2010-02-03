@@ -308,7 +308,7 @@ class AbstractTag implements TagInterface {
 	 * @return string
 	 */
 	public function display() {
-		$str = "\n".'<'.$this->name;
+		$str = '<'.$this->name;
 		if (!empty($this->attributes)) {
 			foreach($this->attributes as $attr) {
 				$str.= $attr;
