@@ -156,7 +156,6 @@ class Tag {
 		}
 		
 			// ID-Attribute
-		$name = preg_replace('/\s/', '_', $name);														// Alle Whitespaces durch einen '_' ersetzten, da Whitespaces im 'name'- und 'id'-Attribute nicht zulässig bzw. 'unschön' sind
     if (!$searchAttributes['id']) {
 		  self::addIdAttribute($attributes, $name);
 		}
@@ -278,7 +277,6 @@ class Tag {
 		self::hasAttributes($attributes, $searchAttributes);
 		
 			// Id-Attribute
-		$name = preg_replace('/\s/', '_', $name);														// Alle Whitespaces durch einen '_' ersetzten, da Whitespaces im 'name'- und 'id'-Attribute nicht zulässig bzw. 'unschön' sind
 		if (!$searchAttributes['id']) {
 			self::addIdAttribute($attributes, $name);
 		}
