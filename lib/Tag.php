@@ -229,12 +229,10 @@ class Tag {
 	 * @param string $value Wert Input-Tags, welcher übermittelt wird
 	 * @param array $inputAttributes Optionale Attribute die dem Input-Tag hinzugefügt werden können
 	 * @param array $labelAttributes Optionale Attribute die dem Label-Tag hinzugefügt werden können
+	 * @param boolean $inputBeforeLabel Bestimmt, ob das <input>-Tag vor dem <label>-Tag steht, oder umgekehrt
 	 * @return string
 	 */
-	static public function createLabeledInputTag($labelContent, $type, $name, $value, $inputAttributes=array(), $labelAttributes=array()) {
-		/**
-		 * :TODO: Die Reihenfolge in der das <input>- und das <label>-Tag ausgeliefert wird, muss editierbar sein!
-		 */
+	static public function createLabeledInputTag($labelContent, $type, $name, $value, $inputAttributes=array(), $labelAttributes=array(), $inputBeforeLabel=true) {
 		$input = self::createInputTag($type, $name, $value, $inputAttributes);
 		if ($input->getAttribute('id') instanceof Attribute) {
 			$for = $input->getAttribute('id')->getValue();
@@ -247,7 +245,7 @@ class Tag {
 			throw new TagException('Beim erstellen eines <label>-Tag wird ein id-Attribute benötigt!');
 		}
 		
-		return $input.$label;
+		return ((boolean)$inputBeforeLabel) ? $input.$label : $label.$input;
 	} 
 	
   /**
@@ -259,12 +257,14 @@ class Tag {
    * @param string $value Wert Input-Tags, welcher übermittelt wird
    * @param array $inputAttributes Optionale Attribute die dem Input-Tag hinzugefügt werden können
    * @param array $labelAttributes Optionale Attribute die dem Label-Tag hinzugefügt werden können
+   * @param boolean $inputBeforeLabel Bestimmt, ob das <input>-Tag vor dem <label>-Tag steht, oder umgekehrt
    * @return string
    */
-  static public function labeledInput($labelContent, $type, $name, $value, $inputAttributes=array(), $labelAttributes=array()) {
-    return Tag::createLabeledInputTag($labelContent, $type, $name, $value, $inputAttributes, $labelAttributes);
+  static public function labeledInput($labelContent, $type, $name, $value, $inputAttributes=array(), $labelAttributes=array(), $inputBeforeLabel=true) {
+    return Tag::createLabeledInputTag($labelContent, $type, $name, $value, $inputAttributes, $labelAttributes, $inputBeforeLabel);
   } 
 	
+  
  /**
    * Erstellt ein <textarea>-Tag
    *
