@@ -335,15 +335,16 @@ class Tag {
 			$fieldsetAttributes['class'] = 'fieldset';
 		}
 		
+    $fieldset = self::createTag('fieldset', $fieldsetAttributes);
+		
 		if (null !== $legendContent) {
+      // <legend>-Tag erstellen und dem <fieldset> hinzufügen
 			$legend = self::createContentTag('legend', $legendContent, $legendAttributes);
 			$legend->setHtmlentities(false);
-		} else {
-			$legend = '';
+      $fieldset->setContent($legend);
 		}
-		
-		$fieldset = self::createContentTag('fieldset', $legend.$fieldsetContent, $fieldsetAttributes);
-		return $fieldset->setHtmlentities(false);
+    
+    return $fieldset->setContent($fieldsetContent)->setHtmlentities(false);
   } 
   
   /**
