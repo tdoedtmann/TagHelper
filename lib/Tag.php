@@ -196,9 +196,9 @@ class Tag {
 		$searchAttributes = array('class'=>false);
 		self::hasAttributes($attributes, $searchAttributes);
 		
-		$for = preg_replace('/\s/', '_', $for);															// Alle Whitespaces durch einen '_' ersetzten, da Whitespaces im 'name'- und 'id'-Attribute nicht zulässig bzw. 'unschön' sind
-		$attributes['for'] =  (self::hasPrefixId()) ? self::$prefixId . '_' . $for : $for;
-		
+		  // FOR-Attribute
+    self::addForAttribute($attributes, $for);
+    
       // Default CLASS-Attribute
 		if (!$searchAttributes['class']) {
 			$attributes['class'] = 'label';
@@ -553,6 +553,17 @@ class Tag {
     $id = preg_replace('/\[/', '_', $id);                               // 
     $id = preg_replace('/\]/', '_', $id);                               // 
     $attributes['id'] = ((self::hasPrefixId()) ? self::$prefixId.'_'  : '') . $id;
+  } 
+  
+  /**
+   * Fügt das FOR-Attribute in den $attributes übergebenen Attributen hinzu.
+   * 
+   * @param array $attributes Referenz mit den Attributen
+   * @param string $value Wert des ID-Attributes
+   * @return void
+   */
+  static public function addForAttribute(&$attributes, $value) {
+    self::addIdAttribute($attributes, $value);
   } 
   
   /**
