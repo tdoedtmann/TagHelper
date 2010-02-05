@@ -357,14 +357,16 @@ class Tag {
   static public function fieldset($fieldsetContent, $legendContent=NULL, $fieldsetAttributes=array(), $legendAttributes=array()) {
     return Tag::createFieldsetTag($fieldsetContent, $legendContent, $fieldsetAttributes, $legendAttributes);  
   } 
-
+  
+  
   /**
+   * Erstellt, in Abhängikeit von $listType, eine <ul>-, <ol>- oder <dl>-List
    * 
    * @param $listItems
    * @param $listType
    * @param $listAttritbutes
    * @param $itemAttributes
-   * @return unknown_type
+   * @return Tag
    */
   static public function createListTag($listItems, $listType='ul', $attritbutes=array()) {
 		$searchAttributes = array('id'=>false, 'class'=>false);
@@ -381,28 +383,58 @@ class Tag {
 			switch($listType) {
 				case 'ul':
 				case 'ol':
-					if ($value instanceof AbstractTag) {
-						// Es wurde ein Array mit Tags (<li>-Tags) übergeben (hoffentlich)
-						if ('li' == $value->getName()) {
-							$items[] = $value;
-						} else {
-							throw new TagTypeException('Es sind in dem Listentyp \''.$listType.'\' nur \'<li>\'-Tags erlaubt!');
-						}
-					} else {
-						if (is_array($value)) {
-								// In $value stecken die Attribute und in $key der Content für das kommende <li>-Tag
-							$itemObj = self::createContentTag('li', $key, $value);
-						} else {
-								// In $value steckt der Inhalt für das kommende <li>-Tag.
-								// Attribute sind nicht angegeben.
-							$itemObj = self::createContentTag('li', $value);
-						}
-						$items[] = $itemObj;
-					}
+				  
+          if ($value instanceof AbstractTag) {
+              // Es wurde ein Array mit Tags (<li>-Tags) übergeben (hoffentlich)
+            if ('li' == $value->getName()) {
+              $items[] = $value;
+            } else {
+              throw new TagTypeException('Es sind in dem Listentyp \''.$listType.'\' nur \'<li>\'-Tags erlaubt!');
+            }
+          } else {
+            if (is_array($value)) {
+                // In $value stecken die Attribute und in $key der Content für das kommende <li>-Tag
+              $itemObj = self::createContentTag('li', $key, $value);
+            } else {
+                // In $value steckt der Inhalt für das kommende <li>-Tag.
+                // Attribute sind nicht angegeben.
+              $itemObj = self::createContentTag('li', $value);
+            }
+            $items[] = $itemObj;
+          }
 					break;
 				
 				case 'dl':
-					// :TODO: <dl>-Listen müssen noch umgesetzt werden
+          if ($value instanceof AbstractTag) {
+            if ('dt' == $value->getName()) {              // Es wurde ein Array mit Tags (<dt>-Tags) übergeben (hoffentlich)
+              $items[] = $value;
+            } else if ('dd' == $value->getName()) {       // Es wurde ein Array mit Tags (<dd>-Tags) übergeben (hoffentlich)
+              $items[] = $value;
+            } else {
+              throw new TagTypeException('Es sind in dem Listentyp \''.$listType.'\' nur \'<dt>\' und \'<dd>\'-Tags erlaubt!');
+            }
+          } else {
+            if (is_array($value)) {
+              foreach($value as $dlItemName => $dlItemData) {
+                if ('dt' == $dlItemName || 'dd' == $dlItemName) {
+                  if (is_array($dlItemData)) {
+                      // In $dlItemData stecken die Attribute und in $key der Content für das kommende <li>-Tag
+                      $dlItemContent    = isset($dlItemData['content'])    ? $dlItemData['content']    : array_shift($dlItemData);
+                      $dlItemAttributes = isset($dlItemData['attributes']) ? $dlItemData['attributes'] : array_shift($dlItemData);
+                    $itemObj = self::createContentTag($dlItemName, $dlItemContent, $dlItemAttributes);
+                  } else {
+                      // In $dlItemData steckt der Inhalt für das kommende <dt>- oder <dd>-Tag.
+                      // Attribute sind nicht angegeben.
+                    $itemObj = self::createContentTag($dlItemName, $dlItemData);
+                  }
+                  $items[] = $itemObj;
+                } else {
+                  throw new TagTypeException('Es sind in dem Listentyp \''.$listType.'\' nur \'<dt>\' und \'<dd>\'-Tags erlaubt!');
+                }
+              }
+            }
+            $items[] = $itemObj;
+          }				  
 					break;
 				
 				default:
@@ -410,11 +442,6 @@ class Tag {
 			}
 		}
 
-		$itemsContent = '';
-		foreach($items as $item) {
-			$itemsContent.= $item->display();
-		}	
-			
 		$tag = self::createContentTag($listType, $itemsContent, $attritbutes);
 		return $tag->setHtmlentities(false);
   } 
@@ -426,7 +453,7 @@ class Tag {
    * @param $listType
    * @param $listAttritbutes
    * @param $itemAttributes
-   * @return unknown_type
+   * @return Tag
    */
   static public function ul($listItems, $attritbutes=array()) {
     return Tag::createListTag($listItems, 'ul', $attritbutes);
@@ -439,7 +466,7 @@ class Tag {
    * @param $listType
    * @param $listAttritbutes
    * @param $itemAttributes
-   * @return unknown_type
+   * @return Tag
    */
   static public function ol($listItems, $attritbutes=array()) {
     return Tag::createListTag($listItems, 'ol', $attritbutes);
@@ -452,11 +479,45 @@ class Tag {
    * @param $listType
    * @param $listAttritbutes
    * @param $itemAttributes
-   * @return unknown_type
+   * @return Tag
    */
   static public function dl($listItems, $attritbutes=array()) {
     return Tag::createListTag($listItems, 'dl', $attritbutes);
   } 
+
+  /**
+   * Erstellt ein <li>-Tag
+   * 
+   * @param mixed $content
+   * @param mixed $attritbutes
+   * @return Tag
+   */
+  static public function li($content, $attritbutes=array()) {
+    return Tag::createContentTag('li', $content, $attritbutes);
+  } 
+  
+  /**
+   * Erstellt ein <dt>-Tag
+   * 
+   * @param mixed $content
+   * @param mixed $attritbutes
+   * @return Tag
+   */
+  static public function dt($content, $attritbutes=array()) {
+    return Tag::createContentTag('li', $content, $attritbutes);
+  } 
+  
+  /**
+   * Erstellt ein <dd>-Tag
+   * 
+   * @param mixed $content
+   * @param mixed $attritbutes
+   * @return Tag
+   */
+  static public function dd($content, $attritbutes=array()) {
+    return Tag::createContentTag('li', $content, $attritbutes);
+  } 
+
   
   /**
    *:TODO:
