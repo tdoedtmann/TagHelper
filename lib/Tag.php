@@ -620,10 +620,69 @@ class Tag {
 
         $itemObj[] = self::createLabeledInputTag($label, $type, $inputName, $inputValue, $inputAttributes);
       }
+      
+    } else if ($type === 'select') {
+        // :TODO: 
+        // <optgroup>-Tags sind noch nicht berücksichtigt
+      foreach($items as $optionValue => $optionData) {
+        $optionAttributes = array();
+        
+        if (is_string($optionData)) {
+          $optionContent = $optionData;                           // Inhalt des <label>-Tags
+        
+        } else if (is_numeric($optionData)) {
+          $optionContent = $optionData;                           // Inhalt des <label>-Tags
+          
+        } else if (is_array($optionData)) {                       // Inhalt des <label>-Tags
+          if (isset($optionData['content'])) {
+            $optionContent = $optionData['content'];
+            unset($optionData['content']);
+          } else if (isset($optionData['optionContent'])) {
+            $optionContent = $optionData['optionContent'];
+            unset($optionData['optionContent']);
+          } else {
+            $optionContent = array_shift($optionData);
+          }
+          
+          if (!empty($optionData)) {                              // Der Rest des Array, sind Attribute für das <input>-Tag
+            if (isset($optionData['attribute'])) {
+              $optionAttributes = $optionData['attribute'];
+              unset($itemValue['attribute']);
+            } else if (isset($optionData['attributes'])) {
+              $optionAttributes = $optionData['attributes'];
+              unset($optionData['attributes']);
+            } else {
+              $optionAttributes = array_shift($optionData);
+            }
+          }
+        }
+        
+        $searchAttributes = array('value'=>false);
+        self::hasAttributes($optionAttributes, $searchAttributes);
+        
+          // Default VALUE-Attribute
+        if (false === $searchAttributes['value']) {
+          $optionAttributes['value'] = $optionValue;
+        }
+        $optionTags[] = self::createContentTag('option', $optionContent, $optionAttributes);
+      }
+      
+      $searchAttributes = array('id'=>false);
+      self::hasAttributes($attributes, $searchAttributes);
+        
+        // Default ID-Attribute
+      if (false === $searchAttributes['id']) {
+        self::addIdAttribute($attributes, $name);
+      }
+      
+        // NAME-Attribute
+      self::addNameAttribute($attributes, $name);
+      
+      $itemObj = self::createContentTag('select', $optionTags, $attributes);
     }
-
+    
     return $itemObj;
-  }
+  } 
 
   /**
    * Alias für createChoiceTag(..., ..., $type='radio', ...)
@@ -635,7 +694,7 @@ class Tag {
    */
   static public function radio($items, $name, $attributes=array()) {
     return Tag::createChoiceTag($items, $name, 'radio', $attributes);
-  }
+  } 
 
   /**
    * Alias für createChoiceTag(..., ..., $type='checkbox', ...)
@@ -647,8 +706,20 @@ class Tag {
    */
   static public function checkbox($items, $name, $attributes=array()) {
     return Tag::createChoiceTag($items, $name, 'checkbox', $attributes);
-  }
+  } 
 
+  /**
+   * Alias für createChoiceTag(..., ..., $type='select', ...)
+   *
+   * @param array $items
+   * @param string $id
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function select($items, $id, $attributes=array()) {
+    return Tag::createChoiceTag($items, $id, 'select', $attributes);
+  } 
+    
 
 
 
