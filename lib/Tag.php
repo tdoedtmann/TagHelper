@@ -66,8 +66,36 @@ class Tag {
    */
   static public function create($name, $attributes=array()) {
     return Tag::createTag($name, $attributes);
-  }
+  } 
+  
+  /**
+   * Erstellt ein Tag und fügt dem den übergebenen Inhalt, sowie die übergebenen Attribute hinzu.
+   *
+   * @param string $tagName Name des Tags, z.B. 'a', 'p', 'div'
+   * @param string $content Inhalt der zwischen den öffnenden und schließenden Tag stehen soll.
+   * @param array $attributes Attribute, die dem Tag hinzugefügt werden sollen
+   * @return Tag
+   */
+  static  public function createContentTag($tagName, $content, $attributes=array()) {
+    $tag = Tag::createTag($tagName);
+    $tag->addAttributes(AttributeFactory::createAttributes($tag->getName(), $attributes))
+    ->setContent($content);
 
+    return $tag;
+  } 
+
+  /**
+   * Alias für createContentTag()
+   *
+   * @param string $tagName Name des Tags, z.B. 'a', 'p', 'div'
+   * @param string $content Inhalt der zwischen den öffnenden und schließenden Tag stehen soll.
+   * @param array $attributes Attribute, die dem Tag hinzugefügt werden sollen
+   * @return Tag
+   */
+  static  public function content($tagName, $content, $attributes=array()) {
+    return Tag::createContentTag($tagName, $content, $attributes);
+  } 
+  
 
   /**
    * Erstellt ein <a>-Tag und fügt dem den übergebenen Inhalt, sowie die übergebenen Attribute hinzu.
@@ -648,37 +676,9 @@ class Tag {
    */
   static public function addNameAttribute(&$attributes, $value) {
     $attributes['name'] = (self::hasPrefixId()) ? self::$prefixId . '[' . $value . ']' : $value;
-  }
+  } 
 
-  /**
-   * Erstellt ein Tag und fügt dem den übergebenen Inhalt, sowie die übergebenen Attribute hinzu.
-   *
-   * @param string $tagName Name des Tags, z.B. 'a', 'p', 'div'
-   * @param string $content Inhalt der zwischen den öffnenden und schließenden Tag stehen soll.
-   * @param array $attributes Attribute, die dem Tag hinzugefügt werden sollen
-   * @return Tag
-   */
-  static  public function createContentTag($tagName, $content, $attributes=array()) {
-    $tag = Tag::createTag($tagName);
-    $tag->addAttributes(AttributeFactory::createAttributes($tag->getName(), $attributes))
-    ->setContent($content);
-
-    return $tag;
-  }
-
-  /**
-   * Alias für createContentTag()
-   *
-   * @param string $tagName Name des Tags, z.B. 'a', 'p', 'div'
-   * @param string $content Inhalt der zwischen den öffnenden und schließenden Tag stehen soll.
-   * @param array $attributes Attribute, die dem Tag hinzugefügt werden sollen
-   * @return Tag
-   */
-  static  public function content($tagName, $content, $attributes=array()) {
-    return Tag::createContentTag($tagName, $content, $attributes);
-  }
-
-
+  
   /**
    * Setzen der PrefixId.
    * Wenn diese angegeben ist, wird z.B. bei createInputTag() das ID-Attribute automatisch gesetzt (sofern nicht schon in dem Attribute-Array aufgeführt) und die PrefixId vorangestellt.
