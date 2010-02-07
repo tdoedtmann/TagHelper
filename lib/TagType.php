@@ -381,14 +381,22 @@ class StandaloneTag extends AbstractTag {
 	 * @return string
 	 */
 	public function display() {
-		$tag = parent::display() . ' />';
-		
-		if ($this->contentAfter) {
-			$str = $tag . $this->content;
-		} else {
-			$str = $this->content . $tag;
-		}
-		return $str;
+	  $tag = parent::display() . ' />';
+
+	  if (is_array($this->content)) {
+	    foreach($this->content as $value) {
+	      $content.=$value;
+	    }
+	  } else {
+	    $content = $this->content;
+	  }
+
+	  if ($this->contentAfter) {
+	    $str = $tag . $content;
+	  } else {
+	    $str = $content . $tag;
+	  }
+	  return $str;
 	} 
 } 
 
@@ -428,11 +436,19 @@ class ModularTag extends AbstractTag {
 	 */
 	public function display() {
 		$tag = parent::display();
-
+    
+		if (is_array($this->content)) {
+		  foreach($this->content as $value) {
+		    $content.=$value;
+		  }
+		} else {
+		  $content = $this->content;
+		}
+		
 		if ($this->displayContentWithHtmlEntities) {
-      return "{$tag}>" . htmlentities($this->content, ENT_NOQUOTES, ENCODING) . "</{$this->name}>";
+      return "{$tag}>" . htmlentities($content, ENT_NOQUOTES, ENCODING) . "</{$this->name}>";
     } else {
-      return "{$tag}>{$this->content}</{$this->name}>";
+      return "{$tag}>{$content}</{$this->name}>";
     }
 	} 
 } 
