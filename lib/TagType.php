@@ -329,6 +329,15 @@ class StandaloneTag extends AbstractTag {
 	protected $content = '';
 	protected $contentAfter = true;
 	
+  /**
+   * Gibt den "Content", der für diesen Tag hinterlegt ist, zurück.
+   * 
+   * @return mixed $content
+   */
+  public function getContent() {
+    return $this->content;
+  } 
+  
 	/**
 	 * Setzt den "Content" (z.B. die "Beschriftung" eines <input>-Tags), der vor oder hinter dem Tag erscheinen soll.
 	 * 
@@ -392,6 +401,15 @@ class ModularTag extends AbstractTag {
 	
 	protected $content = '';
 	
+  /**
+   * Gibt den "Content", der z.B. zwischen dem öffneden und schließendem Tag steht (z.B. 'Hello World!' für <p>Hello World!</p>) zurück.
+   * 
+   * @return mixed $content
+   */
+  public function getContent() {
+    return $this->content;
+  } 
+  
 	/**
 	 * Setzt den "Content", der zwischen dem öffneden und schließendem Tag steht (z.B. 'Hello World!' für <p>Hello World!</p>).
 	 * 
