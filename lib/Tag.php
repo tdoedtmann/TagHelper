@@ -334,7 +334,7 @@ class Tag {
 
     $tag = self::createContentTag('textarea', $content, $attributes);
     return $tag->setHtmlentities(false);
-  }
+  } 
 
   /**
    * Alias für createTextareaTag()
