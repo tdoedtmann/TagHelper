@@ -467,7 +467,6 @@ class Tag {
                 }
               }
             }
-            $items[] = $itemObj;
           }
           break;
 
@@ -476,9 +475,9 @@ class Tag {
       }
     }
 
-    $tag = self::createContentTag($listType, $itemsContent, $attritbutes);
+    $tag = self::createContentTag($listType, $items, $attritbutes);
     return $tag->setHtmlentities(false);
-  }
+  } 
 
   /**
    * Alias für createListTag(..., 'ul', ...)
