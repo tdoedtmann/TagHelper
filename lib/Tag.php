@@ -750,8 +750,12 @@ class Tag {
    * @return void
    */
   static public function addForAttribute(&$attributes, $value) {
-    self::addIdAttribute($attributes, $value);
-  }
+    $for = preg_replace('/\s/', '_', $value);                           // Alle Whitespaces durch einen '_' ersetzten, da Whitespaces im 'name'- und 'id'-Attribute nicht zulässig bzw. 'unschön' sind
+    $for = preg_replace('/\]\[/', '_', $for);                           // Alle "][", welches in PHP zu einen Array geparst wird, durch einen '_' ersetzten
+    $for = preg_replace('/\[/', '_', $for);                             //
+    $for = preg_replace('/\]/', '_', $for);                             //
+    $attributes['for'] = ((self::hasPrefixId()) ? self::$prefixId.'_'  : '') . $for;
+  } 
 
   /**
    * Fügt das NAME-Attribute den in $attributes übergeben Attributen hinzu.
