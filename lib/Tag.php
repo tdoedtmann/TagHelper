@@ -55,7 +55,7 @@ class Tag {
     }
 
     return $tag;
-  }
+  } 
 
   /**
    * Alias für createTag()
@@ -110,7 +110,7 @@ class Tag {
     $tag = self::createTag('a', $attributes);
     $tag->setContent($content);
     return $tag;
-  }
+  } 
 
   /**
    * Alias für createATag()
@@ -122,7 +122,7 @@ class Tag {
    */
   static public function a($href, $content, $attributes=array()) {
     return Tag::createATag($href, $content, $attributes);
-  }
+  } 
 
 
   /**
@@ -153,7 +153,7 @@ class Tag {
     $tag = self::createContentTag('form', $content, $attributes);
     $tag->setHtmlentities(false);
     return $tag;
-  }
+  } 
 
   /**
    * Alias für createFormTag()
@@ -165,7 +165,7 @@ class Tag {
    */
   static public function form($action, $content, $attributes=array()) {
     return Tag::createFormTag($action, $content, $attributes);
-  }
+  } 
 
 
   /**
@@ -200,7 +200,7 @@ class Tag {
     }
 
     return self::createTag('input', $attributes);
-  }
+  } 
 
   /**
    * Alias für createInputTag()
@@ -212,7 +212,7 @@ class Tag {
    */
   static public function input($type, $name, $value='', $attributes=array()) {
     return Tag::createInputTag($type, $name, $value, $attributes);
-  }
+  } 
 
 
   /**
@@ -237,7 +237,7 @@ class Tag {
 
     $tag = self::createContentTag('label', $content, $attributes);
     return $tag->setHtmlentities(false);
-  }
+  } 
 
   /**
    * Alias für createLabelTag()
@@ -249,7 +249,7 @@ class Tag {
    */
   static public function label($for, $content, $attributes=array()) {
     return Tag::createLabelTag($for, $content, $attributes);
-  }
+  } 
 
 
   /**
@@ -278,7 +278,7 @@ class Tag {
     }
 
     return ((boolean)$inputBeforeLabel) ? $input.$label : $label.$input;
-  }
+  } 
 
   /**
    * Alias für createLabeledInputTag()
@@ -294,7 +294,7 @@ class Tag {
    */
   static public function labeledInput($labelContent, $type, $name, $value, $inputAttributes=array(), $labelAttributes=array(), $inputBeforeLabel=true) {
     return Tag::createLabeledInputTag($labelContent, $type, $name, $value, $inputAttributes, $labelAttributes, $inputBeforeLabel);
-  }
+  } 
 
 
   /**
@@ -346,7 +346,7 @@ class Tag {
    */
   static public function textarea($name, $content='', $attributes=array()) {
     return Tag::createTextareaTag($name, $content, $attributes);
-  }
+  } 
 
 
   /**
@@ -377,7 +377,7 @@ class Tag {
     }
 
     return $fieldset->setContent($fieldsetContent)->setHtmlentities(false);
-  }
+  } 
 
   /**
    * Alias für createFieldsetTag()
@@ -390,7 +390,7 @@ class Tag {
    */
   static public function fieldset($fieldsetContent, $legendContent=NULL, $fieldsetAttributes=array(), $legendAttributes=array()) {
     return Tag::createFieldsetTag($fieldsetContent, $legendContent, $fieldsetAttributes, $legendAttributes);
-  }
+  } 
 
 
   /**
@@ -490,7 +490,7 @@ class Tag {
    */
   static public function ul($listItems, $attritbutes=array()) {
     return Tag::createListTag($listItems, 'ul', $attritbutes);
-  }
+  } 
 
   /**
    * Alias für createListTag(..., 'ol', ...)
@@ -503,7 +503,7 @@ class Tag {
    */
   static public function ol($listItems, $attritbutes=array()) {
     return Tag::createListTag($listItems, 'ol', $attritbutes);
-  }
+  } 
 
   /**
    * Alias für createListTag(..., 'dl', ...)
@@ -516,7 +516,7 @@ class Tag {
    */
   static public function dl($listItems, $attritbutes=array()) {
     return Tag::createListTag($listItems, 'dl', $attritbutes);
-  }
+  } 
 
   /**
    * Erstellt ein <li>-Tag
@@ -527,7 +527,7 @@ class Tag {
    */
   static public function li($content, $attritbutes=array()) {
     return Tag::createContentTag('li', $content, $attritbutes);
-  }
+  } 
 
   /**
    * Erstellt ein <dt>-Tag
@@ -538,7 +538,7 @@ class Tag {
    */
   static public function dt($content, $attritbutes=array()) {
     return Tag::createContentTag('li', $content, $attritbutes);
-  }
+  } 
 
   /**
    * Erstellt ein <dd>-Tag
@@ -549,7 +549,7 @@ class Tag {
    */
   static public function dd($content, $attritbutes=array()) {
     return Tag::createContentTag('li', $content, $attritbutes);
-  }
+  } 
 
 
   /**
@@ -740,7 +740,7 @@ class Tag {
     $id = preg_replace('/\[/', '_', $id);                               //
     $id = preg_replace('/\]/', '_', $id);                               //
     $attributes['id'] = ((self::hasPrefixId()) ? self::$prefixId.'_'  : '') . $id;
-  }
+  } 
 
   /**
    * Fügt das FOR-Attribute in den $attributes übergebenen Attributen hinzu.
@@ -782,7 +782,7 @@ class Tag {
     } else {
       throw new TagException('Die PrefixId muss ein String sein!');
     }
-  }
+  } 
 
   /**
    * Gibt die prefixId zurück.
@@ -790,7 +790,7 @@ class Tag {
    */
   static public function getPrefixId() {
     return self::$prefixId;
-  }
+  } 
 
   /**
    * Setzen die Default-Größe für das 'cols'-Attribute beim <textarea>-Tag.
@@ -805,7 +805,7 @@ class Tag {
     } else {
       throw new TagException('Die angebenene Größe für \'TextareaCols\' muss vom Typ Integer und > 0 sein!');
     }
-  }
+  } 
 
   /**
    * Setzen die Default-Größe für das 'rows'-Attribute beim <textarea>-Tag.
@@ -820,7 +820,7 @@ class Tag {
     } else {
       throw new TagException('Die angebenene Größe für \'TextareaRows\' muss vom Typ Integer und > 0 sein!');
     }
-  }
+  } 
 
   /**
    * Prüft, ob Prefix für diverse Attribute (z.B. 'id' oder 'name') gesetzt wurde.
@@ -828,7 +828,7 @@ class Tag {
    */
   static protected function hasPrefixId() {
     return (is_string(self::$prefixId) && '' != self::$prefixId);
-  }
+  } 
 
   /**
    * Durchsucht die übergebenen $attributes nach Attributen, die in $search in Form von Schlüsseln angegeben werden.
@@ -848,8 +848,10 @@ class Tag {
       }
     }
     return $has;
-  }
+  } 
 
+  
+  
 
   static public function createTagsByArray($array) {
     /**
