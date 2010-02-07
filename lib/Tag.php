@@ -572,11 +572,27 @@ class Tag {
         if (is_string($itemValue)) {
           $label = $itemValue;																		// Inhalt des <label>-Tags
           	
+        } else if (is_numeric($itemValue)) {
+          $label = $itemValue;                                    // Inhalt des <label>-Tags
+        
         } else if (is_array($itemValue)) {
-          $label = array_shift($itemValue);												// Inhalt des <label>-Tags
-
-          if (!empty($itemValue)) {
-            $inputAttributes = array_shift($itemValue);						// Der Rest des Array, sind Attribute für das <input>-Tag
+          if (isset($itemValue['value'])) {                       // Inhalt des <label>-Tags
+            $label = $itemValue['value'];
+            unset($itemValue['value']);
+          } else {
+            $label = array_shift($itemValue);
+          }
+          
+          if (!empty($itemValue)) {                               // Der Rest des Array, sind Attribute für das <input>-Tag
+            if (isset($itemValue['attribute'])) {
+              $inputAttributes = $itemValue['attribute'];
+              unset($itemValue['attribute']);
+            } else if (isset($itemValue['attributes'])) {
+              $inputAttributes = $itemValue['attributes'];
+              unset($itemValue['attributes']);
+            } else {
+              $inputAttributes = array_shift($itemValue);
+            }
           }
         }
 
