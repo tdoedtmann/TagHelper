@@ -1,6 +1,5 @@
 <?php 
-$br = Tag::createTag('br');
-$hr = Tag::createTag('hr');
+$br = Tag::br();
 
 $items_test = array(
   'tickets_01' => 'Single-Ticket',
@@ -19,9 +18,9 @@ $items_test = array(
   )
 );
 Tag::setPrefixId(basename(__FILE__, '.php'));
-foreach(Tag::createChoiceTag($items_test, 'tickets', 'checkbox') as $item) {
+foreach(Tag::choices($items_test, 'tickets', 'checkbox') as $item) {
   $itemContent.= $item . $br;
 }
-$itemContent.= Tag::createInputTag('submit', 'submit', 'Submit');
+$itemContent.= Tag::input('submit', 'submit', 'Submit');
 
-echo $formTag = Tag::createFormTag($_SERVER['PHP_SELF'], $itemContent);
+echo $formTag = Tag::form($_SERVER['PHP_SELF'], $itemContent);
