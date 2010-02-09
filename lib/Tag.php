@@ -27,6 +27,102 @@ class TagException extends Exception {
  */
 class Tag {
 
+  /**
+   * :TODO: 
+   * XHTML-TAGS
+   * [X] a 
+   * [X] abbr 
+   * [X] acronym 
+   * [ ] address 
+   * [ ] applet 
+   * [ ] area 
+   * [X] b 
+   * [ ] base 
+   * [ ] basefont 
+   * [ ] bdo 
+   * [X] big 
+   * [X] blockquote 
+   * [ ] body 
+   * [X] br 
+   * [X] button 
+   * [ ] caption 
+   * [X] center 
+   * [X] cite 
+   * [X] code 
+   * [ ] col 
+   * [ ] colgroup 
+   * [X] dd 
+   * [ ] del 
+   * [X] dfn 
+   * [ ] dir 
+   * [X] div 
+   * [X] dl 
+   * [X] dt 
+   * [X] em 
+   * [X] fieldset 
+   * [ ] font 
+   * [X] form 
+   * [ ] frame 
+   * [ ] frameset 
+   * [X] h1 
+   * [X] h2 
+   * [X] h3 
+   * [X] h4 
+   * [X] h5 
+   * [X] h6 
+   * [ ] head 
+   * [X] hr 
+   * [ ] html 
+   * [X] i 
+   * [ ] iframe 
+   * [X] img 
+   * [X] input 
+   * [ ] ins 
+   * [ ] isindex 
+   * [X] kbd 
+   * [X] label 
+   * [X] legend 
+   * [X] li 
+   * [ ] link 
+   * [ ] map 
+   * [ ] menu 
+   * [ ] meta 
+   * [ ] noframes 
+   * [ ] noscript 
+   * [ ] object 
+   * [X] ol 
+   * [ ] optgroup 
+   * [ ] option 
+   * [X] p 
+   * [X] param 
+   * [X] pre 
+   * [X] q 
+   * [X] s 
+   * [X] samp 
+   * [ ] script 
+   * [X] select 
+   * [X] small 
+   * [X] span 
+   * [X] strike 
+   * [X] strong 
+   * [ ] style 
+   * [X] sub 
+   * [X] sup 
+   * [ ] table 
+   * [X] tbody 
+   * [X] td 
+   * [X] textarea 
+   * [X] tfoot 
+   * [X] th 
+   * [X] thead 
+   * [ ] title 
+   * [X] tr 
+   * [X] tt 
+   * [X] u 
+   * [X] ul 
+   * [X] var'
+   */
+  
   static protected $prefixId = '';
   static protected $defaultTextareaCols = 20;
   static protected $defaultTextareaRows = 5;
@@ -44,7 +140,7 @@ class Tag {
    * @param array $attributes Array mit den zu erstellenden Attributen.
    * @return Tag
    */
-  static public function createTag($name, $attributes=array()) {
+  static public function create($name, $attributes=array()) {
     if (false === array_search($name, trimExplode(STANDALONE_TAGS))) {
       $tag = new ModularTag($name);
     } else {
@@ -58,17 +154,6 @@ class Tag {
   } 
 
   /**
-   * Alias für createTag()
-   *
-   * @param string $name Name des Tags, z.B. 'a', 'input', 'br' etc.
-   * @param array $attributes Array mit den zu erstellenden Attributen.
-   * @return Tag
-   */
-  static public function create($name, $attributes=array()) {
-    return Tag::createTag($name, $attributes);
-  } 
-  
-  /**
    * Erstellt ein Tag und fügt dem den übergebenen Inhalt, sowie die übergebenen Attribute hinzu.
    *
    * @param string $tagName Name des Tags, z.B. 'a', 'p', 'div'
@@ -76,27 +161,46 @@ class Tag {
    * @param array $attributes Attribute, die dem Tag hinzugefügt werden sollen
    * @return Tag
    */
-  static  public function createContentTag($tagName, $content, $attributes=array()) {
-    $tag = Tag::createTag($tagName);
-    $tag->addAttributes(AttributeFactory::createAttributes($tag->getName(), $attributes))
-    ->setContent($content);
+  static  public function content($tagName, $content, $attributes=array()) {
+    $tag = self::create($tagName, $attributes);
+    $tag->setContent($content);
 
     return $tag;
   } 
-
+  
+  
+  
+  
+  /**********************************************************************
+   * Standalone-Tags ****************************************************
+   **********************************************************************/
+  
   /**
-   * Alias für createContentTag()
-   *
-   * @param string $tagName Name des Tags, z.B. 'a', 'p', 'div'
-   * @param string $content Inhalt der zwischen den öffnenden und schließenden Tag stehen soll.
-   * @param array $attributes Attribute, die dem Tag hinzugefügt werden sollen
+   * Erstelt ein <br>-Tag
+   * 
+   * @param array $attributes
    * @return Tag
    */
-  static  public function content($tagName, $content, $attributes=array()) {
-    return Tag::createContentTag($tagName, $content, $attributes);
+  static public function br($attributes=array()) {
+    return self::create('br', $attributes);
   } 
   
-
+  /**
+   * Erstelt ein <hr>-Tag
+   * 
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function hr($attributes=array()) {
+    return self::create('hr', $attributes);
+  } 
+  
+  
+  
+  /**********************************************************************
+   * Modular-Tags *******************************************************
+   **********************************************************************/
+  
   /**
    * Erstellt ein <a>-Tag und fügt dem den übergebenen Inhalt, sowie die übergebenen Attribute hinzu.
    *
@@ -105,26 +209,59 @@ class Tag {
    * @param array $attributes Zusätliche Attribute für das Tag
    * @return Tag
    */
-  static public function createATag($href, $content, $attributes=array()) {
+  static public function a($href, $content, $attributes=array()) {
     $attributes['href'] = $href;
-    $tag = self::createTag('a', $attributes);
-    $tag->setContent($content);
-    return $tag;
+    return self::content('a', $content, $attributes);
   } 
-
+  
   /**
-   * Alias für createATag()
+   * Erstellt ein <fieldset>-Tag. Bei Angabe eines $legendContent, wird zudem noch ein <legend>-Tag (in Form des Fieldset-Content) hinzugefügt.
    *
-   * @param string $href Wert des href-Attribute
-   * @param string $content Text, der Links
-   * @param array $attributes Zusätliche Attribute für das Tag
+   * @param $legendContent
+   * @param $fieldsetContent
+   * @param $fieldsetAttributes
+   * @param $legendAttributes
+   * @return unknown_type
+   */
+  static public function fieldset($fieldsetContent, $legendContent=NULL, $fieldsetAttributes=array(), $legendAttributes=array()) {
+    $searchAttributes = array('class'=>false);
+    self::hasAttributes($fieldsetAttributes, $searchAttributes);
+
+      // Default CLASS-Attribute
+    if (!$searchAttributes['class']) {
+      $fieldsetAttributes['class'] = 'fieldset';
+    }
+
+    $fieldset = self::create('fieldset', $fieldsetAttributes);
+
+    if (null !== $legendContent) {
+      // <legend>-Tag erstellen und dem <fieldset> hinzufügen
+      $legend = self::legend($legendContent, $legendAttributes);
+      $legend->setHtmlentities(false);
+      $fieldset->setContent($legend);
+    }
+
+    return $fieldset->setContent($fieldsetContent)->setHtmlentities(false);
+  } 
+  
+  /**
+   * Erstellt ein <lagend>-Tag
+   * 
+   * @param mixed $content
+   * @param array $attributes
    * @return Tag
    */
-  static public function a($href, $content, $attributes=array()) {
-    return Tag::createATag($href, $content, $attributes);
-  } 
-
-
+  static public function legend($content, $attributes=array()) {
+    return self::content('legend', $content, $attributes);
+  }
+  
+  
+  
+  
+  /**********************************************************************
+   * Formular-Tags ******************************************************
+   **********************************************************************/
+    
   /**
    * Erstellt ein <form>-Tag
    *
@@ -133,7 +270,7 @@ class Tag {
    * @param array $params Additional parameter like 'class'
    * @return unknown
    */
-  static public function createFormTag($action, $content, $attributes=array()) {
+  static public function form($action, $content, $attributes=array()) {
     $searchAttributes = array('method'=>false);
     self::hasAttributes($attributes, $searchAttributes);
      
@@ -150,23 +287,10 @@ class Tag {
       // Das 'action'-Attribute setzen
     $attributes['action'] = $action;
 
-    $tag = self::createContentTag('form', $content, $attributes);
+    $tag = self::content('form', $content, $attributes);
     $tag->setHtmlentities(false);
     return $tag;
   } 
-
-  /**
-   * Alias für createFormTag()
-   *
-   * @param string $action URL an der das <form> versendet wird
-   * @param string $formContent Content zwischen dem <form>- und </form>-Tag
-   * @param array $params Additional parameter like 'class'
-   * @return Tag
-   */
-  static public function form($action, $content, $attributes=array()) {
-    return Tag::createFormTag($action, $content, $attributes);
-  } 
-
 
   /**
    * Erstellt ein <input>-Tag.
@@ -176,7 +300,7 @@ class Tag {
    * @param array $attributes
    * @return Tag
    */
-  static public function createInputTag($type, $name, $value='', $attributes=array()) {
+  static public function input($type, $name, $value='', $attributes=array()) {
     $searchAttributes = array('id'=>false, 'class'=>false);
     self::hasAttributes($attributes, $searchAttributes);
 
@@ -199,21 +323,8 @@ class Tag {
       $attributes['class'] = (($type=='submit') ? 'submit' : 'input '.$type);
     }
 
-    return self::createTag('input', $attributes);
+    return self::create('input', $attributes);
   } 
-
-  /**
-   * Alias für createInputTag()
-   *
-   * @param string $type
-   * @param string $name
-   * @param array $attributes
-   * @return Tag
-   */
-  static public function input($type, $name, $value='', $attributes=array()) {
-    return Tag::createInputTag($type, $name, $value, $attributes);
-  } 
-
 
   /**
    * Erstellt ein <label>-Tag
@@ -223,7 +334,7 @@ class Tag {
    * @param array $attributes
    * @return Tag
    */
-  static public function createLabelTag($for, $content, $attributes=array()) {
+  static public function label($for, $content, $attributes=array()) {
     $searchAttributes = array('class'=>false);
     self::hasAttributes($attributes, $searchAttributes);
 
@@ -235,22 +346,9 @@ class Tag {
       $attributes['class'] = 'label';
     }
 
-    $tag = self::createContentTag('label', $content, $attributes);
+    $tag = self::content('label', $content, $attributes);
     return $tag->setHtmlentities(false);
   } 
-
-  /**
-   * Alias für createLabelTag()
-   *
-   * @param string $for
-   * @param string $content
-   * @param array $attributes
-   * @return Tag
-   */
-  static public function label($for, $content, $attributes=array()) {
-    return Tag::createLabelTag($for, $content, $attributes);
-  } 
-
 
   /**
    * Erstellt ein <input>-Tag und das zugehörige <label>-Tag.
@@ -264,38 +362,22 @@ class Tag {
    * @param boolean $inputBeforeLabel Bestimmt, ob das <input>-Tag vor dem <label>-Tag steht, oder umgekehrt
    * @return string
    */
-  static public function createLabeledInputTag($labelContent, $type, $name, $value, $inputAttributes=array(), $labelAttributes=array(), $inputBeforeLabel=true) {
-    $input = self::createInputTag($type, $name, $value, $inputAttributes);
+  static public function labeledInput($labelContent, $type, $name, $value, $inputAttributes=array(), $labelAttributes=array(), $inputBeforeLabel=true) {
+    $input = self::input($type, $name, $value, $inputAttributes);
+    
     if ($input->getAttribute('id') instanceof Attribute) {
       $for = $input->getAttribute('id')->getValue();
         // In '$for' kann 'self::$prefixId' schon behinhalten, das muss hier herausgefiltert werden
       if (self::$prefixId.'_' === substr($for, 0, (strlen(self::$prefixId)+1))) {
         $for = substr($for, (strlen(self::$prefixId)+1));
       }
-      $label = self::createLabelTag($for, $labelContent, $labelAttributes);
+      $label = self::label($for, $labelContent, $labelAttributes);
     } else {
       throw new TagException('Beim erstellen eines <label>-Tag wird ein id-Attribute benötigt!');
     }
 
     return ((boolean)$inputBeforeLabel) ? $input.$label : $label.$input;
   } 
-
-  /**
-   * Alias für createLabeledInputTag()
-   *
-   * @param string $labelContent Beschriftung des Label-Tags
-   * @param string $type Type des Input-Tags, z.B. 'checkbox'
-   * @param string $name Name des Input-Tags
-   * @param string $value Wert Input-Tags, welcher übermittelt wird
-   * @param array $inputAttributes Optionale Attribute die dem Input-Tag hinzugefügt werden können
-   * @param array $labelAttributes Optionale Attribute die dem Label-Tag hinzugefügt werden können
-   * @param boolean $inputBeforeLabel Bestimmt, ob das <input>-Tag vor dem <label>-Tag steht, oder umgekehrt
-   * @return string
-   */
-  static public function labeledInput($labelContent, $type, $name, $value, $inputAttributes=array(), $labelAttributes=array(), $inputBeforeLabel=true) {
-    return Tag::createLabeledInputTag($labelContent, $type, $name, $value, $inputAttributes, $labelAttributes, $inputBeforeLabel);
-  } 
-
 
   /**
    * Erstellt ein <textarea>-Tag
@@ -305,7 +387,7 @@ class Tag {
    * @param array $params Additional parameter like 'class'
    * @return unknown
    */
-  static public function createTextareaTag($name, $content='', $attributes=array()) {
+  static public function textarea($name, $content='', $attributes=array()) {
     $searchAttributes = array('id'=>false, 'class'=>false, 'cols'=>false, 'rows'=>false);
     self::hasAttributes($attributes, $searchAttributes);
 
@@ -332,228 +414,64 @@ class Tag {
       $attributes['rows'] = self::$defaultTextareaRows;
     }
 
-    $tag = self::createContentTag('textarea', $content, $attributes);
+    $tag = self::content('textarea', $content, $attributes);
     return $tag->setHtmlentities(false);
   } 
 
   /**
-   * Alias für createTextareaTag()
-   *
-   * @param string $name Name des Tags, über dem der Inhalt ausgelesen werden kann (name-Attribute)
-   * @param string $content Content zwischen dem <textarea>- und </textarea>-Tag
-   * @param array $params Additional parameter like 'class'
-   * @return unknown
-   */
-  static public function textarea($name, $content='', $attributes=array()) {
-    return Tag::createTextareaTag($name, $content, $attributes);
-  } 
-
-
-  /**
-   * Erstellt ein <fieldset>-Tag. Bei Angabe eines $legendContent, wird zudem noch ein <legend>-Tag (in Form des Fieldset-Content) hinzugefügt.
-   *
-   * @param $legendContent
-   * @param $fieldsetContent
-   * @param $fieldsetAttributes
-   * @param $legendAttributes
-   * @return unknown_type
-   */
-  static public function createFieldsetTag($fieldsetContent, $legendContent=NULL, $fieldsetAttributes=array(), $legendAttributes=array()) {
-    $searchAttributes = array('class'=>false);
-    self::hasAttributes($fieldsetAttributes, $searchAttributes);
-
-      // Default CLASS-Attribute
-    if (!$searchAttributes['class']) {
-      $fieldsetAttributes['class'] = 'fieldset';
-    }
-
-    $fieldset = self::createTag('fieldset', $fieldsetAttributes);
-
-    if (null !== $legendContent) {
-      // <legend>-Tag erstellen und dem <fieldset> hinzufügen
-      $legend = self::createContentTag('legend', $legendContent, $legendAttributes);
-      $legend->setHtmlentities(false);
-      $fieldset->setContent($legend);
-    }
-
-    return $fieldset->setContent($fieldsetContent)->setHtmlentities(false);
-  } 
-
-  /**
-   * Alias für createFieldsetTag()
-   *
-   * @param $legendContent
-   * @param $fieldsetContent
-   * @param $fieldsetAttributes
-   * @param $legendAttributes
-   * @return unknown_type
-   */
-  static public function fieldset($fieldsetContent, $legendContent=NULL, $fieldsetAttributes=array(), $legendAttributes=array()) {
-    return Tag::createFieldsetTag($fieldsetContent, $legendContent, $fieldsetAttributes, $legendAttributes);
-  } 
-
-
-  /**
-   * Erstellt, in Abhängikeit von $listType, eine <ul>-, <ol>- oder <dl>-List
-   *
-   * @param $listItems
-   * @param $listType
-   * @param $listAttritbutes
-   * @param $itemAttributes
+   * Erstellt ein <input>-Tag vom Type "submit"
+   * 
+   * @param string $name
+   * @param sting $value
+   * @param array $attributes
    * @return Tag
    */
-  static public function createListTag($listItems, $listType='ul', $attritbutes=array()) {
+  static public function submit($name, $value='submit', $attributes=array()) {
+    return self::input('submit', $name, $value, $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <button>-Tag
+   * 
+   * @param unknown_type $type
+   * @param unknown_type $name
+   * @param unknown_type $value
+   * @param unknown_type $attributes
+   * @return unknown_type
+   */
+  static public function button($name, $value, $type='button', $attributes=array()) {
     $searchAttributes = array('id'=>false, 'class'=>false);
-    self::hasAttributes($attritbutes, $searchAttributes);
+    self::hasAttributes($attributes, $searchAttributes);
 
-      // Default CLASS-Attribute
+    $attributes['type'] = $type;
+    
+    if (is_numeric($value) || !empty($value)) {
+      $attributes['value'] = $value;
+    }
+    
+      // ID-Attribute
+    if (!$searchAttributes['id']) {
+      self::addIdAttribute($attributes, $name);
+    }
+    
+      // NAME-Attribute
+    self::addNameAttribute($attributes, $name);
+    
+      // CLASS-Attribute
     if (false === $searchAttributes['class']) {
-      $attritbutes['class'] = 'select ' . $listType;
+      $attributes['class'] = 'button '.$type;
     }
-
-    $items = array();
-    $itemsContent = '';
-    foreach($listItems as $key => $value) {
-      switch($listType) {
-        case 'ul':
-        case 'ol':
-
-          if ($value instanceof AbstractTag) {
-              // Es wurde ein Array mit Tags (<li>-Tags) übergeben (hoffentlich)
-            if ('li' == $value->getName()) {
-              $items[] = $value;
-            } else {
-              throw new TagTypeException('Es sind in dem Listentyp \''.$listType.'\' nur \'<li>\'-Tags erlaubt!');
-            }
-          } else {
-            if (is_array($value)) {
-                // In $value stecken die Attribute und in $key der Content für das kommende <li>-Tag
-              $itemObj = self::createContentTag('li', $key, $value);
-            } else {
-                // In $value steckt der Inhalt für das kommende <li>-Tag.
-                // Attribute sind nicht angegeben.
-              $itemObj = self::createContentTag('li', $value);
-            }
-            $items[] = $itemObj;
-          }
-          break;
-
-        case 'dl':
-          if ($value instanceof AbstractTag) {
-            if ('dt' == $value->getName()) {              // Es wurde ein Array mit Tags (<dt>-Tags) übergeben (hoffentlich)
-              $items[] = $value;
-            } else if ('dd' == $value->getName()) {       // Es wurde ein Array mit Tags (<dd>-Tags) übergeben (hoffentlich)
-              $items[] = $value;
-            } else {
-              throw new TagTypeException('Es sind in dem Listentyp \''.$listType.'\' nur \'<dt>\' und \'<dd>\'-Tags erlaubt!');
-            }
-          } else {
-            if (is_array($value)) {
-              foreach($value as $dlItemName => $dlItemData) {
-                if ('dt' == $dlItemName || 'dd' == $dlItemName) {
-                  if (is_array($dlItemData)) {
-                      // In $dlItemData stecken die Attribute und in $key der Content für das kommende <li>-Tag
-                    $dlItemContent    = isset($dlItemData['content'])    ? $dlItemData['content']    : array_shift($dlItemData);
-                    $dlItemAttributes = isset($dlItemData['attributes']) ? $dlItemData['attributes'] : array_shift($dlItemData);
-                    $itemObj = self::createContentTag($dlItemName, $dlItemContent, $dlItemAttributes);
-                  } else {
-                      // In $dlItemData steckt der Inhalt für das kommende <dt>- oder <dd>-Tag.
-                      // Attribute sind nicht angegeben.
-                    $itemObj = self::createContentTag($dlItemName, $dlItemData);
-                  }
-                  $items[] = $itemObj;
-                } else {
-                  throw new TagTypeException('Es sind in dem Listentyp \''.$listType.'\' nur \'<dt>\' und \'<dd>\'-Tags erlaubt!');
-                }
-              }
-            }
-          }
-          break;
-
-        default:
-          throw new TagTypeException('Der angegebene Listentyp ($listType=\''.$listType.'\') existiert nicht!');
-      }
-    }
-
-    $tag = self::createContentTag($listType, $items, $attritbutes);
-    return $tag->setHtmlentities(false);
+    
+    return self::create('button', $attributes);
   } 
-
+  
+  
+  /**********************************************************************
+   * Auswahl-Tags *******************************************************
+   **********************************************************************/
+  
   /**
-   * Alias für createListTag(..., 'ul', ...)
-   *
-   * @param $listItems
-   * @param $listType
-   * @param $listAttritbutes
-   * @param $itemAttributes
-   * @return Tag
-   */
-  static public function ul($listItems, $attritbutes=array()) {
-    return Tag::createListTag($listItems, 'ul', $attritbutes);
-  } 
-
-  /**
-   * Alias für createListTag(..., 'ol', ...)
-   *
-   * @param $listItems
-   * @param $listType
-   * @param $listAttritbutes
-   * @param $itemAttributes
-   * @return Tag
-   */
-  static public function ol($listItems, $attritbutes=array()) {
-    return Tag::createListTag($listItems, 'ol', $attritbutes);
-  } 
-
-  /**
-   * Alias für createListTag(..., 'dl', ...)
-   *
-   * @param $listItems
-   * @param $listType
-   * @param $listAttritbutes
-   * @param $itemAttributes
-   * @return Tag
-   */
-  static public function dl($listItems, $attritbutes=array()) {
-    return Tag::createListTag($listItems, 'dl', $attritbutes);
-  } 
-
-  /**
-   * Erstellt ein <li>-Tag
-   *
-   * @param mixed $content
-   * @param mixed $attritbutes
-   * @return Tag
-   */
-  static public function li($content, $attritbutes=array()) {
-    return Tag::createContentTag('li', $content, $attritbutes);
-  } 
-
-  /**
-   * Erstellt ein <dt>-Tag
-   *
-   * @param mixed $content
-   * @param mixed $attritbutes
-   * @return Tag
-   */
-  static public function dt($content, $attritbutes=array()) {
-    return Tag::createContentTag('li', $content, $attritbutes);
-  } 
-
-  /**
-   * Erstellt ein <dd>-Tag
-   *
-   * @param mixed $content
-   * @param mixed $attritbutes
-   * @return Tag
-   */
-  static public function dd($content, $attritbutes=array()) {
-    return Tag::createContentTag('li', $content, $attritbutes);
-  } 
-
-
-  /**
-   *:TODO:
+   * Erstellt, in Abhängigkeit von $type, Checkboxen, Radio-Buttons oder eine Select-Box
    *
    * @param array $items
    * @param string $name
@@ -561,7 +479,7 @@ class Tag {
    * @param array $attributes
    * @return Tag
    */
-  static public function createChoiceTag($items, $name, $type='radio', $attributes=array()) {
+  static public function choices($items, $name, $type='radio', $attributes=array()) {
     $itemObj = array();
 
     if ($type === 'radio' || ($type === 'checkbox')) {
@@ -570,8 +488,8 @@ class Tag {
         $inputAttributes = array();
 
         if (is_string($itemValue)) {
-          $label = $itemValue;																		// Inhalt des <label>-Tags
-          	
+          $label = $itemValue;                                    // Inhalt des <label>-Tags
+            
         } else if (is_numeric($itemValue)) {
           $label = $itemValue;                                    // Inhalt des <label>-Tags
         
@@ -612,13 +530,13 @@ class Tag {
           $inputName = $name;
         } else {
           if (self::hasPrefixId()) {
-            $inputName = $name.'][';						 	// 'name'-Attribute im <input>-Tag
+            $inputName = $name.'][';              // 'name'-Attribute im <input>-Tag
           } else {
             $inputName = $name.'[]';
           }
         }
 
-        $itemObj[] = self::createLabeledInputTag($label, $type, $inputName, $inputValue, $inputAttributes);
+        $itemObj[] = self::labeledInput($label, $type, $inputName, $inputValue, $inputAttributes);
       }
       
     } else if ($type === 'select') {
@@ -664,7 +582,7 @@ class Tag {
         if (false === $searchAttributes['value']) {
           $optionAttributes['value'] = $optionValue;
         }
-        $optionTags[] = self::createContentTag('option', $optionContent, $optionAttributes);
+        $optionTags[] = self::content('option', $optionContent, $optionAttributes);
       }
       
       $searchAttributes = array('id'=>false);
@@ -678,7 +596,7 @@ class Tag {
         // NAME-Attribute
       self::addNameAttribute($attributes, $name);
       
-      $itemObj = self::createContentTag('select', $optionTags, $attributes);
+      $itemObj = self::content('select', $optionTags, $attributes);
     }
     
     return $itemObj;
@@ -693,7 +611,7 @@ class Tag {
    * @return Tag
    */
   static public function radio($items, $name, $attributes=array()) {
-    return Tag::createChoiceTag($items, $name, 'radio', $attributes);
+    return self::choice($items, $name, 'radio', $attributes);
   } 
 
   /**
@@ -705,7 +623,7 @@ class Tag {
    * @return Tag
    */
   static public function checkbox($items, $name, $attributes=array()) {
-    return Tag::createChoiceTag($items, $name, 'checkbox', $attributes);
+    return self::choice($items, $name, 'checkbox', $attributes);
   } 
 
   /**
@@ -717,9 +635,596 @@ class Tag {
    * @return Tag
    */
   static public function select($items, $id, $attributes=array()) {
-    return Tag::createChoiceTag($items, $id, 'select', $attributes);
+    return self::choice($items, $id, 'select', $attributes);
   } 
-    
+  
+  
+  /**********************************************************************
+   * Listen-Tags ********************************************************
+   **********************************************************************/
+  
+  /**
+   * Erstellt, in Abhängikeit von $listType, eine <ul>-, <ol>- oder <dl>-List.
+   * Man kann auch die direkten Methoden dafür aufrüfen.
+   *
+   * @param $listItems
+   * @param $listType
+   * @param $listAttritbutes
+   * @param $itemAttributes
+   * @return Tag
+   */
+  static public function lists($listItems, $listType='ul', $attritbutes=array()) {
+    $searchAttributes = array('id'=>false, 'class'=>false);
+    self::hasAttributes($attritbutes, $searchAttributes);
+
+      // Default CLASS-Attribute
+    if (false === $searchAttributes['class']) {
+      $attritbutes['class'] = 'select ' . $listType;
+    }
+
+    $items = array();
+    $itemsContent = '';
+    foreach($listItems as $key => $value) {
+      switch($listType) {
+        case 'ul':
+        case 'ol':
+
+          if ($value instanceof AbstractTag) {
+              // Es wurde ein Array mit Tags (<li>-Tags) übergeben (hoffentlich)
+            if ('li' == $value->getName()) {
+              $items[] = $value;
+            } else {
+              throw new TagTypeException('Es sind in dem Listentyp \''.$listType.'\' nur \'<li>\'-Tags erlaubt!');
+            }
+          } else {
+            if (is_array($value)) {
+                // In $value stecken die Attribute und in $key der Content für das kommende <li>-Tag
+              $itemObj = self::content('li', $key, $value);
+            } else {
+                // In $value steckt der Inhalt für das kommende <li>-Tag.
+                // Attribute sind nicht angegeben.
+              $itemObj = self::content('li', $value);
+            }
+            $items[] = $itemObj;
+          }
+          break;
+
+        case 'dl':
+          if ($value instanceof AbstractTag) {
+            if ('dt' == $value->getName()) {              // Es wurde ein Array mit Tags (<dt>-Tags) übergeben (hoffentlich)
+              $items[] = $value;
+            } else if ('dd' == $value->getName()) {       // Es wurde ein Array mit Tags (<dd>-Tags) übergeben (hoffentlich)
+              $items[] = $value;
+            } else {
+              throw new TagTypeException('Es sind in dem Listentyp \''.$listType.'\' nur \'<dt>\' und \'<dd>\'-Tags erlaubt!');
+            }
+          } else {
+            if (is_array($value)) {
+              foreach($value as $dlItemName => $dlItemData) {
+                if ('dt' == $dlItemName || 'dd' == $dlItemName) {
+                  if (is_array($dlItemData)) {
+                      // In $dlItemData stecken die Attribute und in $key der Content für das kommende <li>-Tag
+                    $dlItemContent    = isset($dlItemData['content'])    ? $dlItemData['content']    : array_shift($dlItemData);
+                    $dlItemAttributes = isset($dlItemData['attributes']) ? $dlItemData['attributes'] : array_shift($dlItemData);
+                    $itemObj = self::content($dlItemName, $dlItemContent, $dlItemAttributes);
+                  } else {
+                      // In $dlItemData steckt der Inhalt für das kommende <dt>- oder <dd>-Tag.
+                      // Attribute sind nicht angegeben.
+                    $itemObj = self::content($dlItemName, $dlItemData);
+                  }
+                  $items[] = $itemObj;
+                } else {
+                  throw new TagTypeException('Es sind in dem Listentyp \''.$listType.'\' nur \'<dt>\' und \'<dd>\'-Tags erlaubt!');
+                }
+              }
+            }
+          }
+          break;
+
+        default:
+          throw new TagTypeException('Der angegebene Listentyp ($listType=\''.$listType.'\') existiert nicht!');
+      }
+    }
+
+    $tag = self::content($listType, $items, $attritbutes);
+    return $tag->setHtmlentities(false);
+  } 
+
+  /**
+   * Alias für createListTag(..., 'ul', ...)
+   *
+   * @param $listItems
+   * @param $listType
+   * @param $listAttritbutes
+   * @param $itemAttributes
+   * @return Tag
+   */
+  static public function ul($listItems, $attritbutes=array()) {
+    return self::lists($listItems, 'ul', $attritbutes);
+  } 
+
+  /**
+   * Alias für createListTag(..., 'ol', ...)
+   *
+   * @param $listItems
+   * @param $listType
+   * @param $listAttritbutes
+   * @param $itemAttributes
+   * @return Tag
+   */
+  static public function ol($listItems, $attritbutes=array()) {
+    return self::lists($listItems, 'ol', $attritbutes);
+  } 
+
+  /**
+   * Alias für createListTag(..., 'dl', ...)
+   *
+   * @param $listItems
+   * @param $listType
+   * @param $listAttritbutes
+   * @param $itemAttributes
+   * @return Tag
+   */
+  static public function dl($listItems, $attritbutes=array()) {
+    return self::lists($listItems, 'dl', $attritbutes);
+  } 
+
+  /**
+   * Erstellt ein <li>-Tag
+   *
+   * @param mixed $content
+   * @param mixed $attritbutes
+   * @return Tag
+   */
+  static public function li($content, $attritbutes=array()) {
+    return self::content('li', $content, $attritbutes);
+  } 
+
+  /**
+   * Erstellt ein <dt>-Tag
+   *
+   * @param mixed $content
+   * @param mixed $attritbutes
+   * @return Tag
+   */
+  static public function dt($content, $attritbutes=array()) {
+    return self::content('li', $content, $attritbutes);
+  } 
+
+  /**
+   * Erstellt ein <dd>-Tag
+   *
+   * @param mixed $content
+   * @param mixed $attritbutes
+   * @return Tag
+   */
+  static public function dd($content, $attritbutes=array()) {
+    return self::content('li', $content, $attritbutes);
+  } 
+  
+  
+  /**********************************************************************
+   * Physische Auszeichnung-Tags ****************************************
+   **********************************************************************/
+  
+  /**
+   * Erstellt ein <b>-Tag, dies zeichnet einen Text als fett aus
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function b($content, $attributes=array()) {
+    return self::content('b', $content, $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <big>-Tag, dies zeichnet einen Text größer als normal aus
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function big($content, $attributes=array()) {
+    return self::content('big', $content, $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <i>-Tag, dies zeichnet einen Text als kursiv aus
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function i($content, $attributes=array()) {
+    return self::content('i', $content, $attributes);
+  } 
+
+  /**
+   * Erstellt ein <s>-Tag, dies zeichnet einen Text als durchgestrichen aus
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function small($content, $attributes=array()) {
+    return self::content('s', $content, $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <small>-Tag, dies zeichnet einen Text kleiner als normal aus
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function small($content, $attributes=array()) {
+    return self::content('small', $content, $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <strike>-Tag, dies zeichnet einen Text als durchgestrichen aus
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function strike($content, $attributes=array()) {
+    return self::content('strike', $content, $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <sub>-Tag, dies zeichnet einen Text als tiefgestellt aus
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function sub($content, $attributes=array()) {
+    return self::content('sub', $content, $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <sup>-Tag, dies zeichnet einen Text als hochgestellt aus
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function sup($content, $attributes=array()) {
+    return self::content('sup', $content, $attributes);
+  } 
+
+  /**
+   * Erstellt ein <tt>-Tag, dies zeichnet einen Text als dicktengleich formatiert aus (tt = Teletyper = Fernschreiber)
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function tt($content, $attributes=array()) {
+    return self::content('tt', $content, $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <u>-Tag, dies zeichnet einen Text als unterstrichen aus
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function u($content, $attributes=array()) {
+    return self::content('u', $content, $attributes);
+  } 
+  
+  
+  /**********************************************************************
+   * Logischen Auszeichnung-Tags ****************************************
+   **********************************************************************/
+  
+  /**
+   * Erstellt ein <abbr>-Tag, dies zeichnet einen Text aus mit der Bedeutung "dies ist eine Abkürzung"
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function abbr($content, $attributes=array()) {
+    return self::content('abbr', $content, $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <acronym>-Tag, dies zeichnet einen Text aus mit der Bedeutung "dies ist ein Akronym".
+   * Akronyme sind besondere Abkürzungen, die aus den Anfangsbuchstaben mehrerer (Teil-)Wörter gebildet werden. 
+   * Sie werden im Deutschen in der Regel ohne Punkte gebildet ("Lkw"). Akronyme lassen sich darüber hinaus meist als Wort aussprechen (z.B. "NATO").
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function acronym($content, $attributes=array()) {
+    return self::content('acronym', $content, $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <cite>-Tag, dies 
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function cite($content, $attributes=array()) {
+    return self::content('cite', $content, $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <code>-Tag, dies zeichnet einen Text aus mit der Bedeutung "dies ist Quelltext"
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function code($content, $attributes=array()) {
+    return self::content('code', $content, $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <dfn>-Tag, dies zeichnet einen Text aus mit der Bedeutung "dies ist eine Definition".
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function dfn($content, $attributes=array()) {
+    return self::content('dfn', $content, $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <em>-Tag, dies zeichnet einen Text aus als betonten, wichtigen Text ("emphatisch")
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function em($content, $attributes=array()) {
+    return self::content('em', $content, $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <kbd>-Tag, dies zeichnet einen Text aus mit der Bedeutung "dies stellt eine Benutzereingabe dar"
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function kbd($content, $attributes=array()) {
+    return self::content('kbd', $content, $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <q cite="..">-Tag, dies zeichnet einen Text aus mit der Bedeutung "dies ist ein Zitat mit Quellenangabe"
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function qCite($cite, $content, $attributes=array()) {
+    $attributes['cite'] = $cite;
+    return self::content('q', $content, $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <samp>-Tag, dies zeichnet einen Text aus mit der Bedeutung "Dies ist ein Beispiel". Im engeren Sinne können auch Beispiel-Ausgaben von Programmen und Scripten auf diese Weise ausgezeichnet werden.
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function samp($content, $attributes=array()) {
+    return self::content('samp', $content, $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <strong>-Tag, dies zeichnet einen Text aus mit der Bedeutung "stark betont" (Steigerung von "em")
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function strong($content, $attributes=array()) {
+    return self::content('strong', $content, $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <var>-Tag, dies zeichnet einen Text aus mit der Bedeutung "dies ist eine Variable oder ein variabler Name"
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function variable($content, $attributes=array()) {
+    return self::content('var', $content, $attributes);
+  } 
+  
+  
+  /**********************************************************************
+   * Headline-Tags ******************************************************
+   **********************************************************************/
+
+  /**
+   * Erstellt in Abhängigkeit vom $type ein <h1>- bis <h6>-Tag.
+   * 
+   * @param mixed $content
+   * @param string $type
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function headline($content, $type='h1', $attributes=array()) {
+    $type = strtolower($type);
+    switch($type) {
+      case 'h1':
+      case 'h2':
+      case 'h3':
+      case 'h4':
+      case 'h5':
+      case 'h6':
+        return self::content($type, $content, $attributes);
+        break;
+      default:
+       throw new TagTypeException('Der angegebene Headline vom Type \''.$type.'\' existiert nicht! Nur \'<h1>\'- bis \'<h6>\'-Tags sind erlaubt!');
+    }
+  } 
+  
+  /**
+   * Erstellt ein <h1>-Tag
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function h1($content, $attributes=array()) {
+    return self::headline($content, 'h1', $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <h2>-Tag
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function h2($content, $attributes=array()) {
+    return self::headline($content, 'h2', $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <h3>-Tag
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function h3($content, $attributes=array()) {
+    return self::headline($content, 'h3', $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <h4>-Tag
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function h4($content, $attributes=array()) {
+    return self::headline($content, 'h4', $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <h5>-Tag
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function h5($content, $attributes=array()) {
+    return self::headline($content, 'h5', $attributes);
+  } 
+  
+  /**
+   * Erstellt ein <h6>-Tag
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function h6($content, $attributes=array()) {
+    return self::headline($content, 'h6', $attributes);
+  } 
+
+  
+
+  
+  static public function blockquote($content, $attributes=array()) {
+    return self::content('blockquote', $content, $attributes);
+  } 
+  
+  static public function center($content, $attributes=array()) {
+    return self::content('center', $content, $attributes);
+  } 
+  
+  static public function div($content, $attributes=array()) {
+    return self::content('div', $content, $attributes);
+  } 
+  
+  static public function p($content, $attributes=array()) {
+    return self::content('p', $content, $attributes);
+  } 
+
+  static public function param($content, $attributes=array()) {
+    return self::content('param', $content, $attributes);
+  } 
+  
+  static public function pre($content, $attributes=array()) {
+    return self::content('pre', $content, $attributes);
+  } 
+  
+  static public function span($content, $attributes=array()) {
+    return self::content('span', $content, $attributes);
+  } 
+  
+  static public function img($src, $attributes=array()) {
+    return self::createTag('img', array_merge($attributes, array('src'=>$src)));
+  } 
+  
+  
+  /**********************************************************************
+   * Tabellen-Tags ******************************************************
+   **********************************************************************/
+
+  /**
+   * Erstellt ein <table>-Tag
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function table($content, $attributes=array()) {
+    $tag = self::createTag('table', $attributes);
+    $tag->setContent($content);
+    return $tag;
+  } 
+
+  static public function thead($content, $attributes=array()) {
+    $tag = self::createTag('thead', $attributes);
+    $tag->setContent($content);
+    return $tag;
+  } 
+  
+  static public function tbody($content, $attributes=array()) {
+    $tag = self::createTag('tbody', $attributes);
+    $tag->setContent($content);
+    return $tag;
+  } 
+  
+  static public function tfoot($content, $attributes=array()) {
+    $tag = self::createTag('tfoot', $attributes);
+    $tag->setContent($content);
+    return $tag;
+  } 
+
+  static public function tr($content, $attributes=array()) {
+    $tag = self::createTag('tr', $attributes);
+    $tag->setContent($content);
+    return $tag;
+  } 
+  
+  static public function td($content, $attributes=array()) {
+    $tag = self::createTag('td', $attributes);
+    $tag->setContent($content);
+    return $tag;
+  } 
+
+  
 
 
 
@@ -849,10 +1354,156 @@ class Tag {
     }
     return $has;
   } 
-
   
   
+  
+  
+  /**********************************************************************
+   * Aus Kompatibilitäts-Gründen
+   **********************************************************************/
+  
+  /**
+   * Alias für create()
+   *
+   * @param string $name Name des Tags, z.B. 'a', 'input', 'br' etc.
+   * @param array $attributes Array mit den zu erstellenden Attributen.
+   * @return Tag
+   */
+  static public function createTag($name, $attributes=array()) {
+    return self::create($name, $attributes);
+  } 
+  
+  /**
+   * Alias für content()
+   *
+   * @param string $tagName Name des Tags, z.B. 'a', 'p', 'div'
+   * @param string $content Inhalt der zwischen den öffnenden und schließenden Tag stehen soll.
+   * @param array $attributes Attribute, die dem Tag hinzugefügt werden sollen
+   * @return Tag
+   */
+  static public function createContentTag($tagName, $content, $attributes=array()) {
+    return self::content($tagName, $content, $attributes);
+  } 
 
+  /**
+   * Alias für a()
+   *
+   * @param string $href Wert des href-Attribute
+   * @param string $content Text, der Links
+   * @param array $attributes Zusätliche Attribute für das Tag
+   * @return Tag
+   */
+  static public function createATag($href, $content, $attributes=array()) {
+    return self::a($href, $content, $attributes);
+  } 
+  
+  /**
+   * Alias für form()
+   *
+   * @param string $action URL an der das <form> versendet wird
+   * @param string $formContent Content zwischen dem <form>- und </form>-Tag
+   * @param array $params Additional parameter like 'class'
+   * @return Tag
+   */
+  static public function createFormTag($action, $content, $attributes=array()) {
+    return self::form($action, $content, $attributes);
+  } 
+  
+  /**
+   * Alias für input()
+   *
+   * @param string $type
+   * @param string $name
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function createInputTag($type, $name, $value='', $attributes=array()) {
+    return self::input($type, $name, $value, $attributes);
+  } 
+  
+  /**
+   * Alias für label()
+   *
+   * @param string $for
+   * @param string $content
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function createLabelTag($for, $content, $attributes=array()) {
+    return self::label($for, $content, $attributes);
+  } 
+  
+  /**
+   * Alias für labeledInput()
+   *
+   * @param string $labelContent Beschriftung des Label-Tags
+   * @param string $type Type des Input-Tags, z.B. 'checkbox'
+   * @param string $name Name des Input-Tags
+   * @param string $value Wert Input-Tags, welcher übermittelt wird
+   * @param array $inputAttributes Optionale Attribute die dem Input-Tag hinzugefügt werden können
+   * @param array $labelAttributes Optionale Attribute die dem Label-Tag hinzugefügt werden können
+   * @param boolean $inputBeforeLabel Bestimmt, ob das <input>-Tag vor dem <label>-Tag steht, oder umgekehrt
+   * @return string
+   */
+  static public function createLabeledInputTag($labelContent, $type, $name, $value, $inputAttributes=array(), $labelAttributes=array(), $inputBeforeLabel=true) {
+    return self::labeledInput($labelContent, $type, $name, $value, $inputAttributes, $labelAttributes, $inputBeforeLabel);
+  } 
+
+
+  /**
+   * Alias für textarea()
+   *
+   * @param string $name Name des Tags, über dem der Inhalt ausgelesen werden kann (name-Attribute)
+   * @param string $content Content zwischen dem <textarea>- und </textarea>-Tag
+   * @param array $params Additional parameter like 'class'
+   * @return unknown
+   */
+  static public function createTextareaTag($name, $content='', $attributes=array()) {
+    return self::textarea($name, $content, $attributes);
+  } 
+  
+  /**
+   * Alias für fieldset()
+   *
+   * @param $legendContent
+   * @param $fieldsetContent
+   * @param $fieldsetAttributes
+   * @param $legendAttributes
+   * @return unknown_type
+   */
+  static public function createFieldsetTag($fieldsetContent, $legendContent=NULL, $fieldsetAttributes=array(), $legendAttributes=array()) {
+    return self::fieldset($fieldsetContent, $legendContent, $fieldsetAttributes, $legendAttributes);
+  } 
+
+  /**
+   * Alias für choices()
+   *
+   * @param array $items
+   * @param string $name
+   * @param string $type
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function createChoiceTag($items, $name, $type='radio', $attributes=array()) {
+    return self::choices($items, $name, $type, $attributes);
+  } 
+
+  /**
+   * Alias für lists()
+   *
+   * @param array $items
+   * @param string $type
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function createListTag($items, $type='ul', $attritbutes=array()) {
+    return self::lists($items, $type, $attritbutes);
+  } 
+  
+  
+  
+  
+  
   static public function createTagsByArray($array) {
     /**
      * 1.) Gibt es für den Key eine Factory?
@@ -872,7 +1523,7 @@ class Tag {
           	
           switch($factoryName) {
             case 'createATag':
-              $content.= Tag::createATag($factoryData['href'], $factoryData['content'], $factoryData['attributes']);
+              $content.= self::createATag($factoryData['href'], $factoryData['content'], $factoryData['attributes']);
               break;
               	
             case 'createFormTag':
@@ -881,7 +1532,7 @@ class Tag {
               break;
 
             case 'createInputTag':
-              $content.= Tag::createInputTag($factoryData['type'], $factoryData['name'], $value, $factoryData['attributes']);
+              $content.= self::createInputTag($factoryData['type'], $factoryData['name'], $value, $factoryData['attributes']);
               break;
 
             case 'createLabelTag':
@@ -905,13 +1556,13 @@ class Tag {
               break;
 
             case 'createListTag':
-              $content.= Tag::createListTag($factoryData['content'], $factoryData['type'], $factoryData['attributes']);
+              $content.= self::createListTag($factoryData['content'], $factoryData['type'], $factoryData['attributes']);
               break;
 
             case 'createChoiceTag':
-              Tag::createChoiceTag($factoryData['content'], $factoryData['name'], $factoryData['type'], $factoryData['attributes']);
-              $br = Tag::createTag('br');
-              foreach(Tag::createChoiceTag($factoryData['content'], $factoryData['name'], $factoryData['type'], $factoryData['attributes']) as $item) {
+              self::createChoiceTag($factoryData['content'], $factoryData['name'], $factoryData['type'], $factoryData['attributes']);
+              $br = self::createTag('br');
+              foreach(self::createChoiceTag($factoryData['content'], $factoryData['name'], $factoryData['type'], $factoryData['attributes']) as $item) {
                 $content.= $item . $br;
               }
               	
@@ -928,7 +1579,7 @@ class Tag {
               // Es sind weitere Daten/Konfigurationen vorhanden.
           } else {
               // Es handelt sich anscheinend um ein Standalone-Tag
-            $content.= Tag::createTag($factory);
+            $content.= self::createTag($factory);
           }
         }
       }
