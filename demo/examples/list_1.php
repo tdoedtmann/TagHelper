@@ -4,4 +4,4 @@ $listItems = array(
 	'Item B', 
 	'Item C'
 );
-echo Tag::createListTag($listItems);
+echo Tag::ul($listItems);

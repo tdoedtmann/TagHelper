@@ -4,4 +4,4 @@ $attributes = array(
 	'style'  => 'color: green;'
 );
 
-echo Tag::createATag('http://www.timo-strotmann.de', 'www.Timo-Strotmann.de', $attributes);
+echo Tag::a('http://www.timo-strotmann.de', 'www.Timo-Strotmann.de', $attributes);

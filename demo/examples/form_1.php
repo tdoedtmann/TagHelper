@@ -18,9 +18,9 @@ $items_test = array(
   )
 );
 Tag::setPrefixId(basename(__FILE__, '.php'));
-foreach(Tag::choices($items_test, 'tickets', 'checkbox') as $item) {
+foreach(Tag::choices($items_test, 'tickets', 'checkbox', array(), false) as $item) {
   $itemContent.= $item . $br;
 }
 $itemContent.= Tag::input('submit', 'submit', 'Submit');
 
-echo $formTag = Tag::form($_SERVER['PHP_SELF'], $itemContent);
+echo Tag::form($_SERVER['PHP_SELF'], $itemContent);

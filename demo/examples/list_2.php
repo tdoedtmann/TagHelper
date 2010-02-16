@@ -1,12 +1,8 @@
 <?php
-$itemObj2 = Tag::createTag('div');
-$itemObj2->addAttributes(AttributeFactory::createAttributes($itemObj2->getName(), array('title'=>'Ich bin ein Title')))
-	->setContent('Spezial, mit \'title\'-Attirbute');
+$itemObj2 = Tag::div('Spezial, mit \'title\'-Attirbute');
+$itemObj2->addAttributes(AttributeFactory::createAttributes($itemObj2->getName(), array('title'=>'Ich bin ein Title')));
 
-$listItem = Tag::createTag('li');
-$listItem->addAttributes(AttributeFactory::createAttributes($listItem->getName(), array('class'=>'special', 'style'=>'color:red;')))
-	->setHtmlentities(false)
-	->setContent($itemObj2);
+$listItem = Tag::li($itemObj2, array('class'=>'special', 'style'=>'color:red;'))->setHtmlentities(false);
 	
 $listItems = array(
 	'Item 1' => array('class'=>'firstItem'),
@@ -16,4 +12,4 @@ $listItems = array(
 	'Item A', 'Item B', 'Item C',
 );
 
-echo Tag::createListTag($listItems, 'ol', array('type'=>'I', 'start'=>5, 'compact'=>true));
+echo Tag::ol($listItems, array('type'=>'I', 'start'=>5, 'compact'=>true));

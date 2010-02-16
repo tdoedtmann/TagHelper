@@ -14,4 +14,4 @@ $listItems = array(
     'dd' => 'Description for Item 3'
   ),
 );
-echo Tag::createListTag($listItems, 'dl');
+echo Tag::dl($listItems);

@@ -1,12 +1,12 @@
 <?php 
-$br = Tag::createTag('br');
-$hr = Tag::createTag('hr');
+$br = Tag::br();
+$hr = Tag::hr();
 
 Tag::setPrefixId(basename(__FILE__, '.php'));
 
-$textareaTag = Tag::createTextareaTag('textfeld', $content='', array('cols'=>'30'));
+$textareaTag = Tag::textarea('textfeld', $content='', array('cols'=>'30'));
             
-$inputTag1 = Tag::createTag('input');
+$inputTag1 = Tag::create('input');
 $inputTag1->addAttribute(AttributeFactory::createAttribute('type', 'button', $inputTag1->getName()))
           ->addAttribute(AttributeFactory::createAttribute('name', 'Text 1', $inputTag1->getName()))
           ->addAttribute(AttributeFactory::createAttribute('value', 'Text 1 anzeigen', $inputTag1->getName()))
@@ -23,7 +23,7 @@ $inputTag2Data = array(
 		)
 	),
 );
-$inputTag2 = Tag::createTag('input');
+$inputTag2 = Tag::create('input');
 $inputTag2->addAttributes(AttributeFactory::createAttributes($inputTag2->getName(), $inputTag2Data));
 
 $inputTag3Attr = array(
@@ -34,12 +34,9 @@ $inputTag3Attr = array(
 		)
 	)
 );
-$inputTag3 = Tag::createInputTag('button', 'Text 3', 'Text 3 anzeigen', $inputTag3Attr);
+$inputTag3 = Tag::input('button', 'Text 3', 'Text 3 anzeigen', $inputTag3Attr);
 
-$span1 = Tag::createTag('span');
-$span1->addAttribute(AttributeFactory::createAttribute('style', 'float:left', $span1->getName()))
-	->setHtmlentities(false)
-	->setContent($textareaTag);
+$span1 = Tag::span($textareaTag, array('style' =>'float:left'))->setHtmlentities(false);
 
 $span2 = Tag::createTag('span');
 $span2->addAttribute(AttributeFactory::createAttribute('style', 'float:left', $span2->getName()))
@@ -50,14 +47,13 @@ $pTag = Tag::createTag('p');
 $pTag->setHtmlentities(false)
 		 ->setContent($span1 . $span2);
 
-$brClear = Tag::createTag('br');
-$brClear->addAttribute(AttributeFactory::createAttribute('clear', 'all', $brClear->getName()));
+$brClear = Tag::br(array('clear'=>'all'));
 
-$submit = Tag::createInputTag('submit', 'submit', 'Submit');
+$submit = Tag::input('submit', 'submit', 'Submit');
 
 $fieldsetContent = $pTag . $brClear . $submit;
 
-$fielset = Tag::createFieldsetTag($fieldsetContent, 'I am Legend', $fieldsetAttributes=array(), $legendAttributes=array());
-$formTag2 = Tag::createFormTag($_SERVER['PHP_SELF'], $fielset);
+$fielset = Tag::fieldset($fieldsetContent, 'I am Legend');
+$formTag2 = Tag::form($_SERVER['PHP_SELF'], $fielset);
 
 echo $formTag2;
