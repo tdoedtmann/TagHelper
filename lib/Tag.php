@@ -195,6 +195,18 @@ class Tag {
     return self::create('hr', $attributes);
   } 
   
+  /**
+   * Erstellt ein <img>-Tag
+   * 
+   * @param string $src
+   * @param array $attributes
+   * @return Tag
+   */
+  static public function img($src, $attributes=array()) {
+    return self::createTag('img', array_merge($attributes, array('src'=>$src)));
+  } 
+  
+  
   
   
   /**********************************************************************
@@ -536,7 +548,6 @@ class Tag {
             $inputName = $name.'[]';
           }
         }
-
         $itemObj[] = self::labeledInput($label, $type, $inputName, $inputValue, $inputAttributes);
       }
       
@@ -1149,40 +1160,92 @@ class Tag {
   static public function h6($content, $attributes=array()) {
     return self::headline($content, 'h6', $attributes);
   } 
-
   
-
   
+  /**********************************************************************
+   * Absatz-Tags (BLOCK) ************************************************
+   **********************************************************************/
+  
+  /**
+   * Erstellt ein <blockquote>-Tag
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
   static public function blockquote($content, $attributes=array()) {
     return self::content('blockquote', $content, $attributes);
   } 
   
+  /**
+   * Erstellt ein <center>-Tag
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
   static public function center($content, $attributes=array()) {
     return self::content('center', $content, $attributes);
   } 
   
+  /**
+   * Erstellt ein <div>-Tag
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
   static public function div($content, $attributes=array()) {
     return self::content('div', $content, $attributes);
   } 
   
+  /**
+   * Erstellt ein <p>-Tag
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
   static public function p($content, $attributes=array()) {
     return self::content('p', $content, $attributes);
   } 
 
+  /**
+   * Erstellt ein <param>-Tag
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
   static public function param($content, $attributes=array()) {
     return self::content('param', $content, $attributes);
   } 
   
+  /**
+   * Erstellt ein <pre>-Tag
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
   static public function pre($content, $attributes=array()) {
     return self::content('pre', $content, $attributes);
   } 
   
+  
+  /**********************************************************************
+   * Absatz-Tags (INLINE) ***********************************************
+   **********************************************************************/
+  
+  /**
+   * Erstellt ein <span>-Tag
+   * 
+   * @param mixed $content
+   * @param array $attributes
+   * @return Tag
+   */
   static public function span($content, $attributes=array()) {
     return self::content('span', $content, $attributes);
-  } 
-  
-  static public function img($src, $attributes=array()) {
-    return self::createTag('img', array_merge($attributes, array('src'=>$src)));
   } 
   
   
