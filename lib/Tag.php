@@ -867,7 +867,7 @@ class Tag {
    * @param array $attributes
    * @return Tag
    */
-  static public function small($content, $attributes=array()) {
+  static public function s($content, $attributes=array()) {
     return self::content('s', $content, $attributes);
   } 
   
