@@ -1261,45 +1261,140 @@ class Tag {
    * @return Tag
    */
   static public function table($content, $attributes=array()) {
-    $tag = self::createTag('table', $attributes);
-    $tag->setContent($content);
-    return $tag;
+    $thead = null;
+    $tfoot = null;
+    $tbody = null;
+    $tableContent = array();
+    if (is_array($content)) {
+      if (isset($content['tbody'])) {
+          // Nur wenn ein "tbody" gesetzt ist, macht ein "thead" bzw. "tfoot" Sinn
+        if (isset($content['thead'])) {
+          $theadContent    = isset($content['thead']['content'])    ? $content['thead']['content'] : $content['thead'];
+          $theadAttributes = isset($content['thead']['attributes']) ? $content['thead']['attributes'] : array();
+          $tableContent['thead'] = self::thead($theadContent, $theadAttributes);
+        } 
+        if (isset($content['tfoot'])) {
+          $tfootContent    = isset($content['tfoot']['content'])    ? $content['tfoot']['content'] : $content['tfoot'];
+          $tfootAttributes = isset($content['tfoot']['attributes']) ? $content['tfoot']['attributes'] : array();
+          $tableContent['tfoot'] = self::tfoot($tfootContent, $tfootAttributes);
+        }
+        $tbodyContent    = isset($content['tbody']['content'])    ? $content['tbody']['content'] : $content['tbody'];
+        $tbodyAttributes = isset($content['tbody']['attributes']) ? $content['tbody']['attributes'] : array();
+        $tableContent['tbody'] = self::tbody($tbodyContent, $tbodyAttributes);
+      } else {
+        $tbodyContent    = isset($content['content'])    ? $content['content']    : $content;
+        $tbodyAttributes = isset($content['attributes']) ? $content['attributes'] : array();
+        $tableContent['tbody'] = self::tbody($tbodyContent, $tbodyAttributes);
+      }
+    }
+    
+    return self::content('table', $tableContent, $attributes);
   } 
 
   static public function thead($content, $attributes=array()) {
-    $tag = self::createTag('thead', $attributes);
-    $tag->setContent($content);
-    return $tag;
+    return self::tablePart('thead', $content, $attributes);
   } 
   
   static public function tbody($content, $attributes=array()) {
-    $tag = self::createTag('tbody', $attributes);
-    $tag->setContent($content);
-    return $tag;
+    return self::tablePart('tbody', $content, $attributes);
   } 
   
   static public function tfoot($content, $attributes=array()) {
-    $tag = self::createTag('tfoot', $attributes);
-    $tag->setContent($content);
-    return $tag;
+    return self::tablePart('tfoot', $content, $attributes);
   } 
+  
+  static private function tablePart($type, $content, $attributes=array()) {
+    $type = strtolower($type);
+    $avaiableTableParts = array('thead', 'tfoot', 'tbody');
+    
+    if (!in_array($type, $avaiableTableParts)) {
+      throw new TagTypeException('Der angegebene Tabellenteil ($type=\''.$type.'\') ist innerhalb eines \'table\'-Tags nicht erlaubt!');
+    }
+    
+    $typeContent = array();
+    if (is_array($content)) {
+      foreach($content as $row) {
+        $trContent    = (is_array($row) && isset($row['content']))    ? $row['content']    : $row;
+        $trAttributes = (is_array($row) && isset($row['attributes'])) ? $row['attributes'] : array();
+        $typeContent[] = Tag::tr($trContent, $trAttributes);
+      }
+    
+    } else if ($content instanceof AbstractTag) {
+      $typeContent[] = $content;
+
+    } else {
+      throw new TagTypeException('Der &uuml;bergebene \'$content\' (\''.gettype($content).'\') kann in dem \''.$type.'\'-Tags nicht verarbeitet werden!');
+    }
+    
+    if (empty($typeContent)) {
+      throw new TagTypeException('In dem \''.$type.'\'-Tags muss mindestens ein \'tr\'-Tags enthalten sein!');
+    }
+    
+    return self::content($type, $typeContent, $attributes);
+  }
 
   static public function tr($content, $attributes=array()) {
-    $tag = self::createTag('tr', $attributes);
-    $tag->setContent($content);
-    return $tag;
+    $trContent = array();
+    if (is_array($content)) {
+      foreach($content as $k => $row) {
+        if ($row instanceof AbstractTag) {
+          if ('td' == $row->getName() || 'th' == $row->getName()) {
+            $trContent[] = $row;
+          } else if ($row->isBlockTag() || $row->isInlineTag()) {
+            $trContent[] = Tag::td($row);
+          } else {
+            throw new TagTypeException('In einem \'tr\'-Tags sind nur \'td\'- und \'th\'-Tags erlaubt, aber kein \''.$row->getName().'\'-Tag!');
+          }
+        } else {
+          $tdContent    = (is_array($row) && isset($row['content']))    ? $row['content']    : $row;
+          $tdAttributes = (is_array($row) && isset($row['attributes'])) ? $row['attributes'] : array();
+          $trContent[]  = Tag::td($tdContent, $tdAttributes);
+        }
+      }
+    }
+    
+    return self::content('tr', $trContent, $attributes);
   } 
   
   static public function td($content, $attributes=array()) {
-    $tag = self::createTag('td', $attributes);
-    $tag->setContent($content);
+    return self::tableCell('td', $content, $attributes);
+  } 
+  
+  static public function th($content, $attributes=array()) {
+    return self::tableCell('th', $content, $attributes);
+  } 
+  
+  static public function tableCell($type, $content, $attributes=array()) {
+    $availableTypes = array('td', 'th');
+    $type = strtolower($type);
+    
+    if (!in_array($type, $availableTypes)) {
+      throw new TagTypeException('Der angegebene Tabellenzellen-Type ($type=\''.$type.'\') ist innerhalb eines \'tr\'-Tags nicht erlaubt!');
+    }
+    
+    $tag = null;
+    if ($content instanceof AbstractTag) {
+      if ($type == $content->getName()) {
+        $tag = $content;
+      } else if ($content->isBlockTag() || $content->isInlineTag()) {
+        $tag = self::content($type, $content);
+      } else {
+        throw new TagTypeException('In einem \''.$type.'\'-Tags sind nur Inline- und Block-Elemente erlaubt, aber nicht \''.$content->getName().'\'-Tags!');
+      }
+    } else {
+      $tag = self::content($type, $content);
+    }
+    
+    if (is_array($attributes) && !empty($attributes)) {
+      $tag->addAttributes(AttributeFactory::createAttributes($tag->getName(), $attributes));
+    }
+    
     return $tag;
   } 
-
   
-
-
-
+  
+  
+  
   /**********************************************************************
    * Hilfsfunktionen
    **********************************************************************/
