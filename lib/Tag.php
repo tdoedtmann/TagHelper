@@ -479,11 +479,12 @@ class Tag {
    * @param array $attributes
    * @return Tag
    */
-  static public function choices($items, $name, $type='radio', $attributes=array()) {
+  static public function choices($items, $name, $type='radio', $attributes=array(), $asString=true) {
     $itemObj = array();
 
     if ($type === 'radio' || ($type === 'checkbox')) {
-      // Radio- oder  Checkbox-Buttons
+      
+        // Radio- oder  Checkbox-Buttons
       foreach($items as $inputValue => $itemValue) {
         $inputAttributes = array();
 
@@ -599,7 +600,15 @@ class Tag {
       $itemObj = self::content('select', $optionTags, $attributes);
     }
     
-    return $itemObj;
+    if ($asString) {
+      foreach($itemObj as $item) {
+        $result.=$item;        
+      }
+    } else {
+      $result = $itemObj;
+    }
+    
+    return $result;
   } 
 
   /**
@@ -610,8 +619,8 @@ class Tag {
    * @param array $attributes
    * @return Tag
    */
-  static public function radio($items, $name, $attributes=array()) {
-    return self::choice($items, $name, 'radio', $attributes);
+  static public function radio($items, $name, $attributes=array(), $asString=true) {
+    return self::choices($items, $name, 'radio', $attributes, $asString);
   } 
 
   /**
@@ -622,8 +631,8 @@ class Tag {
    * @param array $attributes
    * @return Tag
    */
-  static public function checkbox($items, $name, $attributes=array()) {
-    return self::choice($items, $name, 'checkbox', $attributes);
+  static public function checkbox($items, $name, $attributes=array(), $asString=true) {
+    return self::choices($items, $name, 'checkbox', $attributes, $asString);
   } 
 
   /**
@@ -634,8 +643,8 @@ class Tag {
    * @param array $attributes
    * @return Tag
    */
-  static public function select($items, $id, $attributes=array()) {
-    return self::choice($items, $id, 'select', $attributes);
+  static public function select($items, $id, $attributes=array(), $asString=false) {
+    return self::choices($items, $id, 'select', $attributes);
   } 
   
   
