@@ -108,7 +108,7 @@ class Tag {
    * [ ] style 
    * [X] sub 
    * [X] sup 
-   * [ ] table 
+   * [X] table 
    * [X] tbody 
    * [X] td 
    * [X] textarea 
@@ -1290,19 +1290,50 @@ class Tag {
     
     return self::content('table', $tableContent, $attributes);
   } 
-
+  
+  /**
+   * Erstellt ein <thead>-Tag.
+   * 
+   * @param mixed $content Inhalt des Tags
+   * @param array $attributes
+   * @return Tag
+   */
   static public function thead($content, $attributes=array()) {
     return self::tablePart('thead', $content, $attributes);
   } 
   
+  
+  /**
+   * Erstellt ein <tbody>-Tag.
+   * 
+   * @param mixed $content Inhalt des Tags
+   * @param array $attributes
+   * @return Tag
+   */
   static public function tbody($content, $attributes=array()) {
     return self::tablePart('tbody', $content, $attributes);
   } 
   
+  
+  /**
+   * Erstellt ein <tfoot>-Tag.
+   * 
+   * @param mixed $content Inhalt des Tags
+   * @param array $attributes
+   * @return Tag
+   */
   static public function tfoot($content, $attributes=array()) {
     return self::tablePart('tfoot', $content, $attributes);
   } 
   
+  
+  /**
+   * Erstellt ein anhand des übergebenen $type, dass gleichnamige (<thead>-, <tfoot>- oder <tbody>-) Tag.
+   * 
+   * @param mixed $content Inhalt des Tags
+   * @param array $attributes
+   * @return Tag
+   */
   static private function tablePart($type, $content, $attributes=array()) {
     $type = strtolower($type);
     $avaiableTableParts = array('thead', 'tfoot', 'tbody');
@@ -1331,8 +1362,15 @@ class Tag {
     }
     
     return self::content($type, $typeContent, $attributes);
-  }
-
+  } 
+  
+  /**
+   * Erstellt ein <tr>-Tag.
+   * 
+   * @param mixed $content Inhalt des Tags
+   * @param array $attributes
+   * @return Tag
+   */
   static public function tr($content, $attributes=array()) {
     $trContent = array();
     if (is_array($content)) {
@@ -1356,14 +1394,37 @@ class Tag {
     return self::content('tr', $trContent, $attributes);
   } 
   
+  
+  /**
+   * Erstellt ein <td>-Tag.
+   * 
+   * @param mixed $content Inhalt des Tags
+   * @param array $attributes
+   * @return Tag
+   */
   static public function td($content, $attributes=array()) {
     return self::tableCell('td', $content, $attributes);
   } 
   
+  
+  /**
+   * Erstellt ein <th>-Tag.
+   * 
+   * @param mixed $content Inhalt des Tags
+   * @param array $attributes
+   * @return Tag
+   */
   static public function th($content, $attributes=array()) {
     return self::tableCell('th', $content, $attributes);
   } 
   
+  /**
+   * Erstellt ein anhand des übergebenen $type, dass gleichnamige (<td>- oder <th>-) Tag.
+   * 
+   * @param mixed $content Inhalt des Tags
+   * @param array $attributes
+   * @return Tag
+   */
   static public function tableCell($type, $content, $attributes=array()) {
     $availableTypes = array('td', 'th');
     $type = strtolower($type);
@@ -1399,6 +1460,26 @@ class Tag {
    * Hilfsfunktionen
    **********************************************************************/
 
+  /**
+   * Durchsucht die übergebenen $attributes nach Attributen, die in $search in Form von Schlüsseln angegeben werden.
+   *
+   * @param array $attributes Array mit Attributen
+   * @param array $search Array mit den Attributen nach denen in $attributes gesucht werden soll (array('id'=>false, 'class'=>false, ...)
+   * @return boolean
+   */
+  static protected function hasAttributes($attributes, &$search) {
+    $has = false;
+    if (is_array($attributes) && is_array($search)) {
+      foreach ($attributes as $attrName => $attrValue) {                                // Alle Attribute durchsuchen
+        if (array_key_exists($attrName, $search)) {                                     // und zwar nach denen, die in $search als Schlüssel aufgeführt wurden
+          $search[$attrName] = true;
+          $has = true;
+        }
+      }
+    }
+    return $has;
+  } 
+  
   /**
    * Fügt das ID-Attribute den in $attributes übergebenen Attributen hinzu.
    *
@@ -1464,6 +1545,7 @@ class Tag {
     return self::$prefixId;
   } 
 
+  
   /**
    * Setzen die Default-Größe für das 'cols'-Attribute beim <textarea>-Tag.
    *
@@ -1492,34 +1574,6 @@ class Tag {
     } else {
       throw new TagException('Die angebenene Größe für \'TextareaRows\' muss vom Typ Integer und > 0 sein!');
     }
-  } 
-
-  /**
-   * Prüft, ob Prefix für diverse Attribute (z.B. 'id' oder 'name') gesetzt wurde.
-   * @return boolean
-   */
-  static protected function hasPrefixId() {
-    return (is_string(self::$prefixId) && '' != self::$prefixId);
-  } 
-
-  /**
-   * Durchsucht die übergebenen $attributes nach Attributen, die in $search in Form von Schlüsseln angegeben werden.
-   *
-   * @param array $attributes Array mit Attributen
-   * @param array $search Array mit den Attributen nach denen in $attributes gesucht werden soll (array('id'=>false, 'class'=>false, ...)
-   * @return boolean
-   */
-  static protected function hasAttributes($attributes, &$search) {
-    $has = false;
-    if (is_array($attributes) && is_array($search)) {
-      foreach ($attributes as $attrName => $attrValue) {																// Alle Attribute durchsuchen
-        if (array_key_exists($attrName, $search)) {																			// und zwar nach denen, die in $search als Schlüssel aufgeführt wurden
-          $search[$attrName] = true;
-          $has = true;
-        }
-      }
-    }
-    return $has;
   } 
   
   
