@@ -20,46 +20,47 @@ define('STANDALONE_TAGS', 							'area, base, basefont, br, col, frame, hr, img,
 define('ENCODING',											'UTF-8');
 
 
-function trimExplode($string, $delim=',', $onlyNonEmptyValues=0)    {
-	$temp = explode($delim,$string);
-	$newtemp = array();
-	while (list($key, $val) = each($temp))      {
-		if (!$onlyNonEmptyValues || strcmp('', trim($val)))      {
-			$newtemp[] = trim($val);
-		}
-	}
-	reset($newtemp);
-	return $newtemp;
+function trimExplode($string, $delim=',', $onlyNonEmptyValues=true)    {
+  $temp = explode($delim,$string);
+  $newtemp = array();
+  while (list($key, $val) = each($temp))      {
+    if (!$onlyNonEmptyValues || strcmp('', trim($val)))      {
+      $newtemp[] = trim($val);
+    }
+  }
+  reset($newtemp);
+  return $newtemp;
 } 
 
 function viewArray($array)  {
-	if (!is_array($array)) {
-		return false;
-	}
-		
-	if (!count($array)) {
-		$tableContent.= Tag::createTag('tr')->setContent(
-			Tag::createTag('td')->setContent(
-				Tag::createTag('strong')->setContent(htmlspecialchars("EMPTY!"))));
-				
-	} else {
-		while (list($key, $val) = each($array)) {
-			$td1 = Tag::createTag('td', array('valign'=>'top'))->setContent(htmlspecialchars((string)$key));
+  if (!is_array($array)) {
+    return false;
+  }
 
-			$tdValue = (is_array($array[$key])) ? viewArray($array[$key]) : Tag::createTag('span', array('style'=>'color:red;'))->setContent(nl2br(htmlspecialchars((string)$val)) . Tag::createTag('br'));
-			$td2 = Tag::createTag('td', array('valign'=>'top'))->setContent($tdValue);
-			
-			$tableContent.= Tag::createTag('tr')->setContent($td1 . $td2);
-		}
-	}
-			
-	$tableAttr = array(
-		'cellpadding' => '1',
-		'cellspacing' => '0',
-		'border'      => '1'
-	);
-	return Tag::createTag('table', $tableAttr)->setContent($tableContent);
-}
+  if (!count($array)) {
+    $tableContent.= Tag::createTag('tr')->setContent(
+    Tag::createTag('td')->setContent(
+    Tag::createTag('strong')->setContent(htmlspecialchars("EMPTY!"))));
+
+  } else {
+    while (list($key, $val) = each($array)) {
+      $td1 = Tag::createTag('td', array('valign'=>'top'))->setContent(htmlspecialchars((string)$key));
+
+      $tdValue = (is_array($array[$key])) ? viewArray($array[$key]) : Tag::createTag('span', array('style'=>'color:red;'))->setContent(nl2br(htmlspecialchars((string)$val)) . Tag::createTag('br'));
+      $td2 = Tag::createTag('td', array('valign'=>'top'))->setContent($tdValue);
+       
+      $tableContent.= Tag::createTag('tr')->setContent($td1 . $td2);
+    }
+  }
+   
+  $tableAttr = array(
+    'cellpadding' => '1',
+    'cellspacing' => '0',
+    'border'      => '1'
+  );
+  
+   return Tag::createTag('table', $tableAttr)->setContent($tableContent);
+} 
 
 
 
@@ -69,7 +70,7 @@ function viewArray($array)  {
 
 /**
  * Exception Klasse für AbstractTag-Fehler
- * 
+ *
  * @author Timo Strotmann
  */
 class AbstractTagException extends Exception {
@@ -77,7 +78,7 @@ class AbstractTagException extends Exception {
 
 /**
  * Exception Klasse für TagHtmlVariant-Fehler
- * 
+ *
  * @author Timo Strotmann
  */
 class TagHtmlVariantException extends Exception {
@@ -85,7 +86,7 @@ class TagHtmlVariantException extends Exception {
 
 /**
  * Exception Klasse für TagInlineElement-Fehler
- * 
+ *
  * @author Timo Strotmann
  */
 class TagInlineElementException extends Exception {
@@ -93,7 +94,7 @@ class TagInlineElementException extends Exception {
 
 /**
  * Exception Klasse für UnknownTag-Fehler
- * 
+ *
  * @author Timo Strotmann
  */
 class UnknownTagException extends Exception {
@@ -101,7 +102,7 @@ class UnknownTagException extends Exception {
 
 /**
  * Exception Klasse für TagFactory-Fehler
- * 
+ *
  * @author Timo Strotmann
  */
 class TagTypeException extends Exception {
@@ -109,7 +110,7 @@ class TagTypeException extends Exception {
 
 /**
  * Exception Klasse für StandaloneTag-Fehler
- * 
+ *
  * @author Timo Strotmann
  */
 class StandaloneTagException extends Exception {
@@ -118,340 +119,394 @@ class StandaloneTagException extends Exception {
 
 
 /**
- * 
+ *
  * @author Timo Strotmann
  */
 interface TagInterface {
-	public function getName(); 
-	public function getAttributes(); 
-	public function getAttribute($name); 
-	public function isInlineTag(); 
-	public function setName($name); 
-	public function addAttribute(Attribute $value);
-	public function addAttributes($value);
-	public function removeAttribute(Attribute $value); 
-	public function display(); 
+  public function getName();
+  public function getAttributes();
+  public function getAttribute($name);
+  public function isInlineTag();
+  public function setName($name);
+  public function addAttribute(Attribute $value);
+  public function addAttributes($value);
+  public function removeAttribute(Attribute $value);
+  public function display();
 } 
 
 
 
 /**
- * 
+ *
  * @author Timo Strotmann
  */
 class AbstractTag implements TagInterface {
-	
-	protected $name = null;
-	//protected $parent = null;
-	protected $attributes = null;
-	protected $isInlineTag = true;
-	
-	protected $displayContentWithHtmlEntities = false;
-	
-	/**
-	 * Konstruktor von AbstractTag.
-	 * 
-	 * @param string $name Name des zu erstellenden Tags
-	 * @return void
-	 */
-	public function __construct($name) {
-		$this->name = $name;
-		$attributes = array();
-		
-		if (false === array_search(HTML_VARIANT, trimExplode(HTML_VARIANTS))) {
-			throw new TagHtmlVariantException('Die angegeben HTML-Variante existiert nicht');
-		}
-		
-		switch(HTML_VARIANT) {
-			case 'strict':
-				$this->isInlineTag = (false !== array_search($this->name, trimExplode(STRICT_INLINE_ELEMENTS))) ? true : false;
-				break;
-				
-			case 'frameset':
-				$this->isInlineTag = (false !== array_search($this->name, trimExplode(FRAMESET_INLINE_ELEMENTS))) ? true : false;
-				break;
-					
-			case 'transitional':
-				$this->isInlineTag = (false !== array_search($this->name, trimExplode(TRANSITIONAL_INLINE_ELEMENTS))) ? true : false;
-				break;
-		}
-	} 
-	
-	/**
-	 * __toString()-Methode zum ausgeben des Tags (siehe display()-Methode).
-	 * 
-	 * @return string
-	 */
-	public function __toString() {
-		return $this->display();
-	} 
-	
-	/**
-	 * Gibt den Namen des Tags zurück.
-	 * 
-	 * @return string
-	 */
-	public function getName() {
-		return $this->name;
-	} 
 
-// :TODO: Wenn man das Parent-Element (-Tag) mit abspeichert, kann man besser validieren, denn es ist ja nicht jedes Tag überall erlaubt!	
-//	public function getParent() {
-//		return $this->parent;
-//	} 
+  protected $name = null;
+  //protected $parent = null;
+  protected $attributes = null;
+  protected $isInlineTag = true;
+  protected $isBlockTag  = true;
 
-	/**
-	 * Gibt ein Array mit den Attributen zu diesem Tags zurück.
-	 * 
-	 * @return array
-	 */
-	public function getAttributes() {
-		return $this->attributes;
-	} 
-	
-	/**
-	 * Gibt ein Array mit den Attributen zu diesem Tags zurück.
-	 * 
-	 * @return array
-	 */
-	public function getAttribute($name) {
-		if (array_key_exists($name, $this->attributes)) {
-			return $this->attributes[$name];
-		}
-		return false;
-	} 
-	
-	/**
-	 * Gibt TRUE zurück, wenn es sich bei dem Tag um ein "Inline-Tag", wie z.B. <br />, <hr />, <span> etc., zurück.
-	 * 
-	 * @return boolean
-	 */
-	public function isInlineTag() {
-		return (boolean)$this->isInlineTag;
-	} 
+  protected $displayContentWithHtmlEntities = false;
 
-	/**
-	 * Setzt den Namen des Tags.
-	 * 
-	 * @return Tag $this
-	 */
-	public function setName($value) {
-		$this->name = $value;
-		return $this;
-	} 
-	
-	/**
-	 * Fügt dem Tag ein Attribute hinzu.
-	 * 
-	 * @return Tag $this
-	 */
-	public function addAttribute(Attribute $value) {
-		$this->attributes[$value->getName()] = $value;
-		return $this;
-	} 
-	
-	/**
-	 * Fügt dem Tag die übergebenen Attribute hinzu.
-	 * 
-	 * @return Tag $this
-	 */
-	public function addAttributes($value) {
-		if (is_array($value) && !empty($value)) {
-			foreach($value as $attribute) {
-				if ($attribute instanceof Attribute) {
-					$this->addAttribute($attribute);
-				} else {
-					throw new AbstractTagException('Die Methode \'addAttributes()\' erwartet ein Array mit Attribute-Objekten!');		
-				}
-			}
-		}
-		
-		return $this;
-	} 
-	
-	/**
-	 * Entfernt dem Tag das übergebene Attribute.
-	 * 
-	 * @return Tag $this
-	 */
-	public function removeAttribute(Attribute $value) {
-		if (array_key_exists($value->getName(), $this->attributes)) {
-			return $this->attributes[$value->getName()];
-		}
-		return $this;
-	} 
-	
-	/**
-	 * Ist dieser Wert gesetzt, so wird der Inhalt, der innerhalb eines ModularTags (z.B. <p>-Tag) steht, mit der htmlentities()-Funktion aufgerufen.
-	 * 
-	 * @return Tag $this
-	 */
-	public function setHtmlentities($value) {
-		$this->displayContentWithHtmlEntities = (boolean)$value;
-		return $this;
-	} 
-	
-	/**
-	 * Gibt TRUE zurück, wenn der Inhalt des Tags mit der htmlentities()-Funktion von PHP aufgerufen werden soll, andernfalls FALSE.
-	 * 
-	 * @return boolean
-	 */
-	public function getHtmlentities() {
-		return $this->displayContentWithHtmlEntities;
-	} 
-	
-	/**
-	 * Rendern den Anfang des Tags.
-	 * Dies behinhaltend das öffnenden des Tags und die Auflistung der Attribute, z.B. '<a href="http://www.timo-strotmann.de" target="_blank"'.
-	 * Zu beachten ist, das das öffnede Tag nicht nicht geschlossen wird, dies liegt daran, das ein StandaloneTag mit ' />' und ein ModularTag mit '>' geschlossen wird!
-	 * 
-	 * @return string
-	 */
-	public function display() {
-		$str = '<'.$this->name;
-		if (!empty($this->attributes)) {
-			foreach($this->attributes as $attr) {
-				$str.= $attr;
-			}
-		}
-		
-		return $str;
-	} 
+  /**
+   * Konstruktor von AbstractTag.
+   *
+   * @param string $name Name des zu erstellenden Tags
+   * @return void
+   */
+  public function __construct($name) {
+    $this->name = $name;
+    $attributes = array();
+
+    if (false === array_search(HTML_VARIANT, trimExplode(HTML_VARIANTS))) {
+      throw new TagHtmlVariantException('Die angegeben HTML-Variante existiert nicht');
+    }
+
+    switch(HTML_VARIANT) {
+      case 'strict':
+        $this->isInlineTag = in_array($this->name, trimExplode(STRICT_INLINE_ELEMENTS));
+        $this->isBlockTag  = in_array($this->name, trimExplode(STRICT_BLOCK_ELEMENTS));
+        break;
+
+      case 'frameset':
+        $this->isInlineTag = in_array($this->name, trimExplode(FRAMESET_INLINE_ELEMENTS));
+        $this->isBlockTag  = in_array($this->name, trimExplode(FRAMESET_BLOCK_ELEMENTS));
+        break;
+
+      case 'transitional':
+        $this->isInlineTag = in_array($this->name, trimExplode(TRANSITIONAL_INLINE_ELEMENTS));
+        $this->isBlockTag  = in_array($this->name, trimExplode(TRANSITIONAL_BLOCK_ELEMENTS));
+        break;
+    }
+  } 
+
+  /**
+   * __toString()-Methode zum ausgeben des Tags (siehe display()-Methode).
+   *
+   * @return string
+   */
+  public function __toString() {
+    return $this->display();
+  } 
+
+  /**
+   * Gibt den Namen des Tags zurück.
+   *
+   * @return string
+   */
+  public function getName() {
+    return $this->name;
+  } 
+
+  // :TODO: Wenn man das Parent-Element (-Tag) mit abspeichert, kann man besser validieren, denn es ist ja nicht jedes Tag überall erlaubt!
+  //	public function getParent() {
+  //		return $this->parent;
+  //	}
+
+  /**
+   * Gibt ein Array mit den Attributen zu diesem Tags zurück.
+   *
+   * @return array
+   */
+  public function getAttributes() {
+    return $this->attributes;
+  } 
+
+  /**
+   * Gibt ein Array mit den Attributen zu diesem Tags zurück.
+   *
+   * @return array
+   */
+  public function getAttribute($name) {
+    if (array_key_exists($name, $this->attributes)) {
+      return $this->attributes[$name];
+    }
+    return false;
+  } 
+
+  /**
+   * Gibt TRUE zurück, wenn es sich bei dem Tag um ein "Inline-Tag", wie z.B. <br />, <hr />, <span> etc., zurück.
+   *
+   * @return boolean
+   */
+  public function isBlockTag() {
+    return (boolean)$this->isBlockTag;
+  } 
+
+  /**
+   * Alias-Methode für isBlockTag()
+   *
+   * @return boolean
+   */
+  public function isBlockElement() {
+    return $this->isBlockTag();
+  } 
+
+  /**
+   * Alias-Methode für isBlockTag()
+   *
+   * @return boolean
+   */
+  public function isBlock() {
+    return $this->isBlockTag();
+  } 
+
+  /**
+   * Gibt TRUE zurück, wenn es sich bei dem Tag um ein "Inline-Tag", wie z.B. <br />, <hr />, <span> etc., zurück.
+   *
+   * @return boolean
+   */
+  public function isInlineTag() {
+    return (boolean)$this->isInlineTag;
+  } 
+
+  /**
+   * Alias-Methode für isInlineTag()
+   *
+   * @return boolean
+   */
+  public function isInlineElement() {
+    return $this->isInlineTag();
+  } 
+
+  /**
+   * Alias-Methode für isInlineTag()
+   *
+   * @return boolean
+   */
+  public function isInline() {
+    return $this->isInlineTag();
+  } 
+
+  /**
+   * Setzt den Namen des Tags.
+   *
+   * @return Tag $this
+   */
+  public function setName($value) {
+    $this->name = $value;
+    return $this;
+  } 
+
+  /**
+   * Fügt dem Tag ein Attribute hinzu.
+   *
+   * @return Tag $this
+   */
+  public function addAttribute(Attribute $value) {
+    $this->attributes[$value->getName()] = $value;
+    return $this;
+  } 
+
+  /**
+   * Fügt dem Tag die übergebenen Attribute hinzu.
+   *
+   * @return Tag $this
+   */
+  public function addAttributes($value) {
+    if (is_array($value) && !empty($value)) {
+      foreach($value as $attribute) {
+        if ($attribute instanceof Attribute) {
+          $this->addAttribute($attribute);
+        } else {
+          throw new AbstractTagException('Die Methode \'addAttributes()\' erwartet ein Array mit Attribute-Objekten!');
+        }
+      }
+    }
+
+    return $this;
+  } 
+
+  /**
+   * Entfernt dem Tag das übergebene Attribute.
+   *
+   * @return Tag $this
+   */
+  public function removeAttribute(Attribute $value) {
+    if (array_key_exists($value->getName(), $this->attributes)) {
+      return $this->attributes[$value->getName()];
+    }
+    
+    return $this;
+  } 
+
+  /**
+   * Ist dieser Wert gesetzt, so wird der Inhalt, der innerhalb eines ModularTags (z.B. <p>-Tag) steht, mit der htmlentities()-Funktion aufgerufen.
+   *
+   * @return Tag $this
+   */
+  public function setHtmlentities($value) {
+    $this->displayContentWithHtmlEntities = (boolean)$value;
+    return $this;
+  } 
+
+  /**
+   * Gibt TRUE zurück, wenn der Inhalt des Tags mit der htmlentities()-Funktion von PHP aufgerufen werden soll, andernfalls FALSE.
+   *
+   * @return boolean
+   */
+  public function getHtmlentities() {
+    return $this->displayContentWithHtmlEntities;
+  } 
+
+  /**
+   * Rendern den Anfang des Tags.
+   * Dies behinhaltend das öffnenden des Tags und die Auflistung der Attribute, z.B. '<a href="http://www.timo-strotmann.de" target="_blank"'.
+   * Zu beachten ist, das das öffnede Tag nicht nicht geschlossen wird, dies liegt daran, das ein StandaloneTag mit ' />' und ein ModularTag mit '>' geschlossen wird!
+   *
+   * @return string
+   */
+  public function display() {
+    $str = '<'.$this->name;
+    if (!empty($this->attributes)) {
+      foreach($this->attributes as $attr) {
+        $str.= $attr;
+      }
+    }
+
+    return $str;
+  }
+  
 } 
+
 
 /**
  * Hierbei handelt es sich um Tags, die kein abschließdes Tag haben, wie z.B. <br />, <hr />, <input /> etc.
- * 
+ *
  * @author Timo Strotmann
  */
 class StandaloneTag extends AbstractTag {
-	
-	protected $content = '';
-	protected $contentAfter = true;
-	
+
+  protected $content = '';
+  protected $contentAfter = true;
+
   /**
    * Gibt den "Content", der für diesen Tag hinterlegt ist, zurück.
-   * 
+   *
    * @return mixed $content
    */
   public function getContent() {
     return $this->content;
   } 
+
+  /**
+   * Setzt den "Content" (z.B. die "Beschriftung" eines <input>-Tags), der vor oder hinter dem Tag erscheinen soll.
+   *
+   * @param string $content
+   * @return Tag $this
+   */
+  public function setContent($content) {
+    if (is_string($content)) {
+      $this->content = $content;
+    } else {
+      throw new StandaloneTagException('Der in $content hinterlegte Wert muss ein String sein!');
+    }
+    return $this;
+  } 
+
+  /**
+   * Bestimmt, ob der "Content" (z.B. die "Beschriftung" eines <input>-Tags) vor oder hinter dem Tag stehen soll.
+   *
+   * @param boolean $value
+   * @return Tag $this
+   */
+  public function setContentAfter($value = true) {
+    $this->contentAfter = (boolean)$value;
+    return $this;
+  } 
+
+  /**
+   * Bestimmt, ob der "Content" (z.B. die "Beschriftung" eines <input>-Tags) vor oder hinter dem Tag stehen soll.
+   *
+   * @param boolean $value
+   * @return Tag $htis
+   */
+  public function setContentBefore($value = false) {
+    $this->setContentAfter(!(boolean)$value);
+    return $this;
+  } 
+
+  /**
+   * Vervollständigung der AbstragTag::display()-Methode
+   *
+   * @return string
+   */
+  public function display() {
+    $tag = parent::display() . ' />';
+
+    if (is_array($this->content)) {
+      foreach($this->content as $value) {
+        $content.=$value;
+      }
+    } else {
+      $content = $this->content;
+    }
+
+    if ($this->contentAfter) {
+      $str = $tag . $content;
+    } else {
+      $str = $content . $tag;
+    }
+    
+    return $str;
+  } 
   
-	/**
-	 * Setzt den "Content" (z.B. die "Beschriftung" eines <input>-Tags), der vor oder hinter dem Tag erscheinen soll.
-	 * 
-	 * @param string $content
-	 * @return Tag $this
-	 */
-	public function setContent($content) {
-		if (is_string($content)) {
-			$this->content = $content;
-		} else {
-			throw new StandaloneTagException('Der in $content hinterlegte Wert muss ein String sein!');
-		}
-		return $this;
-	} 
-	
-	/**
-	 * Bestimmt, ob der "Content" (z.B. die "Beschriftung" eines <input>-Tags) vor oder hinter dem Tag stehen soll.
-	 * 
-	 * @param boolean $value
-	 * @return Tag $this
-	 */
-	public function setContentAfter($value = true) {
-		$this->contentAfter = (boolean)$value;
-		return $this;
-	} 
-	
-	/**
-	 * Bestimmt, ob der "Content" (z.B. die "Beschriftung" eines <input>-Tags) vor oder hinter dem Tag stehen soll.
-	 * 
-	 * @param boolean $value
-	 * @return Tag $htis
-	 */
-	public function setContentBefore($value = false) {
-		$this->setContentAfter(!(boolean)$value);
-		return $this;
-	} 
-	
-	/**
-	 * Vervollständigung der AbstragTag::display()-Methode
-	 * 
-	 * @return string
-	 */
-	public function display() {
-	  $tag = parent::display() . ' />';
-
-	  if (is_array($this->content)) {
-	    foreach($this->content as $value) {
-	      $content.=$value;
-	    }
-	  } else {
-	    $content = $this->content;
-	  }
-
-	  if ($this->contentAfter) {
-	    $str = $tag . $content;
-	  } else {
-	    $str = $content . $tag;
-	  }
-	  return $str;
-	} 
 } 
+
 
 /**
  * Hierbei handelt es sich um Tags, die sowhol aus einem öffnedem und schließendem Tag bestehen, wie z.B. <p>, <span>, <textarea> etc.
- * 
+ *
  * @author Timo Strotmann
  */
 class ModularTag extends AbstractTag {
-	
-	protected $content = '';
-	
+
+  protected $content = '';
+
   /**
    * Gibt den "Content", der z.B. zwischen dem öffneden und schließendem Tag steht (z.B. 'Hello World!' für <p>Hello World!</p>) zurück.
-   * 
+   *
    * @return mixed $content
    */
   public function getContent() {
     return $this->content;
   } 
-  
-	/**
-	 * Setzt den "Content", der zwischen dem öffneden und schließendem Tag steht (z.B. 'Hello World!' für <p>Hello World!</p>).
-	 * 
-	 * @param string $content
-	 * @return Tag $this
-	 */
-	public function setContent($content) {
-		$this->content = $content;
-		return $this;
-	} 
-	
-	/**
-	 * Vervollständigung der AbstragTag::display()-Methode
-	 * 
-	 * @return string
-	 */
-	public function display() {
-		$tag = parent::display();
-    
-		if (is_array($this->content)) {
-		  foreach($this->content as $value) {
-		    $content.=$value;
-		  }
-		} else {
-		  $content = $this->content;
-		}
-		
-		if ($this->displayContentWithHtmlEntities) {
-      return "{$tag}>" . htmlentities($content, ENT_NOQUOTES, ENCODING) . "</{$this->name}>";
+
+  /**
+   * Setzt den "Content", der zwischen dem öffneden und schließendem Tag steht (z.B. 'Hello World!' für <p>Hello World!</p>).
+   *
+   * @param string $content
+   * @return Tag $this
+   */
+  public function setContent($content) {
+    $this->content = $content;
+    return $this;
+  } 
+
+  /**
+   * Vervollständigung der AbstragTag::display()-Methode
+   *
+   * @return string
+   */
+  public function display() {
+    $tag = parent::display();
+
+    if (is_array($this->content)) {
+      foreach($this->content as $value) {
+        $content.= $value;
+      }
     } else {
-      return "{$tag}>{$content}</{$this->name}>";
+      $content = $this->content;
     }
-	} 
+    
+    if ($this->displayContentWithHtmlEntities) {
+      $content = htmlentities($content, ENT_NOQUOTES, ENCODING);
+    }
+    
+    return "{$tag}>{$content}</{$this->name}>";
+  } 
+  
+  
 } 
-
-
-
