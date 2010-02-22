@@ -26,6 +26,7 @@ class TagException extends Exception {
  * @author Timo Strotmann
  */
 class Tag {
+  
 
   /**
    * :TODO: 
@@ -1459,7 +1460,15 @@ class Tag {
   /**********************************************************************
    * Hilfsfunktionen
    **********************************************************************/
-
+  
+  /**
+   * Prüft, ob Prefix für diverse Attribute (z.B. 'id' oder 'name') gesetzt wurde.
+   * @return boolean
+   */
+  static protected function hasPrefixId() {
+    return (is_string(self::$prefixId) && '' != self::$prefixId);
+  } 
+  
   /**
    * Durchsucht die übergebenen $attributes nach Attributen, die in $search in Form von Schlüsseln angegeben werden.
    *
