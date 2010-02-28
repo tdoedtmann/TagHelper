@@ -20,615 +20,6 @@ define('STANDALONE_TAGS', 							'area, base, basefont, br, col, frame, hr, img,
 define('ENCODING',											'UTF-8');
 
 
-function allowedTags($include, $exclude=null) {
-  $include = trimExplode($include);
-  
-  if (null !== $exclude) {
-    $exclude = trimExplode($exclude);
-    foreach($exclude as $element) {
-      unset($include[$element]);
-    }
-  }
-  
-  return $include;
-} 
-
-$allowedParents = array(
-  'a'           => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS.',td',                  'a,button')), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS.',td',              'a,button')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',td,body', 'a,button')), 
-  ),
-  'abbr'        => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS)), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ),
-  'acronym'     => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS)), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ),
-  'address'     => array(
-    'strict'       => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ),
-  'applet'      => array(
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS,                 'pre')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body', 'pre')), 
-  ),
-  'area'        => array(
-    'strict'       => array(allowedTags('map')), 
-    'frameset'     => array(allowedTags('map')), 
-    'transitional' => array(allowedTags('map')),
-  ),
-
-  'b'           => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS)), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ),
-  'base'        => array(
-    'strict'       => array(allowedTags('head')), 
-    'frameset'     => array(allowedTags('head')), 
-    'transitional' => array(allowedTags('head')),
-  ),
-  'basefont'    => array(
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS,                 'pre')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body', 'pre')), 
-  ),
-  'bdo'         => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS)), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ),
-  'big'         => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS,                     'pre')), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS,                 'pre')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body', 'pre')), 
-  ),
-  'blockquote'  => array(
-    'strict'       => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ),
-  'body'        => array(
-    'strict'       => array(allowedTags('html')), 
-    'frameset'     => array(allowedTags('html')), 
-    'transitional' => array(allowedTags('html, noframes')),
-  ),
-  'br'          => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS)), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ),
-  'button'      => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS,                     'button')), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS,                 'button')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body', 'button')), 
-  ),
-  
-  'caption'     => array(
-    'strict'       => array(allowedTags('table')), 
-    'frameset'     => array(allowedTags('table')), 
-    'transitional' => array(allowedTags('table')),
-  ),
-  'center'      => array(
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ),
-  'cite'        => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS)), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ),
-  'code'        => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS)), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ),
-  'col'         => array(
-    'strict'       => array(allowedTags('colgroup, table')), 
-    'frameset'     => array(allowedTags('colgroup, table')), 
-    'transitional' => array(allowedTags('colgroup, table')),
-  ),
-  'colgroup'    => array(
-    'strict'       => array(allowedTags('table')), 
-    'frameset'     => array(allowedTags('table')), 
-    'transitional' => array(allowedTags('table')),
-  ),
- 
-  'dd'          => array(
-    'strict'       => array(allowedTags('dl')), 
-    'frameset'     => array(allowedTags('dl')), 
-    'transitional' => array(allowedTags('dl')),
-  ), 
-  'del'         => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS.',body')), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS.',body')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ), 
-  'dfn'         => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS)), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ), 
-  'dir'         => array(
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ), 
-  'div'         => array(
-    'strict'       => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ), 
-  'dl'          => array(
-    'strict'       => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ), 
-  'dt'          => array(
-    'strict'       => array(allowedTags('dl')), 
-    'frameset'     => array(allowedTags('dl')), 
-    'transitional' => array(allowedTags('dl')),
-  ), 
-
-  'em'          => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS)), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ), 
-
-  'fieldset'    => array(
-    'strict'       => array(allowedTags('applet | blockquote | body | button | center | dd | del | div | fieldset | form | iframe | ins | li | map | noframes | noscript | object | td | th')), 
-    'frameset'     => array(allowedTags('applet | blockquote | body | button | center | dd | del | div | fieldset | form | iframe | ins | li | map | noframes | noscript | object | td | th')), 
-    'transitional' => array(allowedTags('applet | blockquote | body | button | center | dd | del | div | fieldset | form | iframe | ins | li | map | noframes | noscript | object | td | th')),
-  ), 
-  'font'        => array(
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS,                 'pre')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body', 'pre')), 
-  ), 
-  'form'        => array(
-    'strict'       => array(allowedTags('applet | blockquote | body | button | center | dd | del | div | fieldset | iframe | ins | li | map | noframes | noscript | object | td | th')), 
-    'frameset'     => array(allowedTags('applet | blockquote | body | button | center | dd | del | div | fieldset | iframe | ins | li | map | noframes | noscript | object | td | th')), 
-    'transitional' => array(allowedTags('applet | blockquote | body | button | center | dd | del | div | fieldset | iframe | ins | li | map | noframes | noscript | object | td | th')),
-  ), 
-  'frame'       => array(
-    'frameset'     => array(allowedTags('frameset')), 
-  ), 
-  'frameset'    => array(
-    'frameset'     => array(allowedTags('html')), 
-  ), 
-  
-  'h1'          => array(
-    'strict'       => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ), 
-  'h2'          => array(
-    'strict'       => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ), 
-  'h3'          => array(
-    'strict'       => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ), 
-  'h4'          => array(
-    'strict'       => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ), 
-  'h5'          => array(
-    'strict'       => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ), 
-  'h6'          => array(
-    'strict'       => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ), 
-  'head'        => array(
-    'strict'       => array(allowedTags('html')), 
-    'frameset'     => array(allowedTags('html')), 
-    'transitional' => array(allowedTags('html')),
-  ), 
-  'hr'          => array(
-    'strict'       => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ), 
-  'html'        => array(
-    'strict'       => array(allowedTags('')), 
-    'frameset'     => array(allowedTags('')), 
-    'transitional' => array(allowedTags('')),
-  ), 
-   
-  'i'           => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS)), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ), 
-  'iframe'      => array(
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS,                 'button')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body', 'button')), 
-  ), 
-  'img'         => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS,                     'pre')), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS,                 'pre')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body', 'pre')), 
-  ), 
-  'input'       => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS,                     'button')), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS,                 'button')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body', 'button')), 
-  ), 
-  'ins'         => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS.',body')), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS.',body')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ), 
-  'isindex'     => array(
-    'frameset'     => array(allowedTags('applet, blockquote, body, center, dd, del, div, fieldset, form, head, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, center, dd, del, div, fieldset, form, head, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ), 
-
-  'kbd'         => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS)), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ), 
-  
-  'label'       => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS,                     'button')), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS,                 'button')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body', 'button')), 
-  ), 
-  'legend'      => array(
-    'strict'       => array(allowedTags('fieldset')), 
-    'frameset'     => array(allowedTags('fieldset')), 
-    'transitional' => array(allowedTags('fieldset')),
-  ), 
-  'li'          => array(
-    'strict'       => array(allowedTags('dir, menu, ol, ul')), 
-    'frameset'     => array(allowedTags('dir, menu, ol, ul')), 
-    'transitional' => array(allowedTags('dir, menu, ol, ul')),
-  ), 
-  'link'        => array(
-    'strict'       => array(allowedTags('head')), 
-    'frameset'     => array(allowedTags('head')), 
-    'transitional' => array(allowedTags('head')),
-  ), 
-  
-  'map'         => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS)), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS)), 
-  ), 
-  'menu'        => array(
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ), 
-  'meta'        => array(
-    'strict'       => array(allowedTags('head')), 
-    'frameset'     => array(allowedTags('head')), 
-    'transitional' => array(allowedTags('head')),
-  ), 
-  
-  'noframes'    => array(
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, frameset, iframe, ins, li, map, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, frameset, iframe, ins, li, map, noscript, object, td, th')),
-  ), 
-  'noscript'    => array(
-    'strict'       => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ), 
-   
-  'object'      => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS.',head',             'pre')), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS.',head',         'pre')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',head', 'pre')), 
-  ), 
-  'ol'          => array(
-    'strict'       => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ), 
-  'optgroup'    => array(
-    'strict'       => array(allowedTags('select')), 
-    'frameset'     => array(allowedTags('select')), 
-    'transitional' => array(allowedTags('select')),
-  ), 
-  'option'      => array(
-    'strict'       => array(allowedTags('select, optgroup')), 
-    'frameset'     => array(allowedTags('select, optgroup')), 
-    'transitional' => array(allowedTags('select, optgroup')),
-  ), 
-  
-  'p'           => array(
-    'strict'       => array(allowedTags('address, applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'frameset'     => array(allowedTags('address, applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('address, applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ), 
-  'param'       => array(
-    'strict'       => array(allowedTags('applet, object')), 
-    'frameset'     => array(allowedTags('applet, object')), 
-    'transitional' => array(allowedTags('applet, object')),
-  ), 
-  'pre'         => array(
-    'strict'       => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ), 
-  
-  'q'           => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS)), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ), 
-   
-  's'           => array(
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ), 
-  'samp'        => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS)), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ), 
-  'script'      => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS.',head,body')), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS.',head,body')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',head,body')), 
-  ), 
-  'select'      => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS,                     'button')), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS,                 'button')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body', 'button')), 
-  ), 
-  'small'       => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS,                     'pre')), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS,                 'pre')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body', 'pre')), 
-  ), 
-  'span'        => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS)), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ), 
-  'strike'      => array(
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ), 
-  'strong'      => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS)), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ), 
-  'style'       => array(
-    'strict'       => array(allowedTags('head')), 
-    'frameset'     => array(allowedTags('head')), 
-    'transitional' => array(allowedTags('head')),
-  ), 
-  'sub'         => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS,                     'pre')), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS,                 'pre')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body', 'pre')), 
-  ), 
-  'sup'         => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS,                     'pre')), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS,                 'pre')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body', 'pre')), 
-  ), 
-  
-  'table'       => array(
-    'strict'       => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ), 
-  'tbody'       => array(
-    'strict'       => array(allowedTags('table')), 
-    'frameset'     => array(allowedTags('table')), 
-    'transitional' => array(allowedTags('table')),
-  ), 
-
-  'td'          => array(
-    'strict'       => array(allowedTags('tr')), 
-    'frameset'     => array(allowedTags('tr')), 
-    'transitional' => array(allowedTags('tr')),
-  ), 
-  'textarea'    => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS,                     'button')), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS,                 'button')), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body', 'button')), 
-  ), 
-  'tfoot'       => array(
-    'strict'       => array(allowedTags('table')), 
-    'frameset'     => array(allowedTags('table')), 
-    'transitional' => array(allowedTags('table')),
-  ), 
-  'th'          => array(
-    'strict'       => array(allowedTags('tr')), 
-    'frameset'     => array(allowedTags('tr')), 
-    'transitional' => array(allowedTags('tr')),
-  ), 
-  'thead'       => array(
-    'strict'       => array(allowedTags('table')), 
-    'frameset'     => array(allowedTags('table')), 
-    'transitional' => array(allowedTags('table')),
-  ), 
-  'title'       => array(
-    'strict'       => array(allowedTags('head')), 
-    'frameset'     => array(allowedTags('head')), 
-    'transitional' => array(allowedTags('head')),
-  ), 
-  'tr'          => array(
-    'strict'       => array(allowedTags('table, tbody, tfoot, thead')), 
-    'frameset'     => array(allowedTags('table, tbody, tfoot, thead')), 
-    'transitional' => array(allowedTags('table, tbody, tfoot, thead')),
-  ), 
-  'tt'          => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS)), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ), 
-  
-  'u'           => array(
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ), 
-  'ul'          => array(
-    'strict'       => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'frameset'     => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')), 
-    'transitional' => array(allowedTags('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th')),
-  ), 
-  
-  'var'         => array(
-    'strict'       => array(allowedTags(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS)), 
-    'frameset'     => array(allowedTags(FRAMESET_BLOCK_ELEMENTS.','.FRAMESET_INLINE_ELEMENTS)), 
-    'transitional' => array(allowedTags(TRANSITIONAL_BLOCK_ELEMENTS.','.TRANSITIONAL_INLINE_ELEMENTS.',body')), 
-  ),
-);
-
-  /*
-   * a::childs(#PCDATA, [Inline-Elemente] (außer a))
-   * abbr::childs(#PCDATA [Inline-Elemente]) 
-   * acronym::childs(#PCDATA [Inline-Elemente]) 
-   * address::childs(#PCDATA [Inline-Elemente] | p (p nur bei  HTML Transitional)) 
-   * applet::childs([Block-Elemente] | [Inline-Elemente] | param) 
-   * area::childs(__LEER__) 
-   * b::childs(#PCDATA [Inline-Elemente]) 
-   * base::childs(__LEER__) 
-   * basefont::childs(__LEER__ ) 
-   * bdo::childs(#PCDATA [Inline-Elemente]) 
-   * big::childs(#PCDATA [Inline-Elemente]) 
-   * blockquote::childs(1. nach  HTML Strict:       [Block-Elemente] | script
-                        2. nach  HTML Transitional: #PCDATA und [Block-Elemente] | [Inline-Elemente]) 
-   * body::childs(1. nach  HTML Strict: [Block-Elemente] | script
-                  2. nach  HTML Transitional: #PCDATA und [Block-Elemente] | [Inline-Elemente]) 
-   * br::childs(__LEER__ ) 
-   * button::childs(#PCDATA abbr | acronym | address | applet | b | basefont | bdo | big | blockquote | br | center | cite | code | dfn | dl | dir | div | em | font | h1-6 | hr | i | img | kbd | map | menu | noframes | noscript | object | ol | p | pre | q | samp | script | small | span | strong | sub | sup | table | tt | ul | var) 
-   * 
-   * caption::childs(#PCDATA [Inline-Elemente]) 
-   * center::childs(#PCDATA [Block-Elemente] | [Inline-Elemente]) 
-   * cite::childs(#PCDATA [Inline-Elemente]) 
-   * code::childs(#PCDATA [Inline-Elemente]) 
-   * col::childs(__LEER__) 
-   * colgroup::childs(col) 
-   * 
-   * dd::childs(#PCDATA [Block-Elemente] | [Inline-Elemente]) 
-   * del::childs(#PCDATA [Block-Elemente] bei Verwendung als Block-Element | [Inline-Elemente]) 
-   * dfn::childs(#PCDATA [Inline-Elemente]) 
-   * dir::childs(Muss (ein- oder mehrmal): li (Hinweis: li darf in diesem Zusammenhang keine Block-Elemente enthalten)) 
-   * div::childs(#PCDATA [Block-Elemente] | [Inline-Elemente]) 
-   * dl::childs(dd | dt) 
-   * dt::childs(#PCDATA [Inline-Elemente]) 
-   * 
-   * em::childs(#PCDATA [Inline-Elemente]) 
-   * 
-   * fieldset::childs(#PCDATA legend, gefolgt von: [Block-Elemente] | [Inline-Elemente]) 
-   * font::childs(#PCDATA [Inline-Elemente]) 
-   * form::childs(1. nach  HTML Strict: [Block-Elemente] (außer form) | script
-                  2. nach  HTML Transitional: [Block-Elemente] (außer form) | [Inline-Elemente]) 
-   * frame::childs(__LEER__) 
-   * frameset::childs(frame | frameset | noframes) 
-   * 
-   * h1::childs(#PCDATA [Inline-Elemente]) 
-   * h2::childs(#PCDATA [Inline-Elemente]) 
-   * h3::childs(#PCDATA [Inline-Elemente]) 
-   * h4::childs(#PCDATA [Inline-Elemente]) 
-   * h5::childs(#PCDATA [Inline-Elemente]) 
-   * h6::childs(#PCDATA [Inline-Elemente]) 
-   * head::childs(1. MUSS: title
-                  2. KANN:
-                  2.1. nach  HTML Strict: base, isindex, link, meta, object, script, style
-                  2.2. nach  HTML Transitional: isindex) 
-   * hr::childs(__LEER__) 
-   * html::childs(1. Strict | Transitional: head, gefolgt von body
-                  2. Frameset: head, gefolgt von frameset)
-   * 
-   * i::childs(#PCDATA [Inline-Elemente]) 
-   * iframe::childs(#PCDATA [Block-Elemente] | [Inline-Elemente]) 
-   * img::childs(__LEER__) 
-   * input::childs(__LEER__) 
-   * ins::childs(#PCDATA [Block-Elemente] bei Verwendung als Block-Element | [Inline-Elemente]) 
-   * isindex::childs(__LEER__) 
-   * 
-   * kbd::childs(#PCDATA [Inline-Elemente]) 
-   * 
-   * label::childs(#PCDATA [Inline-Elemente] (außer label)) 
-   * legend::childs(#PCDATA [Inline-Elemente]) 
-   * li::childs(#PCDATA dir | menu | ol | ul
-                1. bei dir und menu: [Inline-Elemente]
-                2. bei ol und ul:    [Block-Elemente] | [Inline-Elemente]) 
-   * link::childs(__LEER__) 
-   * 
-   * map::childs([Block-Elemente] | area) 
-   * menu::childs(li (Hinweis: li darf in diesem Zusammenhang keine Block-Elemente enthalten)) 
-   * meta::childs(__LEER__) 
-   * 
-   * noframes::childs(#PCDATA 
-                      1. nach  HTML Frameset:     body
-                      2. nach  HTML Transitional: [Block-Elemente] | [Inline-Elemente]) 
-   * noscript::childs(1. nach  HTML Strict:       [Block-Elemente]
-                      2. nach  HTML Transitional: #PCDATA und [Block-Elemente] | [Inline-Elemente]) 
-   * 
-   * object::childs(#PCDATA [Block-Elemente], [Inline-Elemente], param) 
-   * ol::childs(li) 
-   * optgroup::childs(option) 
-   * option::childs(#PCDATA) 
-   * 
-   * p::childs(#PCDATA [Inline-Elemente]) 
-   * param::childs(__LEER__) 
-   * pre::childs(#PCDATA a, abbr, acronym, applet, b, bdo, br, button, cite, code, dfn, em, i, input, iframe, kbd, label, map, q, samp, script, select, span, strong, textarea, tt, var) 
-   * 
-   * q::childs(#PCDATA [Inline-Elemente]) 
-   * 
-   * s::childs(#PCDATA [Inline-Elemente]) 
-   * samp::childs(#PCDATA [Inline-Elemente]) 
-   * script::childs(Darf nichts als #PCDATA enthalten, die als Script-Code zu interpretieren sind) 
-   * select::childs(#PCDATA optgroup, option) 
-   * small::childs(#PCDATA [Inline-Elemente]) 
-   * span::childs(#PCDATA [Inline-Elemente]) 
-   * strike::childs(#PCDATA [Inline-Elemente]) 
-   * strong::childs(#PCDATA [Inline-Elemente]) 
-   * style::childs(Darf nichts als #PCDATA enthalten, die als Style-Definitionen interpretiert werden) 
-   * 
-   * sub::childs(#PCDATA [Inline-Elemente]) 
-   * sup::childs(#PCDATA [Inline-Elemente]) 
-   * 
-   * table::childs(Darf folgende anderen HTML-Elemente (in dieser Reihenfolge) enthalten: caption (optional), col oder colgroup (optional), thead (optional), tfoot (optional), tbody (ein oder mehrere - wenn nur einmal benötigt, darf tbody auch entfallen, weshalb die herkömmliche Konstruktion, wonach table direkt aus tr-Elementen besteht, ebenfalls zulässig ist)) 
-   * tbody::childs(tr) 
-   * 
-   * td::childs([Block-Elemente], [Inline-Elemente]) 
-   * textarea::childs(Darf nichts als #PCDATA enthalten) 
-   * tfoot::childs(tr) 
-   * th::childs([Block-Elemente], [Inline-Elemente]) 
-   * thead::childs(tr) 
-   * title::childs(Darf nichts als #PCDATA enthalten.) 
-   * tr::childs(td, th) 
-   * tt::childs(#PCDATA [Inline-Elemente]) 
-   * 
-   * u::childs(#PCDATA [Inline-Elemente]) 
-   * ul::childs(li) 
-   * 
-   * var::childs(#PCDATA [Inline-Elemente]) 
-   */  
-
-
-  $allowedParent = array(
-    'a'     => '',
-  );
-
-
-
-
-
-
 function trimExplode($string, $delim=',', $onlyNonEmptyValues=true)    {
   $temp = explode($delim,$string);
   $newtemp = array();
@@ -759,6 +150,1445 @@ class AbstractTag implements TagInterface {
 
   protected $displayContentWithHtmlEntities = false;
 
+  /**
+   * 
+   * @var array
+   */
+  protected $allowedParent = array(
+    'a' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var, td'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var, td'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, td, body'),
+    ),
+    'abbr' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'acronym' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'address' =>  array(
+      'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'applet' =>  array(
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'area' =>  array(
+      'strict'        => array('map'),
+      'frameset'      => array('map'),
+      'transitional'  => array('map'),
+    ),
+    
+    'b' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'base' =>  array(
+      'strict'        => array('head'),
+      'frameset'      => array('head'),
+      'transitional'  => array('head'),
+    ),
+    'basefont' =>  array(
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'bdo' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'big' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'blockquote' =>  array(
+      'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'body' =>  array(
+      'strict'        => array('html'),
+      'frameset'      => array('html'),
+      'transitional'  => array('html, noframes'),
+    ),
+    'br' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'button' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    
+    'caption' =>  array(
+      'strict'        => array('table'),
+      'frameset'      => array('table'),
+      'transitional'  => array('table'),
+    ),
+    'center' =>  array(
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'cite' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'code' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'col' =>  array(
+      'strict'        => array('colgroup, table'),
+      'frameset'      => array('colgroup, table'),
+      'transitional'  => array('colgroup, table'),
+    ),
+    'colgroup' =>  array(
+      'strict'        => array('table'),
+      'frameset'      => array('table'),
+      'transitional'  => array('table'),
+    ),
+    
+    'dd' =>  array(
+      'strict'        => array('dl'),
+      'frameset'      => array('dl'),
+      'transitional'  => array('dl'),
+    ),
+    'del' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var, body'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var, body'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'dfn' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'dir' =>  array(
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'div' =>  array(
+      'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'dl' =>  array(
+      'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'dt' =>  array(
+      'strict'        => array('dl'),
+      'frameset'      => array('dl'),
+      'transitional'  => array('dl'),
+    ),
+    
+    'em' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    
+    'fieldset' =>  array(
+      'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'font' =>  array(
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'form' =>  array(
+      'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'frame' =>  array(
+      'frameset'      => array('frameset'),
+    ),
+    'frameset'      =>  array(
+      'frameset'      => array('html'),
+    ),
+    
+    'h1' =>  array(
+      'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'h2' =>  array(
+      'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'h3' =>  array(
+      'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'h4' =>  array(
+      'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'h5' =>  array(
+      'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'h6' =>  array(
+      'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'head' =>  array(
+      'strict'        => array('html'),
+      'frameset'      => array('html'),
+      'transitional'  => array('html'),
+    ),
+    'hr' =>  array(
+      'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'html' =>  array(
+      'strict'        => array(''),
+      'frameset'      => array(''),
+      'transitional'  => array(''),
+    ),
+    
+    'i' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'iframe' =>  array(
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'img' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'input' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'ins' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var, body'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var, body'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'isindex' =>  array(
+      'frameset'      => array('applet, blockquote, body, center, dd, del, div, fieldset, form, head, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, center, dd, del, div, fieldset, form, head, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    
+    'kbd' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    
+    'label' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'legend' =>  array(
+      'strict'        => array('fieldset'),
+      'frameset'      => array('fieldset'),
+      'transitional'  => array('fieldset'),
+    ),
+    'li' =>  array(
+      'strict'        => array('dir, menu, ol, ul'),
+      'frameset'      => array('dir, menu, ol, ul'),
+      'transitional'  => array('dir, menu, ol, ul'),
+    ),
+    'link' =>  array(
+      'strict'        => array('head'),
+      'frameset'      => array('head'),
+      'transitional'  => array('head'),
+    ),
+    
+    'map' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'menu' =>  array(
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'meta' =>  array(
+      'strict'        => array('head'),
+      'frameset'      => array('head'),
+      'transitional'  => array('head'),
+    ),
+    
+    'noframes' =>  array(
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, frameset, iframe, ins, li, map, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, frameset, iframe, ins, li, map, noscript, object, td, th'),
+    ),
+    'noscript' =>  array(
+      'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    
+    'object' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var, head'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var, head'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, head'),
+    ),
+    'ol' =>  array(
+      'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'optgroup' =>  array(
+      'strict'        => array('select'),
+      'frameset'      => array('select'),
+      'transitional'  => array('select'),
+    ),
+    'option' =>  array(
+      'strict'        => array('select, optgroup'),
+      'frameset'      => array('select, optgroup'),
+      'transitional'  => array('select, optgroup'),
+    ),
+    
+    'p' =>  array(
+      'strict'        => array('address, applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('address, applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('address, applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'param' =>  array(
+      'strict'        => array('applet, object'),
+      'frameset'      => array('applet, object'),
+      'transitional'  => array('applet, object'),
+    ),
+    'pre' =>  array(
+      'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    
+    'q' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    
+    's' =>  array(
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'samp' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'script' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var, head, body'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var, head, body'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, head, body'),
+    ),
+    'select' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'small' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'span' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'strike' =>  array(
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'strong' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'style' =>  array(
+      'strict'        => array('head'),
+      'frameset'      => array('head'),
+      'transitional'  => array('head'),
+    ),
+    'sub' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'sup' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    
+    'table' =>  array(
+      'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    'tbody' =>  array(
+      'strict'        => array('table'),
+      'frameset'      => array('table'),
+      'transitional'  => array('table'),
+    ),
+    'td' =>  array(
+      'strict'        => array('tr'),
+      'frameset'      => array('tr'),
+      'transitional'  => array('tr'),
+    ),
+    'textarea' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'tfoot' =>  array(
+      'strict'        => array('table'),
+      'frameset'      => array('table'),
+      'transitional'  => array('table'),
+    ),
+    'th' =>  array(
+      'strict'        => array('tr'),
+      'frameset'      => array('tr'),
+      'transitional'  => array('tr'),
+    ),
+    'thead' =>  array(
+      'strict'        => array('table'),
+      'frameset'      => array('table'),
+      'transitional'  => array('table'),
+    ),
+    'title' =>  array(
+      'strict'        => array('head'),
+      'frameset'      => array('head'),
+      'transitional'  => array('head'),
+    ),
+    'tr' =>  array(
+      'strict'        => array('table, tbody, tfoot, thead'),
+      'frameset'      => array('table, tbody, tfoot, thead'),
+      'transitional'  => array('table, tbody, tfoot, thead'),
+    ),
+    'tt' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    
+    'u' =>  array(
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+    'ul' =>  array(
+      'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+      'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
+    ),
+    
+    'var' =>  array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
+    ),
+  );
+  
+
+  /**
+   * 
+   * @var array
+   */
+  protected $allowedChild = array(
+    'a' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'abbr' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'acronym' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'address' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, p'),
+    ),
+    'applet' => array(
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var, param'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, param'),
+    ),
+    'area' => array(
+      'strict'        => array(''),
+      'frameset'      => array(''),
+      'transitional'  => array(''),
+    ),
+    
+    'b' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'base' => array(
+      'strict'        => array(''),
+      'frameset'      => array(''),
+      'transitional'  => array(''),
+    ),
+    'basefont' => array(
+      'frameset'      => array(''),
+      'transitional'  => array(''),
+    ),
+    'bdo' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'big' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'blockquote' => array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, script'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'body' => array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, script'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'br' => array(
+      'strict'        => array(''),
+      'frameset'      => array(''),
+      'transitional'  => array(''),
+    ),
+    'button' => array(
+      'strict'        => array('abbr, acronym, address, applet, b, basefont, bdo, big, blockquote, br, center, cite, code, dfn, dl, dir, div, em, font, h1-6, hr, i, img, kbd, map, menu, noframes, noscript, object, ol, p, pre, q, samp, script, small, span, strong, sub, sup, table, tt, ul, var'),
+      'frameset'      => array('abbr, acronym, address, applet, b, basefont, bdo, big, blockquote, br, center, cite, code, dfn, dl, dir, div, em, font, h1-6, hr, i, img, kbd, map, menu, noframes, noscript, object, ol, p, pre, q, samp, script, small, span, strong, sub, sup, table, tt, ul, var'),
+      'transitional'  => array('abbr, acronym, address, applet, b, basefont, bdo, big, blockquote, br, center, cite, code, dfn, dl, dir, div, em, font, h1-6, hr, i, img, kbd, map, menu, noframes, noscript, object, ol, p, pre, q, samp, script, small, span, strong, sub, sup, table, tt, ul, var'),
+    ),
+    
+    'caption' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'center' => array(
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'cite' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'code' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'col' => array(
+      'strict'        => array(''),
+      'frameset'      => array(''),
+      'transitional'  => array(''),
+    ),
+    'colgroup' => array(
+      'strict'        => array('col'),
+      'frameset'      => array('col'),
+      'transitional'  => array('col'),
+    ),
+    
+    'dd' => array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'del' => array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'dfn' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    /****************************************************************************
+     * :TODO:
+     * dir::childs(Muss (ein- oder mehrmal): li (Hinweis: li darf in diesem Zusammenhang keine Block-Elemente enthalten)) 
+     */
+    'dir' => array(
+      'frameset'      => array('li'),
+      'transitional'  => array('li'),
+    ),
+    'div' => array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'dl' => array(
+      'strict'        => array('dd, dt'),
+      'frameset'      => array('dd, dt'),
+      'transitional'  => array('dd, dt'),
+    ),
+    'dt' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    
+    'em' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    
+    /****************************************************************************
+     * :TODO:
+     * fieldset::childs(#PCDATA legend, gefolgt von: [Block-Elemente], [Inline-Elemente]) 
+     */
+    'fieldset' => array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'font' => array(
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'form' => array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, script'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'frame' => array(
+      'frameset'      => array(''),
+    ),
+    'frameset' => array(
+      'frameset'      => array('frame, frameset, noframes'),
+    ),
+    
+    'h1' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'h2' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'h3' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'h4' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'h5' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'h6' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    /****************************************************************************
+     * :TODO:
+     * head::childs(1. MUSS: title
+                    2. KANN:
+                    2.1. nach  HTML Strict: base, isindex, link, meta, object, script, style
+                    2.2. nach  HTML Transitional: isindex) 
+     */
+    'head' => array(
+      'strict'        => array('title, base, isindex, link, meta, object, script, style'),
+      'frameset'      => array('title'),
+      'transitional'  => array('title, isindex'),
+    ),
+    'hr' => array(
+      'strict'        => array(''),
+      'frameset'      => array(''),
+      'transitional'  => array(''),
+    ),
+    /****************************************************************************
+     * :TODO:
+     * html::childs(1. Strict, Transitional: head, gefolgt von body
+                    2. Frameset: head, gefolgt von frameset)
+     */
+    'html' => array(
+      'strict'        => array('head, body'),
+      'frameset'      => array('head, frameset'),
+      'transitional'  => array('head, body'),
+    ),
+    
+    'i' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'iframe' => array(
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'img' => array(
+      'strict'        => array(''),
+      'frameset'      => array(''),
+      'transitional'  => array(''),
+    ),
+    'input' => array(
+      'strict'        => array(''),
+      'frameset'      => array(''),
+      'transitional'  => array(''),
+    ),
+    /****************************************************************************
+     * :TODO:
+     * ins::childs(#PCDATA [Block-Elemente] bei Verwendung als Block-Element, [Inline-Elemente]) 
+     */
+    'ins' => array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'isindex' => array(
+      'frameset'      => array(''),
+      'transitional'  => array(''),
+    ),
+    
+    'kbd' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    
+    'label' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'legend' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    /****************************************************************************
+     * :TODO:
+     * li::childs(#PCDATA dir | menu | ol | ul
+                  1. bei dir und menu: [Inline-Elemente]
+                  2. bei ol und ul:    [Block-Elemente] | [Inline-Elemente]) 
+     */
+    'li' => array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'link' => array(
+      'strict'        => array(''),
+      'frameset'      => array(''),
+      'transitional'  => array(''),
+    ),
+    
+    'map' => array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, area'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, area'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, area'),
+    ),
+    /****************************************************************************
+     * :TODO:
+     * menu::childs(li (Hinweis: li darf in diesem Zusammenhang keine Block-Elemente enthalten)) 
+     */
+    'menu' => array(
+      'frameset'      => array('li'),
+      'transitional'  => array('li'),
+    ),
+    'meta' => array(
+      'strict'        => array(''),
+      'frameset'      => array(''),
+      'transitional'  => array(''),
+    ),
+    
+    'noframes' => array(
+      'frameset'      => array('body'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'noscript' => array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    
+    'object' => array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var, param'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var, param'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, param'),
+    ),
+    'ol' => array(
+      'strict'        => array('li'),
+      'frameset'      => array('li'),
+      'transitional'  => array('li'),
+    ),
+    'optgroup' => array(
+      'strict'        => array('option'),
+      'frameset'      => array('option'),
+      'transitional'  => array('option'),
+    ),
+    'option' => array(
+      'strict'        => array(''),
+      'frameset'      => array(''),
+      'transitional'  => array(''),
+    ),
+    
+    'p' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'param' => array(
+      'strict'        => array(''),
+      'frameset'      => array(''),
+      'transitional'  => array(''),
+    ),
+    'pre' => array(
+      'strict'        => array('a, abbr, acronym, applet, b, bdo, br, button, cite, code, dfn, em, i, input, iframe, kbd, label, map, q, samp, script, select, span, strong, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, applet, b, bdo, br, button, cite, code, dfn, em, i, input, iframe, kbd, label, map, q, samp, script, select, span, strong, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, bdo, br, button, cite, code, dfn, em, i, input, iframe, kbd, label, map, q, samp, script, select, span, strong, textarea, tt, var'),
+    ),
+    
+    'q' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    
+    's' => array(
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'samp' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'script' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'select' => array(
+      'strict'        => array('optgroup, option'),
+      'frameset'      => array('optgroup, option'),
+      'transitional'  => array('optgroup, option'),
+    ),
+    'small' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'span' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'strike' => array(
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'strong' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'style' => array(
+      'strict'        => array(''),
+      'frameset'      => array(''),
+      'transitional'  => array(''),
+    ),
+    'sub' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'sup' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    
+    /****************************************************************************
+     * :TODO:
+     * table::childs(Darf folgende anderen HTML-Elemente (in dieser Reihenfolge) enthalten: caption (optional), col oder colgroup (optional), thead (optional), tfoot (optional), tbody (ein oder mehrere - wenn nur einmal benötigt, darf tbody auch entfallen, weshalb die herkömmliche Konstruktion, wonach table direkt aus tr-Elementen besteht, ebenfalls zulässig ist)) 
+     */
+    'table' => array(
+      'strict'        => array('caption, col, colgroup, thead, tfoot, tbody, tr'),
+      'frameset'      => array('caption, col, colgroup, thead, tfoot, tbody, tr'),
+      'transitional'  => array('caption, col, colgroup, thead, tfoot, tbody, tr'),
+    ),
+    'tbody' => array(
+      'strict'        => array('tr'),
+      'frameset'      => array('tr'),
+      'transitional'  => array('tr'),
+    ),
+    'td' => array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'textarea' => array(
+      'strict'        => array(''),
+      'frameset'      => array(''),
+      'transitional'  => array(''),
+    ),
+    'tfoot' => array(
+      'strict'        => array('tr'),
+      'frameset'      => array('tr'),
+      'transitional'  => array('tr'),
+    ),
+    'th' => array(
+      'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'thead' => array(
+      'strict'        => array('tr'),
+      'frameset'      => array('tr'),
+      'transitional'  => array('tr'),
+    ),
+    'title' => array(
+      'strict'        => array(''),
+      'frameset'      => array(''),
+      'transitional'  => array(''),
+    ),
+    'tr' => array(
+      'strict'        => array('td, th'),
+      'frameset'      => array('td, th'),
+      'transitional'  => array('td, th'),
+    ),
+    'tt' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    
+    'u' => array(
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+    'ul' => array(
+      'strict'        => array('li'),
+      'frameset'      => array('li'),
+      'transitional'  => array('li'),
+    ),
+    
+    'var' => array(
+      'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
+      'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
+    ),
+  );
+  
+  /**
+   * 
+   * @var array
+   */
+  protected $allowedPCData = array(
+    'a' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'abbr' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'acronym' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'address' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'applet' =>  array(
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'area' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    
+    'b' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'base' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'basefont' =>  array(
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'bdo' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'big' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'blockquote' =>  array(
+      'strict'        => false,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'body' =>  array(
+      'strict'        => false,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'br' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'button' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    
+    'caption' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'center' =>  array(
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'cite' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'code' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'col' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'colgroup' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    
+    'dd' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'del' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'dfn' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'dir' =>  array(
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'div' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'dl' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'dt' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    
+    'em' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    
+    'fieldset' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'font' =>  array(
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'form' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'frame' =>  array(
+      'frameset'      => false,
+    ),
+    'frameset'      =>  array(
+      'frameset'      => false,
+    ),
+    
+    'h1' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'h2' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'h3' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'h4' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'h5' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'h6' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'head' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'hr' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'html' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    
+    
+    'i' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'iframe' =>  array(
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'img' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'input' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'ins' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'isindex' =>  array(
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    
+    'kbd' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    
+    'label' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'legend' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'li' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'link' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    
+    'map' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'menu' =>  array(
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'meta' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    
+    'noframes' =>  array(
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'noscript' =>  array(
+      'strict'        => false,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    
+    'object' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'ol' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'optgroup' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'option' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    
+    'p' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'param' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'pre' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    
+    'q' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    
+    's' => array(
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'samp' => array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'script' => array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'select' => array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'small' => array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'span' => array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'strike' => array(
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'strong' => array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'style' => array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'sub' => array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'sup' => array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    
+    
+    
+    
+    
+    
+
+    'table' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'tbody' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'td' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'textarea' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'tfoot' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'th' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'thead' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'title' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'tr' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    'tt' =>  array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    
+    'u' => array(
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+    'ul' =>  array(
+      'strict'        => false,
+      'frameset'      => false,
+      'transitional'  => false,
+    ),
+    
+    'var' => array(
+      'strict'        => true,
+      'frameset'      => true,
+      'transitional'  => true,
+    ),
+  );
+
+  
   /**
    * Konstruktor von AbstractTag.
    *
