@@ -11,7 +11,7 @@ $items = array(
     )
   ),
   'choices_4_value_attr_5' => array(
-    'value' => 'Item 4',
+    'value' => 'Item 5',
     'attributes' => array(
       'checked' => true,
       'onclick' => array(
