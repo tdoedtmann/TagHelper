@@ -612,6 +612,7 @@ class Tag {
       $itemObj = self::content('select', $optionTags, $attributes);
     }
     
+    $result = '';
     if ($asString) {
       foreach($itemObj as $item) {
         $result.=$item;        

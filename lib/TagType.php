@@ -1045,6 +1045,7 @@ class StandaloneTag extends AbstractTag {
   public function display() {
     $tag = parent::display() . ' />';
 
+    $content = '';
     if (is_array($this->content)) {
       foreach($this->content as $value) {
         $content.=$value;
@@ -1102,6 +1103,7 @@ class ModularTag extends AbstractTag {
   public function display() {
     $tag = parent::display();
 
+    $content = '';
     if (is_array($this->content)) {
       foreach($this->content as $value) {
         $content.= $value;

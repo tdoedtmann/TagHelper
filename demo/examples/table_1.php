@@ -1,4 +1,8 @@
 <?php
+// 'a' => array([Block-Elemente] | [Inline-Elemente] (außer a | button) | td | body, (body nur bei  HTML Transitional)),
+//$a = exclude(STRICT_BLOCK_ELEMENTS.','.STRICT_INLINE_ELEMENTS.',td', 'a,button');
+//echo Tag::pre(var_export($a, 1));
+
 $time = microtime();
 $table = array(
   0 => array(
