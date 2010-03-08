@@ -1734,6 +1734,143 @@ class Tag {
   
   
   
+  /**********************************************************************
+   * MessageBox *********************************************************
+   **********************************************************************/
+  
+  /**
+   * Erstellt für den übergebene $type eine MessageBox. Diese Box ist dem $type entsprechend farblich hervorgehoben.
+   * 
+   * @param string  $type       Erlaubte Type 'notice', 'info', 'ok', 'warning', 'error'
+   * @param mixed   $content    Entweder direkt ein Tag-Objekt, oder ein String
+   * @param mixed   $headline   Entweder direkt ein Tag-Objekt, oder ein String
+   * @param array   $attributes 
+   * @return Tag
+   */
+  static public function abstractMessageBox($type, $content, $headline=null, $attributes=array()) {
+    $type = strtolower($type);
+    
+    if (!in_array($type, array('notice', 'info', 'ok', 'warning', 'error'))) {
+      throw new TagTypeException('Dieser Typ ('.$type.') vom MessageBox ist nicht erlaubt!');
+    }
+    
+    $styleMessage = array(
+      "base"      => "padding: 6px; padding-left: 26px; margin-bottom: 4px; background-repeat: no-repeat; background-position: 5px 7px; border: 1px solid;",
+      "notice"    => "background-color: #f6f7fa; border-color: #c2cbcf; background-image: url(../images/notice_16.png);",
+      "info"      => "background-color: #ddeef9; border-color: #8aafc4; background-image: url(../images/info_16.png);",
+      "ok"        => "background-color: #cdeaca; border-color: #58b548; background-image: url(../images/ok_16.png);",
+      "warning"   => "background-color: #fbffb3; border-color: #c4b70d; background-image: url(../images/warning_16.png);",
+      "error"     => "background-color: #fbb19b; border-color: #dc4c42; background-image: url(../images/error_16.png);",
+      "headline"  => "color: #000000; font-size: 1.2em;",
+      "content"   => "color: #000000; font-size: 1.0em;",
+    );
+    
+      // *** Headline ***
+    if (null !== $headline) {
+      if ($headline instanceof AbstractTag) {
+        $headline->addAttribute(AttributeFactory::createAttribute('style', $styleMessage['headline'],      $headline->getName()))
+                 ->addAttribute(AttributeFactory::createAttribute('class', "message_box_{$type}_headline", $headline->getName()));
+        
+      } else if (is_string($headline)) {
+        $headlineAttributes = array(
+          'style' => $styleMessage['headline'], 
+          'class' => "message_box_{$type}_headline",
+        );
+        if (isset($attributes['headline'])) {
+          $headlineAttributes = array_merge($headlineAttributes, $attributes);
+        }
+        
+        $headline = Tag::strong(Tag::span($headline, $headlineAttributes));
+      } else {
+        throw new TagTypeException('Die $headline muss entweder ein AbstractTag sein, oder eins String!');
+      }
+    }
+
+      // *** Content ***
+    if ($content instanceof AbstractTag) {
+      $content->addAttribute(AttributeFactory::createAttribute('style', $styleMessage['content'],      $content->getName()))
+              ->addAttribute(AttributeFactory::createAttribute('class', "message_box_{$type}_content", $content->getName()));
+        
+    } else if (is_string($content)) {
+      $contentAttributes = array(
+        'style' => $styleMessage['content'],
+        'class' => "message_box_{$type}_content",
+      );
+      if (isset($attributes['content'])) {
+        $contentAttributes = array_merge($contentAttributes, $attributes);
+      }
+      $content = Tag::div($content, $contentAttributes);
+    }
+    
+    $boxAttributes = array(
+      'style' => $styleMessage['base'] . $styleMessage[$type],
+      'class' => "message_box_{$type}",
+    );
+    return Tag::div($headline . $content, $boxAttributes);
+  } 
+
+  /**
+   * Erstellt eine 'Notice'-MessageBox.
+   * 
+   * @param mixed   $content    Entweder direkt ein Tag-Objekt, oder ein String
+   * @param mixed   $headline   Entweder direkt ein Tag-Objekt, oder ein String
+   * @param array   $attributes 
+   * @return Tag
+   */
+  static public function notice($content, $headline=null, $attributes=array()) {
+    return Tag::abstractMessageBox('notice', $content, $headline, $attributes);
+  } 
+  
+  /**
+   * Erstellt eine 'Info'-MessageBox.
+   * 
+   * @param mixed   $content    Entweder direkt ein Tag-Objekt, oder ein String
+   * @param mixed   $headline   Entweder direkt ein Tag-Objekt, oder ein String
+   * @param array   $attributes 
+   * @return Tag
+   */
+  static public function info($content, $headline=null, $attributes=array()) {
+    return Tag::abstractMessageBox('info', $content, $headline, $attributes);
+  } 
+  
+  /**
+   * Erstellt eine 'Ok'-MessageBox.
+   * 
+   * @param mixed   $content    Entweder direkt ein Tag-Objekt, oder ein String
+   * @param mixed   $headline   Entweder direkt ein Tag-Objekt, oder ein String
+   * @param array   $attributes 
+   * @return Tag
+   */
+  static public function ok($content, $headline=null, $attributes=array()) {
+    return Tag::abstractMessageBox('ok', $content, $headline, $attributes);
+  } 
+  
+  /**
+   * Erstellt eine 'Warning'-MessageBox.
+   * 
+   * @param mixed   $content    Entweder direkt ein Tag-Objekt, oder ein String
+   * @param mixed   $headline   Entweder direkt ein Tag-Objekt, oder ein String
+   * @param array   $attributes 
+   * @return Tag
+   */
+  static public function warning($content, $headline=null, $attributes=array()) {
+    return Tag::abstractMessageBox('warning', $content, $headline, $attributes);
+  } 
+  
+  /**
+   * Erstellt eine 'Error'-MessageBox.
+   * 
+   * @param mixed   $content    Entweder direkt ein Tag-Objekt, oder ein String
+   * @param mixed   $headline   Entweder direkt ein Tag-Objekt, oder ein String
+   * @param array   $attributes 
+   * @return Tag
+   */
+  static public function error($content, $headline=null, $attributes=array()) {
+    return Tag::abstractMessageBox('error', $content, $headline, $attributes); 
+  } 
+  
+  
+  
   
   static public function createTagsByArray($array) {
     /**
