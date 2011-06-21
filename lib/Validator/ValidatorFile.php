@@ -1,13 +1,26 @@
-<?php
+FALSE<?php
+/**
+ * @author Timo Strotmann <timo@timo-strotmann.de>
+ * @version $Id$
+ * @copyright Timo Strotmann, 18 October, 2010
+ * @package default
+**/
 
+/**
+ *
+ *
+ * @package default
+ * @author Timo Strotmann
+ * @copyright Timo Strotmann, 18 October, 2010
+**/
 class ValidatedFile {
   protected
     $originalName = '',
     $tempName     = '',
-    $savedName    = null,
+    $savedName    = NULL,
     $type         = '',
     $size         = 0,
-    $path         = null;
+    $path         = NULL;
 
   /**
    * Constructor.
@@ -16,21 +29,21 @@ class ValidatedFile {
    * @param string $type          The file content type
    * @param string $tempName      The absolute temporary path to the file
    * @param int    $size          The file size (in bytes)
-   */
-  public function __construct($originalName, $type, $tempName, $size, $path = null) {
+  **/
+  public function __construct($originalName, $type, $tempName, $size, $path = NULL) {
     $this->originalName = $originalName;
     $this->tempName = $tempName;
     $this->type = $type;
     $this->size = $size;
     $this->path = $path;
-  } 
+  }
 
   /**
    * Returns the name of the saved file.
-   */
+  **/
   public function __toString() {
-    return null === $this->savedName ? '' : $this->savedName;
-  } 
+    return NULL === $this->savedName ? '' : $this->savedName;
+  }
 
   /**
    * Saves the uploaded file.
@@ -48,14 +61,14 @@ class ValidatedFile {
    * @return string The filename without the $this->path prefix
    *
    * @throws Exception
-   */
-  public function save($file = null, $fileMode = 0666, $create = true, $dirMode = 0777) {
-    if (null === $file) {
+  **/
+  public function save($file = NULL, $fileMode = 0666, $create = TRUE, $dirMode = 0777) {
+    if (NULL === $file) {
       $file = $this->generateFilename();
     }
 
     if ($file[0] != '/' && $file[0] != '\\' && !(strlen($file) > 3 && ctype_alpha($file[0]) && $file[1] == ':' && ($file[2] == '\\' || $file[2] == '/'))) {
-      if (null === $this->path) {
+      if (NULL === $this->path) {
         throw new RuntimeException('You must give a "path" when you give a relative file name.');
       }
 
@@ -66,7 +79,7 @@ class ValidatedFile {
     $directory = dirname($file);
 
     if (!is_readable($directory)) {
-      if ($create && !@mkdir($directory, $dirMode, true)) {
+      if ($create && !mkdir($directory, $dirMode, TRUE)) {
           // failed to create the directory
         throw new Exception(sprintf('Failed to create file upload directory "%s".', $directory));
       }
@@ -93,26 +106,26 @@ class ValidatedFile {
 
     $this->savedName = $file;
 
-    return null === $this->path ? $file : str_replace($this->path.DIRECTORY_SEPARATOR, '', $file);
-  } 
+    return NULL === $this->path ? $file : str_replace($this->path.DIRECTORY_SEPARATOR, '', $file);
+  }
 
   /**
    * Generates a random filename for the current file.
    *
    * @return string A random name to represent the current file
-   */
+  **/
   public function generateFilename() {
     return sha1($this->getOriginalName().rand(11111, 99999)).$this->getExtension($this->getOriginalExtension());
-  } 
+  }
 
   /**
    * Returns the path to use when saving a file with a relative filename.
    *
    * @return string The path to use when saving a file with a relative filename
-   */
+  **/
   public function getPath() {
     return $this->path;
-  } 
+  }
 
   /**
    * Returns the file extension, based on the content type of the file.
@@ -120,10 +133,10 @@ class ValidatedFile {
    * @param  string $default  The default extension to return if none was given
    *
    * @return string The extension (with the dot)
-   */
+  **/
   public function getExtension($default = '') {
     return $this->getExtensionFromType($this->type, $default);
-  } 
+  }
 
   /**
    * Returns the original uploaded file name extension.
@@ -131,64 +144,64 @@ class ValidatedFile {
    * @param  string $default  The default extension to return if none was given
    *
    * @return string The extension of the uploaded name (with the dot)
-   */
+  **/
   public function getOriginalExtension($default = '') {
-    return (false === $pos = strrpos($this->getOriginalName(), '.')) ? $default : substr($this->getOriginalName(), $pos);
-  } 
+    return (FALSE === $pos = strrpos($this->getOriginalName(), '.')) ? $default : substr($this->getOriginalName(), $pos);
+  }
 
   /**
-   * Returns true if the file has already been saved.
+   * Returns TRUE if the file has already been saved.
    *
-   * @return Boolean true if the file has already been saved, false otherwise
-   */
+   * @return Boolean TRUE if the file has already been saved, FALSE otherwise
+  **/
   public function isSaved() {
-    return null !== $this->savedName;
-  } 
+    return NULL !== $this->savedName;
+  }
 
   /**
    * Returns the path where the file has been saved
    *
    * @return string The path where the file has been saved
-   */
+  **/
   public function getSavedName() {
     return $this->savedName;
-  } 
+  }
 
   /**
    * Returns the original file name.
    *
    * @return string The file name
-   */
+  **/
   public function getOriginalName() {
     return $this->originalName;
-  } 
+  }
 
   /**
    * Returns the absolute temporary path to the uploaded file.
    *
    * @return string The temporary path
-   */
+  **/
   public function getTempName() {
     return $this->tempName;
-  } 
+  }
 
   /**
    * Returns the file content type.
    *
    * @return string The content type
-   */
+  **/
   public function getType() {
     return $this->type;
-  } 
+  }
 
   /**
    * Returns the size of the uploaded file.
    *
    * @return int The file size
-   */
+  **/
   public function getSize() {
     return $this->size;
-  } 
+  }
 
   /**
    * Returns the extension associated with the given content type.
@@ -197,7 +210,7 @@ class ValidatedFile {
    * @param  string $default  The default extension to use
    *
    * @return string The extension (with the dot)
-   */
+  **/
   protected function getExtensionFromType($type, $default = '') {
     static $extensions = array(
       'application/andrew-inset'                                                  => 'ez',
@@ -614,4 +627,5 @@ class ValidatedFile {
 
     return !$type ? $default : (isset($extensions[$type]) ? '.'.$extensions[$type] : $default);
   }
-}
+} // END ValidatedFile
+?>

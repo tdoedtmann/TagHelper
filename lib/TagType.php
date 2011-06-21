@@ -1,26 +1,36 @@
 <?php
-require_once 'Attribute.php';
+/**
+ * 
+ *
+ * @author Timo Strotmann <timo@timo-strotmann.de>
+ * @version $Id$
+ * @copyright Timo Strotmann, 18 October, 2010
+ * @package default
+**/
 
-define('HTML_VARIANTS',									'strict, frameset, transitional');
-define('HTML_VARIANT',									'transitional');
+require_once 'AttributeFactory.php';
 
-define('XHTML_TAGS',										'a, abbr, acronym, address, applet, area, b, base, basefont, bdo, big, blockquote, body, br, button, caption, center, cite, code, col, colgroup, dd, del, dfn, dir, div, dl, dt, em, fieldset, font, form, frame, frameset, h1, h2, h3, h4, h5, h6, head, hr, html, i, iframe, img, input, ins, isindex, kbd, label, legend, li, link, map, menu, meta, noframes, noscript, object, ol, optgroup, option, p, param, pre, q, s, samp, script, select, small, span, strike, strong, style, sub, sup, table, tbody, td, textarea, tfoot, th, thead, title, tr, tt, u, ul, var');
+define('HTML_VARIANTS',                 'strict, frameset, transitional');
+define('HTML_VARIANT',                  'transitional');
 
-define('STRICT_BLOCK_ELEMENTS',					'address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul');
-define('STRICT_INLINE_ELEMENTS',				'a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var');
+define('XHTML_TAGS',                    'a, abbr, acronym, address, applet, area, b, base, basefont, bdo, big, blockquote, body, br, button, caption, center, cite, code, col, colgroup, dd, del, dfn, dir, div, dl, dt, em, fieldset, font, form, frame, frameset, h1, h2, h3, h4, h5, h6, head, hr, html, i, iframe, img, input, ins, isindex, kbd, label, legend, li, link, map, menu, meta, noframes, noscript, object, ol, optgroup, option, p, param, pre, q, s, samp, script, select, small, span, strike, strong, style, sub, sup, table, tbody, td, textarea, tfoot, th, thead, title, tr, tt, u, ul, var');
 
-define('FRAMESET_BLOCK_ELEMENTS',				'address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul');
-define('FRAMESET_INLINE_ELEMENTS',			'a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var');
+define('STRICT_BLOCK_ELEMENTS',         'address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul');
+define('STRICT_INLINE_ELEMENTS',        'a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var');
 
-define('TRANSITIONAL_BLOCK_ELEMENTS',		'address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul');
-define('TRANSITIONAL_INLINE_ELEMENTS',	'a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var');
+define('FRAMESET_BLOCK_ELEMENTS',       'address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul');
+define('FRAMESET_INLINE_ELEMENTS',      'a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var');
 
-define('STANDALONE_TAGS', 							'area, base, basefont, br, col, frame, hr, img, input, isindex, link, meta, param');
+define('TRANSITIONAL_BLOCK_ELEMENTS',   'address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul');
+define('TRANSITIONAL_INLINE_ELEMENTS',  'a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var');
 
-define('ENCODING',											'UTF-8');
+define('STANDALONE_TAGS',               'area, base, basefont, br, col, frame, hr, img, input, isindex, link, meta, param');
+
+define('ENCODING',                      'UTF-8');
 
 
-function trimExplode($string, $delim=',', $onlyNonEmptyValues=true)    {
+
+function trimExplode($string, $delim=',', $onlyNonEmptyValues=TRUE)    {
   $temp = explode($delim,$string);
   $newtemp = array();
   while (list($key, $val) = each($temp))      {
@@ -34,7 +44,7 @@ function trimExplode($string, $delim=',', $onlyNonEmptyValues=true)    {
 
 function viewArray($array)  {
   if (!is_array($array)) {
-    return false;
+    return FALSE;
   }
 
   if (!count($array)) {
@@ -72,7 +82,7 @@ function viewArray($array)  {
  * Exception Klasse für AbstractTag-Fehler
  *
  * @author Timo Strotmann
- */
+**/
 class AbstractTagException extends Exception {
 } 
 
@@ -80,7 +90,7 @@ class AbstractTagException extends Exception {
  * Exception Klasse für TagHtmlVariant-Fehler
  *
  * @author Timo Strotmann
- */
+**/
 class TagHtmlVariantException extends Exception {
 } 
 
@@ -88,7 +98,7 @@ class TagHtmlVariantException extends Exception {
  * Exception Klasse für TagInlineElement-Fehler
  *
  * @author Timo Strotmann
- */
+**/
 class TagInlineElementException extends Exception {
 } 
 
@@ -96,7 +106,7 @@ class TagInlineElementException extends Exception {
  * Exception Klasse für UnknownTag-Fehler
  *
  * @author Timo Strotmann
- */
+**/
 class UnknownTagException extends Exception {
 } 
 
@@ -104,7 +114,7 @@ class UnknownTagException extends Exception {
  * Exception Klasse für TagFactory-Fehler
  *
  * @author Timo Strotmann
- */
+**/
 class TagTypeException extends Exception {
 } 
 
@@ -112,7 +122,7 @@ class TagTypeException extends Exception {
  * Exception Klasse für StandaloneTag-Fehler
  *
  * @author Timo Strotmann
- */
+**/
 class StandaloneTagException extends Exception {
 } 
 
@@ -121,7 +131,7 @@ class StandaloneTagException extends Exception {
 /**
  *
  * @author Timo Strotmann
- */
+**/
 interface TagInterface {
   public function getName();
   public function getAttributes();
@@ -139,21 +149,43 @@ interface TagInterface {
 /**
  *
  * @author Timo Strotmann
- */
+**/
 class AbstractTag implements TagInterface {
 
-  protected $name = null;
-  //protected $parent = null;
-  protected $attributes = null;
-  protected $isInlineTag = true;
-  protected $isBlockTag  = true;
+  /**
+   * 
+   * @var string
+  **/
+  protected $name = NULL;
+  
+  /**
+   * 
+   * @var array
+  **/
+  protected $attributes = NULL;
+  
+  /**
+   * 
+   * @var boolean
+  **/
+  protected $isInlineTag = TRUE;
+  
+  /**
+   * 
+   * @var boolean
+  **/
+  protected $isBlockTag  = TRUE;
 
-  protected $displayContentWithHtmlEntities = false;
+  /**
+   * 
+   * @var boolean
+  **/
+  protected $displayContentWithHtmlEntities = FALSE;
 
   /**
    * 
    * @var array
-   */
+  **/
   protected $allowedParent = array(
     'a' =>  array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var, td'),
@@ -614,11 +646,10 @@ class AbstractTag implements TagInterface {
     ),
   );
   
-
   /**
    * 
    * @var array
-   */
+  **/
   protected $allowedChild = array(
     'a' => array(
       'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
@@ -743,7 +774,7 @@ class AbstractTag implements TagInterface {
     /****************************************************************************
      * :TODO:
      * dir::childs(Muss (ein- oder mehrmal): li (Hinweis: li darf in diesem Zusammenhang keine Block-Elemente enthalten)) 
-     */
+    **/
     'dir' => array(
       'frameset'      => array('li'),
       'transitional'  => array('li'),
@@ -773,7 +804,7 @@ class AbstractTag implements TagInterface {
     /****************************************************************************
      * :TODO:
      * fieldset::childs(#PCDATA legend, gefolgt von: [Block-Elemente], [Inline-Elemente]) 
-     */
+    **/
     'fieldset' => array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
@@ -831,7 +862,7 @@ class AbstractTag implements TagInterface {
                     2. KANN:
                     2.1. nach  HTML Strict: base, isindex, link, meta, object, script, style
                     2.2. nach  HTML Transitional: isindex) 
-     */
+    **/
     'head' => array(
       'strict'        => array('title, base, isindex, link, meta, object, script, style'),
       'frameset'      => array('title'),
@@ -846,7 +877,7 @@ class AbstractTag implements TagInterface {
      * :TODO:
      * html::childs(1. Strict, Transitional: head, gefolgt von body
                     2. Frameset: head, gefolgt von frameset)
-     */
+    **/
     'html' => array(
       'strict'        => array('head, body'),
       'frameset'      => array('head, frameset'),
@@ -875,7 +906,7 @@ class AbstractTag implements TagInterface {
     /****************************************************************************
      * :TODO:
      * ins::childs(#PCDATA [Block-Elemente] bei Verwendung als Block-Element, [Inline-Elemente]) 
-     */
+    **/
     'ins' => array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
@@ -907,7 +938,7 @@ class AbstractTag implements TagInterface {
      * li::childs(#PCDATA dir | menu | ol | ul
                   1. bei dir und menu: [Inline-Elemente]
                   2. bei ol und ul:    [Block-Elemente] | [Inline-Elemente]) 
-     */
+    **/
     'li' => array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
@@ -927,7 +958,7 @@ class AbstractTag implements TagInterface {
     /****************************************************************************
      * :TODO:
      * menu::childs(li (Hinweis: li darf in diesem Zusammenhang keine Block-Elemente enthalten)) 
-     */
+    **/
     'menu' => array(
       'frameset'      => array('li'),
       'transitional'  => array('li'),
@@ -1048,7 +1079,7 @@ class AbstractTag implements TagInterface {
     /****************************************************************************
      * :TODO:
      * table::childs(Darf folgende anderen HTML-Elemente (in dieser Reihenfolge) enthalten: caption (optional), col oder colgroup (optional), thead (optional), tfoot (optional), tbody (ein oder mehrere - wenn nur einmal benötigt, darf tbody auch entfallen, weshalb die herkömmliche Konstruktion, wonach table direkt aus tr-Elementen besteht, ebenfalls zulässig ist)) 
-     */
+    **/
     'table' => array(
       'strict'        => array('caption, col, colgroup, thead, tfoot, tbody, tr'),
       'frameset'      => array('caption, col, colgroup, thead, tfoot, tbody, tr'),
@@ -1120,398 +1151,398 @@ class AbstractTag implements TagInterface {
   /**
    * 
    * @var array
-   */
+  **/
   protected $allowedPCData = array(
     'a' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'abbr' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'acronym' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'address' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'applet' =>  array(
-      'frameset'      => false,
-      'transitional'  => false,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'area' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     
     'b' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'base' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'basefont' =>  array(
-      'frameset'      => false,
-      'transitional'  => false,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'bdo' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'big' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'blockquote' =>  array(
-      'strict'        => false,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => FALSE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'body' =>  array(
-      'strict'        => false,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => FALSE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'br' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'button' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     
     'caption' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'center' =>  array(
-      'frameset'      => true,
-      'transitional'  => true,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'cite' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'code' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'col' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'colgroup' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     
     'dd' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'del' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'dfn' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'dir' =>  array(
-      'frameset'      => false,
-      'transitional'  => false,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'div' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'dl' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'dt' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     
     'em' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     
     'fieldset' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'font' =>  array(
-      'frameset'      => true,
-      'transitional'  => true,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'form' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'frame' =>  array(
-      'frameset'      => false,
+      'frameset'      => FALSE,
     ),
     'frameset'      =>  array(
-      'frameset'      => false,
+      'frameset'      => FALSE,
     ),
     
     'h1' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'h2' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'h3' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'h4' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'h5' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'h6' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'head' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'hr' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'html' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     
     
     'i' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'iframe' =>  array(
-      'frameset'      => true,
-      'transitional'  => true,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'img' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'input' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'ins' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'isindex' =>  array(
-      'frameset'      => false,
-      'transitional'  => false,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     
     'kbd' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     
     'label' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'legend' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'li' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'link' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     
     'map' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'menu' =>  array(
-      'frameset'      => false,
-      'transitional'  => false,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'meta' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     
     'noframes' =>  array(
-      'frameset'      => true,
-      'transitional'  => true,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'noscript' =>  array(
-      'strict'        => false,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => FALSE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     
     'object' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'ol' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'optgroup' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'option' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     
     'p' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'param' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'pre' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     
     'q' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     
     's' => array(
-      'frameset'      => true,
-      'transitional'  => true,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'samp' => array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'script' => array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'select' => array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'small' => array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'span' => array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'strike' => array(
-      'frameset'      => true,
-      'transitional'  => true,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'strong' => array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'style' => array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'sub' => array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'sup' => array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     
     
@@ -1521,70 +1552,70 @@ class AbstractTag implements TagInterface {
     
 
     'table' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'tbody' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'td' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'textarea' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'tfoot' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'th' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'thead' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'title' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'tr' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     'tt' =>  array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     
     'u' => array(
-      'frameset'      => true,
-      'transitional'  => true,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
     'ul' =>  array(
-      'strict'        => false,
-      'frameset'      => false,
-      'transitional'  => false,
+      'strict'        => FALSE,
+      'frameset'      => FALSE,
+      'transitional'  => FALSE,
     ),
     
     'var' => array(
-      'strict'        => true,
-      'frameset'      => true,
-      'transitional'  => true,
+      'strict'        => TRUE,
+      'frameset'      => TRUE,
+      'transitional'  => TRUE,
     ),
   );
 
@@ -1594,12 +1625,12 @@ class AbstractTag implements TagInterface {
    *
    * @param string $name Name des zu erstellenden Tags
    * @return void
-   */
+  **/
   public function __construct($name) {
     $this->name = $name;
     $attributes = array();
 
-    if (false === array_search(HTML_VARIANT, trimExplode(HTML_VARIANTS))) {
+    if (FALSE === array_search(HTML_VARIANT, trimExplode(HTML_VARIANTS))) {
       throw new TagHtmlVariantException('Die angegeben HTML-Variante existiert nicht');
     }
 
@@ -1625,7 +1656,7 @@ class AbstractTag implements TagInterface {
    * __toString()-Methode zum ausgeben des Tags (siehe display()-Methode).
    *
    * @return string
-   */
+  **/
   public function __toString() {
     return $this->display();
   } 
@@ -1634,21 +1665,21 @@ class AbstractTag implements TagInterface {
    * Gibt den Namen des Tags zurück.
    *
    * @return string
-   */
+  **/
   public function getName() {
     return $this->name;
   } 
 
   // :TODO: Wenn man das Parent-Element (-Tag) mit abspeichert, kann man besser validieren, denn es ist ja nicht jedes Tag überall erlaubt!
-  //	public function getParent() {
-  //		return $this->parent;
-  //	}
+  //  public function getParent() {
+  //    return $this->parent;
+  //  }
 
   /**
    * Gibt ein Array mit den Attributen zu diesem Tags zurück.
    *
    * @return array
-   */
+  **/
   public function getAttributes() {
     return $this->attributes;
   } 
@@ -1657,19 +1688,19 @@ class AbstractTag implements TagInterface {
    * Gibt ein Array mit den Attributen zu diesem Tags zurück.
    *
    * @return array
-   */
+  **/
   public function getAttribute($name) {
     if (array_key_exists($name, $this->attributes)) {
       return $this->attributes[$name];
     }
-    return false;
+    return FALSE;
   } 
 
   /**
    * Gibt TRUE zurück, wenn es sich bei dem Tag um ein "Inline-Tag", wie z.B. <br />, <hr />, <span> etc., zurück.
    *
    * @return boolean
-   */
+  **/
   public function isBlockTag() {
     return (boolean)$this->isBlockTag;
   } 
@@ -1678,7 +1709,7 @@ class AbstractTag implements TagInterface {
    * Alias-Methode für isBlockTag()
    *
    * @return boolean
-   */
+  **/
   public function isBlockElement() {
     return $this->isBlockTag();
   } 
@@ -1687,7 +1718,7 @@ class AbstractTag implements TagInterface {
    * Alias-Methode für isBlockTag()
    *
    * @return boolean
-   */
+  **/
   public function isBlock() {
     return $this->isBlockTag();
   } 
@@ -1696,7 +1727,7 @@ class AbstractTag implements TagInterface {
    * Gibt TRUE zurück, wenn es sich bei dem Tag um ein "Inline-Tag", wie z.B. <br />, <hr />, <span> etc., zurück.
    *
    * @return boolean
-   */
+  **/
   public function isInlineTag() {
     return (boolean)$this->isInlineTag;
   } 
@@ -1705,7 +1736,7 @@ class AbstractTag implements TagInterface {
    * Alias-Methode für isInlineTag()
    *
    * @return boolean
-   */
+  **/
   public function isInlineElement() {
     return $this->isInlineTag();
   } 
@@ -1714,7 +1745,7 @@ class AbstractTag implements TagInterface {
    * Alias-Methode für isInlineTag()
    *
    * @return boolean
-   */
+  **/
   public function isInline() {
     return $this->isInlineTag();
   } 
@@ -1723,7 +1754,7 @@ class AbstractTag implements TagInterface {
    * Setzt den Namen des Tags.
    *
    * @return Tag $this
-   */
+  **/
   public function setName($value) {
     $this->name = $value;
     return $this;
@@ -1731,11 +1762,24 @@ class AbstractTag implements TagInterface {
 
   /**
    * Fügt dem Tag ein Attribute hinzu.
-   *
-   * @return Tag $this
-   */
+   * 
+   * @see lib/TagInterface#addAttribute($value)
+   * @param Attribute $value
+  **/
   public function addAttribute(Attribute $value) {
     $this->attributes[$value->getName()] = $value;
+    return $this;
+  } 
+
+  /**
+   * Erstellt ein Attribute vom $type mit dem Wert $value und fügt dieses dem Tag hinzu.
+   * 
+   * @param string  $type
+   * @param mixed   $value
+   * @return Tag    $this
+  **/
+  public function appendAttribute($type, $value) {
+    $this->addAttribute(AttributeFactory::createAttribute($type, $value, $this->getName()));
     return $this;
   } 
 
@@ -1743,7 +1787,7 @@ class AbstractTag implements TagInterface {
    * Fügt dem Tag die übergebenen Attribute hinzu.
    *
    * @return Tag $this
-   */
+  **/
   public function addAttributes($value) {
     if (is_array($value) && !empty($value)) {
       foreach($value as $attribute) {
@@ -1762,7 +1806,7 @@ class AbstractTag implements TagInterface {
    * Entfernt dem Tag das übergebene Attribute.
    *
    * @return Tag $this
-   */
+  **/
   public function removeAttribute(Attribute $value) {
     if (array_key_exists($value->getName(), $this->attributes)) {
       unset($this->attributes[$value->getName()]);
@@ -1775,7 +1819,7 @@ class AbstractTag implements TagInterface {
    * Ist dieser Wert gesetzt, so wird der Inhalt, der innerhalb eines ModularTags (z.B. <p>-Tag) steht, mit der htmlentities()-Funktion aufgerufen.
    *
    * @return Tag $this
-   */
+  **/
   public function setHtmlentities($value) {
     $this->displayContentWithHtmlEntities = (boolean)$value;
     return $this;
@@ -1785,7 +1829,7 @@ class AbstractTag implements TagInterface {
    * Gibt TRUE zurück, wenn der Inhalt des Tags mit der htmlentities()-Funktion von PHP aufgerufen werden soll, andernfalls FALSE.
    *
    * @return boolean
-   */
+  **/
   public function getHtmlentities() {
     return $this->displayContentWithHtmlEntities;
   } 
@@ -1796,7 +1840,7 @@ class AbstractTag implements TagInterface {
    * Zu beachten ist, das das öffnede Tag nicht nicht geschlossen wird, dies liegt daran, das ein StandaloneTag mit ' />' und ein ModularTag mit '>' geschlossen wird!
    *
    * @return string
-   */
+  **/
   public function display() {
     $str = '<'.$this->name;
     if (!empty($this->attributes)) {
@@ -1811,21 +1855,22 @@ class AbstractTag implements TagInterface {
 } 
 
 
+
 /**
  * Hierbei handelt es sich um Tags, die kein abschließdes Tag haben, wie z.B. <br />, <hr />, <input /> etc.
  *
  * @author Timo Strotmann
- */
+**/
 class StandaloneTag extends AbstractTag {
 
   protected $content = '';
-  protected $contentAfter = true;
+  protected $contentAfter = TRUE;
 
   /**
    * Gibt den "Content", der für diesen Tag hinterlegt ist, zurück.
    *
    * @return mixed $content
-   */
+  **/
   public function getContent() {
     return $this->content;
   } 
@@ -1835,7 +1880,7 @@ class StandaloneTag extends AbstractTag {
    *
    * @param string $content
    * @return Tag $this
-   */
+  **/
   public function setContent($content) {
     if (is_string($content)) {
       $this->content = $content;
@@ -1850,8 +1895,8 @@ class StandaloneTag extends AbstractTag {
    *
    * @param boolean $value
    * @return Tag $this
-   */
-  public function setContentAfter($value = true) {
+  **/
+  public function setContentAfter($value = TRUE) {
     $this->contentAfter = (boolean)$value;
     return $this;
   } 
@@ -1861,8 +1906,8 @@ class StandaloneTag extends AbstractTag {
    *
    * @param boolean $value
    * @return Tag $htis
-   */
-  public function setContentBefore($value = false) {
+  **/
+  public function setContentBefore($value = FALSE) {
     $this->setContentAfter(!(boolean)$value);
     return $this;
   } 
@@ -1871,7 +1916,7 @@ class StandaloneTag extends AbstractTag {
    * Vervollständigung der AbstragTag::display()-Methode
    *
    * @return string
-   */
+  **/
   public function display() {
     $tag = parent::display() . ' />';
 
@@ -1896,11 +1941,12 @@ class StandaloneTag extends AbstractTag {
 } 
 
 
+
 /**
  * Hierbei handelt es sich um Tags, die sowhol aus einem öffnedem und schließendem Tag bestehen, wie z.B. <p>, <span>, <textarea> etc.
  *
  * @author Timo Strotmann
- */
+**/
 class ModularTag extends AbstractTag {
 
   protected $content = '';
@@ -1909,7 +1955,7 @@ class ModularTag extends AbstractTag {
    * Gibt den "Content", der z.B. zwischen dem öffneden und schließendem Tag steht (z.B. 'Hello World!' für <p>Hello World!</p>) zurück.
    *
    * @return mixed $content
-   */
+  **/
   public function getContent() {
     return $this->content;
   } 
@@ -1919,7 +1965,7 @@ class ModularTag extends AbstractTag {
    *
    * @param string $content
    * @return Tag $this
-   */
+  **/
   public function setContent($content) {
     $this->content = $content;
     return $this;
@@ -1929,7 +1975,7 @@ class ModularTag extends AbstractTag {
    * Vervollständigung der AbstragTag::display()-Methode
    *
    * @return string
-   */
+  **/
   public function display() {
     $tag = parent::display();
 

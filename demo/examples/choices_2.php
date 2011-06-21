@@ -4,6 +4,6 @@ $items = array(
   'choices_2_value_attr_2' => 'Item 2',
   'choices_2_value_attr_3' => 'Item 3',
 );
-foreach(Tag::radio($items, 'radio_items', array(), false) as $item) {
+foreach(Tag::radio($items, 'radio_items', array(), FALSE) as $item) {
   echo Tag::p($item);
 }

@@ -10,42 +10,42 @@ $inputTag1 = Tag::create('input');
 $inputTag1->addAttribute(AttributeFactory::createAttribute('type', 'button', $inputTag1->getName()))
           ->addAttribute(AttributeFactory::createAttribute('name', 'Text 1', $inputTag1->getName()))
           ->addAttribute(AttributeFactory::createAttribute('value', 'Text 1 anzeigen', $inputTag1->getName()))
-          ->addAttribute(AttributeFactory::createAttribute('onclick', "this.form.".Tag::getPrefixId()."_textfeld.value='Text 1 und rückwärts seltsam geschrieben ich bin.'", $inputTag1->getName(), array('addSlashes'=>false)));
+          ->addAttribute(AttributeFactory::createAttribute('onclick', "this.form.".Tag::getPrefixId()."_textfeld.value='Text 1 und rückwärts seltsam geschrieben ich bin.'", $inputTag1->getName(), array('addSlashes'=>FALSE)));
 
 $inputTag2Data = array(
-	'type'    => 'button',
-	'name'    => 'Text 2',
-	'value'   => 'Text 2 anzeigen',
-	'onclick' => array(
-		'value'   => "this.form.".Tag::getPrefixId()."_textfeld.value='Ich bin Text 2 - ganz normal'",
-		'options' => array(
-			'addSlashes' => false
-		)
-	),
+  'type'    => 'button',
+  'name'    => 'Text 2',
+  'value'   => 'Text 2 anzeigen',
+  'onclick' => array(
+    'value'   => "this.form.".Tag::getPrefixId()."_textfeld.value='Ich bin Text 2 - ganz normal'",
+    'options' => array(
+      'addSlashes' => FALSE
+    )
+  ),
 );
 $inputTag2 = Tag::create('input');
 $inputTag2->addAttributes(AttributeFactory::createAttributes($inputTag2->getName(), $inputTag2Data));
 
 $inputTag3Attr = array(
-	'onclick' => array(
-		'value'   => "alert('Hallo Du Da! Du hast mich angeklickt.');", 
-		'options' => array(
-			'addSlashes' => false
-		)
-	)
+  'onclick' => array(
+    'value'   => "alert('Hallo Du Da! Du hast mich angeklickt.');", 
+    'options' => array(
+      'addSlashes' => FALSE
+    )
+  )
 );
 $inputTag3 = Tag::input('button', 'Text 3', 'Text 3 anzeigen', $inputTag3Attr);
 
-$span1 = Tag::span($textareaTag, array('style' =>'float:left'))->setHtmlentities(false);
+$span1 = Tag::span($textareaTag, array('style' =>'float:left'))->setHtmlentities(FALSE);
 
 $span2 = Tag::createTag('span');
 $span2->addAttribute(AttributeFactory::createAttribute('style', 'float:left', $span2->getName()))
-	->setHtmlentities(false)
-	->setContent($inputTag1.$br.$inputTag2.$br.$inputTag3);
+  ->setHtmlentities(FALSE)
+  ->setContent($inputTag1.$br.$inputTag2.$br.$inputTag3);
 
 $pTag = Tag::createTag('p');
-$pTag->setHtmlentities(false)
-		 ->setContent($span1 . $span2);
+$pTag->setHtmlentities(FALSE)
+     ->setContent($span1 . $span2);
 
 $brClear = Tag::br(array('clear'=>'all'));
 

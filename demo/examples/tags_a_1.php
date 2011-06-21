@@ -5,4 +5,4 @@ $a->addAttribute(new Attribute('href', 'http://www.timo-strotmann.de/', $a->getN
   ->addAttribute(new Attribute('target', '_blank', $a->getName()))
   ->setContent('www.Timo-Strotmann.de');
 
-  echo $a->setHtmlentities(false);
+  echo $a->setHtmlentities(FALSE);

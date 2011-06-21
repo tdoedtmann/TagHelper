@@ -1,7 +1,20 @@
 <?php
+/**
+ * @author Timo Strotmann <timo@timo-strotmann.de>
+ * @version $Id$
+ * @copyright Timo Strotmann, 18 October, 2010
+ * @package default
+**/
 
+/**
+ * Validator for strings
+ *
+ * @package default
+ * @author Timo Strotmann
+ * @copyright Timo Strotmann, 18 October, 2010
+**/
 class ValidatorString extends ValidatorBase {
-	
+
   /**
    * Configures the current validator.
    *
@@ -16,10 +29,10 @@ class ValidatorString extends ValidatorBase {
    *  * min_length
    *
    * @param array $options   An array of options
-   * @param array $messages  An array of error messages
+   * @param array $messages   An array of error messages
    *
    * @see sfValidatorBase
-   */
+  **/
   protected function configure($options = array(), $messages = array()) {
     $this->addMessage('max_length', '"%value%" is too long (%max_length% characters max).');
     $this->addMessage('min_length', '"%value%" is too short (%min_length% characters min).');
@@ -28,13 +41,14 @@ class ValidatorString extends ValidatorBase {
     $this->addOption('min_length');
 
     $this->setOption('empty_value', '');
-  } 
+  }
 
   /**
+   * @param string $value
    * @see sfValidatorBase
-   */
+  **/
   protected function doClean($value) {
-    $clean = (string) $value;
+    $clean = (string)$value;
 
     $length = function_exists('mb_strlen') ? mb_strlen($clean, $this->getCharset()) : strlen($clean);
 
@@ -47,6 +61,7 @@ class ValidatorString extends ValidatorBase {
     }
 
     return $clean;
-  } 
-  
-}
+  }
+
+} // END ValidatorString
+?>
