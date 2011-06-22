@@ -84,25 +84,24 @@ class Attribute {
    * @return void
   **/
   public function __construct($name, $value, $tagName, $options = array()) {
-    if (is_string($name)) {
-      $this->name = $name;
-      $this->tagName = $tagName;
-      $this->type = AttributeTypeFactory::getAttributeType($name, $tagName);
-
-      $this->setValue_Private($value);
-
-      if (isset($options['requried'])) {
-        $this->requried = (boolean)$options['requried'];
-      }
-      if (isset($options['default'])) {
-        $this->default = $options['default'];
-      }
-      if (isset($options['addSlashes'])) {
-        $this->addSlashes = (boolean)$options['addSlashes'];
-      }
-
-    } else {
+    if (!is_string($name)) {
       throw new AttributeException('Der Name des Attributes muss ein String sein ('.$name.', '.$value.', '.$tagName.')!');
+    }
+
+    $this->name     = $name;
+    $this->tagName  = $tagName;
+    $this->type     = AttributeTypeFactory::getAttributeType($name, $tagName);
+
+    $this->setValue_Private($value);
+
+    if (isset($options['requried'])) {
+      $this->requried = (boolean)$options['requried'];
+    }
+    if (isset($options['default'])) {
+      $this->default = $options['default'];
+    }
+    if (isset($options['addSlashes'])) {
+      $this->addSlashes = (boolean)$options['addSlashes'];
     }
   }
 

@@ -1899,11 +1899,10 @@ class StandaloneTag extends AbstractTag {
    * @return Tag
   **/
   public function setContent($content) {
-    if (is_string($content)) {
-      $this->content = $content;
-    } else {
+    if (!is_string($content)) {
       throw new StandaloneTagException('Der in $content hinterlegte Wert muss ein String sein!');
     }
+    $this->content = $content;
     return $this;
   }
 

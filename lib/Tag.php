@@ -1533,11 +1533,11 @@ class Tag {
    * @return void
   **/
   static public function setPrefixId($prefixId) {
-    if (is_string($prefixId)) {
-      self::$prefixId = $prefixId;
-    } else {
+    if (!is_string($prefixId)) {
       throw new TagException('Die PrefixId muss ein String sein!');
     }
+
+    self::$prefixId = $prefixId;
   }
 
   /**
@@ -1556,11 +1556,11 @@ class Tag {
   **/
   static public function setDefaultTextareaCols($cols) {
     $cols = intval($cols);
-    if (0 < $cols) {
-      self::$defaultTextareaCols = $cols;
-    } else {
+    if ($cols <= 0) {
       throw new TagException('Die angebenene Größe für \'TextareaCols\' muss vom Typ Integer und > 0 sein!');
     }
+
+    self::$defaultTextareaCols = $cols;
   }
 
   /**
@@ -1571,11 +1571,11 @@ class Tag {
   **/
   static public function setDefaultTextareaRows($rows) {
     $rows = intval($rows);
-    if (0 < $rows) {
-      self::$defaultTextareaRows = $rows;
-    } else {
+    if ($rows <= 0) {
       throw new TagException('Die angebenene Größe für \'TextareaRows\' muss vom Typ Integer und > 0 sein!');
     }
+
+    self::$defaultTextareaRows = $rows;
   }
 
   /**
@@ -1596,11 +1596,11 @@ class Tag {
    * @return void
   **/
   static public function setImagePath($path) {
-    if (is_string($path) && !empty($path)) {
-      self::$imagePath = $path;
-    } else {
+    if (!is_string($path) || empty($path)) {
       throw new TagException('Der angegebene Pfad zu dem Image-Verzeichnis muss vom Type String und nicht darf nicht leer sein!');
     }
+
+    self::$imagePath = $path;
   }
 
   /**
@@ -1621,11 +1621,11 @@ class Tag {
    * @return void
   **/
   static public function setCssPath($path) {
-    if (is_string($path) && !empty($path)) {
-      self::$cssPath = $path;
-    } else {
+    if (!is_string($path) || empty($path)) {
       throw new TagException('Der angegebene Pfad zu dem CSS-Verzeichnis muss vom Type String und nicht darf nicht leer sein!');
     }
+
+    self::$cssPath = $path;
   }
 
 
