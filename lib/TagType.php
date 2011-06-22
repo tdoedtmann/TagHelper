@@ -47,6 +47,7 @@ function viewArray($array)  {
     return FALSE;
   }
 
+  $tableContent = '';
   if (!count($array)) {
     $tableContent.= Tag::createTag('tr')->setContent(
     Tag::createTag('td')->setContent(
