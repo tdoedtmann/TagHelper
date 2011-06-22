@@ -303,7 +303,7 @@ class AttributeTypeFactory {
       }
     }
 
-    throw new UnknownAttributeTypeException('Für das Tag \''.$tagName.'\' liegt kein Attribute mit dem Namen \''.$name.'\' vor!');
+    throw new UnknownAttributeTypeException("Für das Tag '{$tagName}' liegt kein Attribute mit dem Namen '{$name}' vor!");
   }
 
 }
