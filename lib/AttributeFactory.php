@@ -297,10 +297,8 @@ class AttributeTypeFactory {
       'number'  => $numberConfig,
     );
     foreach($configs as $configType => $config) {
-      if (array_key_exists($name, $config)) {
-        if (FALSE !== array_search($tagName, $config[$name])) {
-          return AttributeTypeFactory::createAttributeType($configType);
-        }
+      if (array_key_exists($name, $config) && array_search($tagName, $config[$name]) !== FALSE) {
+        return AttributeTypeFactory::createAttributeType($configType);
       }
     }
 

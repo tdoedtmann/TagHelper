@@ -1641,12 +1641,12 @@ class AbstractTag implements TagInterface {
    * @return void
   **/
   public function __construct($name) {
-    $this->name = $name;
-    $attributes = array();
-
-    if (FALSE === array_search(HTML_VARIANT, trimExplode(HTML_VARIANTS))) {
+    if (array_search(HTML_VARIANT, trimExplode(HTML_VARIANTS)) === FALSE) {
       throw new TagHtmlVariantException('Die angegeben HTML-Variante existiert nicht');
     }
+
+    $this->name = $name;
+    $attributes = array();
 
     switch(HTML_VARIANT) {
       case 'strict':

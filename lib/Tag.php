@@ -153,7 +153,7 @@ class Tag {
    * @return Tag
   **/
   static public function create($name, $attributes=array()) {
-    if (FALSE === array_search($name, trimExplode(STANDALONE_TAGS))) {
+    if (array_search($name, trimExplode(STANDALONE_TAGS)) === FALSE) {
       $tag = new ModularTag($name);
     } else {
       $tag = new StandaloneTag($name);
@@ -473,7 +473,7 @@ class Tag {
     self::addNameAttribute($attributes, $name);
 
       // CLASS-Attribute
-    if (FALSE === $searchAttributes['class']) {
+    if ($searchAttributes['class'] === FALSE) {
       $attributes['class'] = 'button '.$type;
     }
 
