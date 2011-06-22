@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ *
  *
  * @author Timo Strotmann <timo@timo-strotmann.de>
  * @version $Id$
@@ -11,10 +11,9 @@
 require_once 'AttributeFactory.php';
 require_once 'TagType.php';
 
-/**********************************************************************
- * Exception-Klassen
- **********************************************************************/
-
+// ============================================================================
+// = Exception-Klassen ====================================================== =
+// ============================================================================
 /**
  * Exception Klasse für Tag-Fehler
  *
@@ -24,123 +23,120 @@ class TagException extends Exception {
 }
 
 
-
-/**********************************************************************
- * AttributeTypeFactory-Klasse
- * -> zum erstellen/ermitteln eines Tags
- **********************************************************************/
-
+// ============================================================================
+// = AttributeTypeFactory-Klasse ============================================ =
+// = -> zum erstellen/ermitteln eines Tags ================================== =
+// ============================================================================
 /**
  *
  * @author Timo Strotmann
 **/
 class Tag {
-  
 
   /**
-   * :TODO: 
+   * :TODO:
    * XHTML-TAGS
-   * [X] a 
-   * [X] abbr 
-   * [X] acronym 
-   * [ ] address 
-   * [ ] applet 
-   * [ ] area 
-   * [X] b 
-   * [ ] base 
-   * [ ] basefont 
-   * [ ] bdo 
-   * [X] big 
-   * [X] blockquote 
-   * [ ] body 
-   * [X] br 
-   * [X] button 
-   * [ ] caption 
-   * [X] center 
-   * [X] cite 
-   * [X] code 
-   * [ ] col 
-   * [ ] colgroup 
-   * [X] dd 
-   * [ ] del 
-   * [X] dfn 
-   * [ ] dir 
-   * [X] div 
-   * [X] dl 
-   * [X] dt 
-   * [X] em 
-   * [X] fieldset 
-   * [ ] font 
-   * [X] form 
-   * [ ] frame 
-   * [ ] frameset 
-   * [X] h1 
-   * [X] h2 
-   * [X] h3 
-   * [X] h4 
-   * [X] h5 
-   * [X] h6 
-   * [ ] head 
-   * [X] hr 
-   * [ ] html 
-   * [X] i 
-   * [ ] iframe 
-   * [X] img 
-   * [X] input 
-   * [ ] ins 
-   * [ ] isindex 
-   * [X] kbd 
-   * [X] label 
-   * [X] legend 
-   * [X] li 
-   * [ ] link 
-   * [ ] map 
-   * [ ] menu 
-   * [ ] meta 
-   * [ ] noframes 
-   * [ ] noscript 
-   * [ ] object 
-   * [X] ol 
-   * [ ] optgroup 
-   * [ ] option 
-   * [X] p 
-   * [X] param 
-   * [X] pre 
-   * [X] q 
-   * [X] s 
-   * [X] samp 
-   * [ ] script 
-   * [X] select 
-   * [X] small 
-   * [X] span 
-   * [X] strike 
-   * [X] strong 
-   * [ ] style 
-   * [X] sub 
-   * [X] sup 
-   * [X] table 
-   * [X] tbody 
-   * [X] td 
-   * [X] textarea 
-   * [X] tfoot 
-   * [X] th 
-   * [X] thead 
-   * [ ] title 
-   * [X] tr 
-   * [X] tt 
-   * [X] u 
-   * [X] ul 
+   * [X] a
+   * [X] abbr
+   * [X] acronym
+   * [ ] address
+   * [ ] applet
+   * [ ] area
+   * [X] b
+   * [ ] base
+   * [ ] basefont
+   * [ ] bdo
+   * [X] big
+   * [X] blockquote
+   * [ ] body
+   * [X] br
+   * [X] button
+   * [ ] caption
+   * [X] center
+   * [X] cite
+   * [X] code
+   * [ ] col
+   * [ ] colgroup
+   * [X] dd
+   * [ ] del
+   * [X] dfn
+   * [ ] dir
+   * [X] div
+   * [X] dl
+   * [X] dt
+   * [X] em
+   * [X] fieldset
+   * [ ] font
+   * [X] form
+   * [ ] frame
+   * [ ] frameset
+   * [X] h1
+   * [X] h2
+   * [X] h3
+   * [X] h4
+   * [X] h5
+   * [X] h6
+   * [ ] head
+   * [X] hr
+   * [ ] html
+   * [X] i
+   * [ ] iframe
+   * [X] img
+   * [X] input
+   * [ ] ins
+   * [ ] isindex
+   * [X] kbd
+   * [X] label
+   * [X] legend
+   * [X] li
+   * [ ] link
+   * [ ] map
+   * [ ] menu
+   * [ ] meta
+   * [ ] noframes
+   * [ ] noscript
+   * [ ] object
+   * [X] ol
+   * [ ] optgroup
+   * [ ] option
+   * [X] p
+   * [X] param
+   * [X] pre
+   * [X] q
+   * [X] s
+   * [X] samp
+   * [ ] script
+   * [X] select
+   * [X] small
+   * [X] span
+   * [X] strike
+   * [X] strong
+   * [ ] style
+   * [X] sub
+   * [X] sup
+   * [X] table
+   * [X] tbody
+   * [X] td
+   * [X] textarea
+   * [X] tfoot
+   * [X] th
+   * [X] thead
+   * [ ] title
+   * [X] tr
+   * [X] tt
+   * [X] u
+   * [X] ul
    * [X] var'
   **/
-  
+
   static protected $prefixId = '';
   static protected $defaultTextareaCols = 20;
   static protected $defaultTextareaRows = 5;
-  
+
   static protected $imagePath = 'images/';
   static protected $cssPath   = 'css/';
-  
-  
+
+
   /**
    * Erstellt Tag und fügt diesem, die übergebenen Attribute hinzu.
    * Das Array mit den Attributen ist wie folgt aufgebaut:
@@ -165,7 +161,7 @@ class Tag {
     }
 
     return $tag;
-  } 
+  }
 
   /**
    * Erstellt ein Tag und fügt dem den übergebenen Inhalt, sowie die übergebenen Attribute hinzu.
@@ -180,53 +176,47 @@ class Tag {
     $tag->setContent($content);
 
     return $tag;
-  } 
-  
-  
-  
-  
-  /**********************************************************************
-   * Standalone-Tags ****************************************************
-   **********************************************************************/
-  
+  }
+
+
+  // ==========================================================================
+  // = Standalone-Tags ====================================================== =
+  // ==========================================================================
   /**
    * Erstelt ein <br>-Tag
-   * 
+   *
    * @param array $attributes
    * @return Tag
   **/
   static public function br($attributes=array()) {
     return self::create('br', $attributes);
-  } 
-  
+  }
+
   /**
    * Erstelt ein <hr>-Tag
-   * 
+   *
    * @param array $attributes
    * @return Tag
   **/
   static public function hr($attributes=array()) {
     return self::create('hr', $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <img>-Tag
-   * 
+   *
    * @param string $src
    * @param array $attributes
    * @return Tag
   **/
   static public function img($src, $attributes=array()) {
     return self::createTag('img', array_merge($attributes, array('src'=>$src)));
-  } 
-  
-  
-  
-  
-  /**********************************************************************
-   * Modular-Tags *******************************************************
-   **********************************************************************/
-  
+  }
+
+
+  // ==========================================================================
+  // = Modular-Tags =========================================================== =
+  // ==========================================================================
   /**
    * Erstellt ein <a>-Tag und fügt dem den übergebenen Inhalt, sowie die übergebenen Attribute hinzu.
    *
@@ -238,8 +228,8 @@ class Tag {
   static public function a($href, $content, $attributes=array()) {
     $attributes['href'] = $href;
     return self::content('a', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <fieldset>-Tag. Bei Angabe eines $legendContent, wird zudem noch ein <legend>-Tag (in Form des Fieldset-Content) hinzugefügt.
    *
@@ -268,11 +258,11 @@ class Tag {
     }
 
     return $fieldset->setContent($fieldsetContent)->setHtmlentities(FALSE);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <lagend>-Tag
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
@@ -280,14 +270,11 @@ class Tag {
   static public function legend($content, $attributes=array()) {
     return self::content('legend', $content, $attributes);
   }
-  
-  
-  
-  
-  /**********************************************************************
-   * Formular-Tags ******************************************************
-   **********************************************************************/
-    
+
+
+  // ==========================================================================
+  // = Formular-Tags ======================================================== =
+  // ==========================================================================
   /**
    * Erstellt ein <form>-Tag
    *
@@ -299,7 +286,7 @@ class Tag {
   static public function form($action, $content, $attributes=array()) {
     $searchAttributes = array('method'=>FALSE);
     self::hasAttributes($attributes, $searchAttributes);
-     
+
      // If params isn't a array or in params don't exist the 'method', than set 'method="post"'
     if (!$searchAttributes['method']) {
       $attributes['method'] = 'post';
@@ -316,7 +303,7 @@ class Tag {
     $tag = self::content('form', $content, $attributes);
     $tag->setHtmlentities(FALSE);
     return $tag;
-  } 
+  }
 
   /**
    * Erstellt ein <input>-Tag.
@@ -350,7 +337,7 @@ class Tag {
     }
 
     return self::create('input', $attributes);
-  } 
+  }
 
   /**
    * Erstellt ein <label>-Tag
@@ -374,7 +361,7 @@ class Tag {
 
     $tag = self::content('label', $content, $attributes);
     return $tag->setHtmlentities(FALSE);
-  } 
+  }
 
   /**
    * Erstellt ein <input>-Tag und das zugehörige <label>-Tag.
@@ -390,7 +377,7 @@ class Tag {
   **/
   static public function labeledInput($labelContent, $type, $name, $value, $inputAttributes=array(), $labelAttributes=array(), $inputBeforeLabel=TRUE) {
     $input = self::input($type, $name, $value, $inputAttributes);
-    
+
     if ($input->getAttribute('id') instanceof Attribute) {
       $for = $input->getAttribute('id')->getValue();
         // In '$for' kann 'self::$prefixId' schon behinhalten, das muss hier herausgefiltert werden
@@ -403,7 +390,7 @@ class Tag {
     }
 
     return ((boolean)$inputBeforeLabel) ? $input.$label : $label.$input;
-  } 
+  }
 
   /**
    * Erstellt ein <textarea>-Tag
@@ -442,11 +429,11 @@ class Tag {
 
     $tag = self::content('textarea', $content, $attributes);
     return $tag->setHtmlentities(FALSE);
-  } 
+  }
 
   /**
    * Erstellt ein <input>-Tag vom Type "submit"
-   * 
+   *
    * @param string $name
    * @param sting $value
    * @param array $attributes
@@ -454,11 +441,11 @@ class Tag {
   **/
   static public function submit($name, $value='submit', $attributes=array()) {
     return self::input('submit', $name, $value, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <button>-Tag
-   * 
+   *
    * @param unknown_type $type
    * @param unknown_type $name
    * @param unknown_type $value
@@ -470,32 +457,31 @@ class Tag {
     self::hasAttributes($attributes, $searchAttributes);
 
     $attributes['type'] = $type;
-    
+
     if (is_numeric($value) || !empty($value)) {
       $attributes['value'] = $value;
     }
-    
+
       // ID-Attribute
     if (!$searchAttributes['id']) {
       self::addIdAttribute($attributes, $name);
     }
-    
+
       // NAME-Attribute
     self::addNameAttribute($attributes, $name);
-    
+
       // CLASS-Attribute
     if (FALSE === $searchAttributes['class']) {
       $attributes['class'] = 'button '.$type;
     }
-    
+
     return self::create('button', $attributes);
-  } 
-  
-  
-  /**********************************************************************
-   * Auswahl-Tags *******************************************************
-   **********************************************************************/
-  
+  }
+
+
+  // ==========================================================================
+  // = Auswahl-Tags ========================================================= =
+  // ==========================================================================
   /**
    * Erstellt, in Abhängigkeit von $type, Checkboxen, Radio-Buttons oder eine Select-Box
    *
@@ -509,17 +495,17 @@ class Tag {
     $itemObj = array();
 
     if ($type === 'radio' || ($type === 'checkbox')) {
-      
+
         // Radio- oder  Checkbox-Buttons
       foreach($items as $inputValue => $itemValue) {
         $inputAttributes = array();
 
         if (is_string($itemValue)) {
           $label = $itemValue;                                    // Inhalt des <label>-Tags
-            
+
         } else if (is_numeric($itemValue)) {
           $label = $itemValue;                                    // Inhalt des <label>-Tags
-        
+
         } else if (is_array($itemValue)) {
           if (isset($itemValue['value'])) {                       // Inhalt des <label>-Tags
             $label = $itemValue['value'];
@@ -527,7 +513,7 @@ class Tag {
           } else {
             $label = array_shift($itemValue);
           }
-          
+
           if (!empty($itemValue)) {                               // Der Rest des Array, sind Attribute für das <input>-Tag
             if (isset($itemValue['attribute'])) {
               $inputAttributes = $itemValue['attribute'];
@@ -564,19 +550,19 @@ class Tag {
         }
         $itemObj[] = self::labeledInput($label, $type, $inputName, $inputValue, $inputAttributes);
       }
-      
+
     } else if ($type === 'select') {
-        // :TODO: 
+        // :TODO:
         // <optgroup>-Tags sind noch nicht berücksichtigt
       foreach($items as $optionValue => $optionData) {
         $optionAttributes = array();
-        
+
         if (is_string($optionData)) {
           $optionContent = $optionData;                           // Inhalt des <label>-Tags
-        
+
         } else if (is_numeric($optionData)) {
           $optionContent = $optionData;                           // Inhalt des <label>-Tags
-          
+
         } else if (is_array($optionData)) {                       // Inhalt des <label>-Tags
           if (isset($optionData['content'])) {
             $optionContent = $optionData['content'];
@@ -587,7 +573,7 @@ class Tag {
           } else {
             $optionContent = array_shift($optionData);
           }
-          
+
           if (!empty($optionData)) {                              // Der Rest des Array, sind Attribute für das <input>-Tag
             if (isset($optionData['attribute'])) {
               $optionAttributes = $optionData['attribute'];
@@ -600,42 +586,42 @@ class Tag {
             }
           }
         }
-        
+
         $searchAttributes = array('value'=>FALSE);
         self::hasAttributes($optionAttributes, $searchAttributes);
-        
+
           // Default VALUE-Attribute
         if (FALSE === $searchAttributes['value']) {
           $optionAttributes['value'] = $optionValue;
         }
         $optionTags[] = self::content('option', $optionContent, $optionAttributes);
       }
-      
+
       $searchAttributes = array('id'=>FALSE);
       self::hasAttributes($attributes, $searchAttributes);
-        
+
         // Default ID-Attribute
       if (FALSE === $searchAttributes['id']) {
         self::addIdAttribute($attributes, $name);
       }
-      
+
         // NAME-Attribute
       self::addNameAttribute($attributes, $name);
-      
+
       $itemObj = self::content('select', $optionTags, $attributes);
     }
-    
+
     $result = '';
     if ($asString) {
       foreach($itemObj as $item) {
-        $result.=$item;        
+        $result.=$item;
       }
     } else {
       $result = $itemObj;
     }
-    
+
     return $result;
-  } 
+  }
 
   /**
    * Alias für createChoiceTag(..., ..., $type='radio', ...)
@@ -647,7 +633,7 @@ class Tag {
   **/
   static public function radio($items, $name, $attributes=array(), $asString=TRUE) {
     return self::choices($items, $name, 'radio', $attributes, $asString);
-  } 
+  }
 
   /**
    * Alias für createChoiceTag(..., ..., $type='checkbox', ...)
@@ -659,7 +645,7 @@ class Tag {
   **/
   static public function checkbox($items, $name, $attributes=array(), $asString=TRUE) {
     return self::choices($items, $name, 'checkbox', $attributes, $asString);
-  } 
+  }
 
   /**
    * Alias für createChoiceTag(..., ..., $type='select', ...)
@@ -671,13 +657,12 @@ class Tag {
   **/
   static public function select($items, $id, $attributes=array(), $asString=FALSE) {
     return self::choices($items, $id, 'select', $attributes);
-  } 
-  
-  
-  /**********************************************************************
-   * Listen-Tags ********************************************************
-   **********************************************************************/
-  
+  }
+
+
+  // ==========================================================================
+  // = Listen-Tags ========================================================== =
+  // ==========================================================================
   /**
    * Erstellt, in Abhängikeit von $listType, eine <ul>-, <ol>- oder <dl>-List.
    * Man kann auch die direkten Methoden dafür aufrüfen.
@@ -763,7 +748,7 @@ class Tag {
 
     $tag = self::content($listType, $items, $attritbutes);
     return $tag->setHtmlentities(FALSE);
-  } 
+  }
 
   /**
    * Alias für createListTag(..., 'ul', ...)
@@ -776,7 +761,7 @@ class Tag {
   **/
   static public function ul($listItems, $attritbutes=array()) {
     return self::lists($listItems, 'ul', $attritbutes);
-  } 
+  }
 
   /**
    * Alias für createListTag(..., 'ol', ...)
@@ -789,7 +774,7 @@ class Tag {
   **/
   static public function ol($listItems, $attritbutes=array()) {
     return self::lists($listItems, 'ol', $attritbutes);
-  } 
+  }
 
   /**
    * Alias für createListTag(..., 'dl', ...)
@@ -802,7 +787,7 @@ class Tag {
   **/
   static public function dl($listItems, $attritbutes=array()) {
     return self::lists($listItems, 'dl', $attritbutes);
-  } 
+  }
 
   /**
    * Erstellt ein <li>-Tag
@@ -813,7 +798,7 @@ class Tag {
   **/
   static public function li($content, $attritbutes=array()) {
     return self::content('li', $content, $attritbutes);
-  } 
+  }
 
   /**
    * Erstellt ein <dt>-Tag
@@ -824,7 +809,7 @@ class Tag {
   **/
   static public function dt($content, $attritbutes=array()) {
     return self::content('li', $content, $attritbutes);
-  } 
+  }
 
   /**
    * Erstellt ein <dd>-Tag
@@ -835,210 +820,208 @@ class Tag {
   **/
   static public function dd($content, $attritbutes=array()) {
     return self::content('li', $content, $attritbutes);
-  } 
-  
-  
-  /**********************************************************************
-   * Physische Auszeichnung-Tags ****************************************
-   **********************************************************************/
-  
+  }
+
+
+  // ==========================================================================
+  // = Physische Auszeichnung-Tags ========================================== =
+  // ==========================================================================
   /**
    * Erstellt ein <b>-Tag, dies zeichnet einen Text als fett aus
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function b($content, $attributes=array()) {
     return self::content('b', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <big>-Tag, dies zeichnet einen Text größer als normal aus
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function big($content, $attributes=array()) {
     return self::content('big', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <i>-Tag, dies zeichnet einen Text als kursiv aus
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function i($content, $attributes=array()) {
     return self::content('i', $content, $attributes);
-  } 
+  }
 
   /**
    * Erstellt ein <s>-Tag, dies zeichnet einen Text als durchgestrichen aus
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function s($content, $attributes=array()) {
     return self::content('s', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <small>-Tag, dies zeichnet einen Text kleiner als normal aus
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function small($content, $attributes=array()) {
     return self::content('small', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <strike>-Tag, dies zeichnet einen Text als durchgestrichen aus
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function strike($content, $attributes=array()) {
     return self::content('strike', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <sub>-Tag, dies zeichnet einen Text als tiefgestellt aus
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function sub($content, $attributes=array()) {
     return self::content('sub', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <sup>-Tag, dies zeichnet einen Text als hochgestellt aus
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function sup($content, $attributes=array()) {
     return self::content('sup', $content, $attributes);
-  } 
+  }
 
   /**
    * Erstellt ein <tt>-Tag, dies zeichnet einen Text als dicktengleich formatiert aus (tt = Teletyper = Fernschreiber)
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function tt($content, $attributes=array()) {
     return self::content('tt', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <u>-Tag, dies zeichnet einen Text als unterstrichen aus
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function u($content, $attributes=array()) {
     return self::content('u', $content, $attributes);
-  } 
-  
-  
-  /**********************************************************************
-   * Logischen Auszeichnung-Tags ****************************************
-   **********************************************************************/
-  
+  }
+
+
+  // ==========================================================================
+  // = Logischen Auszeichnung-Tags ========================================== =
+  // ==========================================================================
   /**
    * Erstellt ein <abbr>-Tag, dies zeichnet einen Text aus mit der Bedeutung "dies ist eine Abkürzung"
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function abbr($content, $attributes=array()) {
     return self::content('abbr', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <acronym>-Tag, dies zeichnet einen Text aus mit der Bedeutung "dies ist ein Akronym".
-   * Akronyme sind besondere Abkürzungen, die aus den Anfangsbuchstaben mehrerer (Teil-)Wörter gebildet werden. 
+   * Akronyme sind besondere Abkürzungen, die aus den Anfangsbuchstaben mehrerer (Teil-)Wörter gebildet werden.
    * Sie werden im Deutschen in der Regel ohne Punkte gebildet ("Lkw"). Akronyme lassen sich darüber hinaus meist als Wort aussprechen (z.B. "NATO").
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function acronym($content, $attributes=array()) {
     return self::content('acronym', $content, $attributes);
-  } 
-  
+  }
+
   /**
-   * Erstellt ein <cite>-Tag, dies 
-   * 
+   * Erstellt ein <cite>-Tag, dies
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function cite($content, $attributes=array()) {
     return self::content('cite', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <code>-Tag, dies zeichnet einen Text aus mit der Bedeutung "dies ist Quelltext"
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function code($content, $attributes=array()) {
     return self::content('code', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <dfn>-Tag, dies zeichnet einen Text aus mit der Bedeutung "dies ist eine Definition".
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function dfn($content, $attributes=array()) {
     return self::content('dfn', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <em>-Tag, dies zeichnet einen Text aus als betonten, wichtigen Text ("emphatisch")
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function em($content, $attributes=array()) {
     return self::content('em', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <kbd>-Tag, dies zeichnet einen Text aus mit der Bedeutung "dies stellt eine Benutzereingabe dar"
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function kbd($content, $attributes=array()) {
     return self::content('kbd', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <q cite="..">-Tag, dies zeichnet einen Text aus mit der Bedeutung "dies ist ein Zitat mit Quellenangabe"
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
@@ -1046,49 +1029,48 @@ class Tag {
   static public function qCite($cite, $content, $attributes=array()) {
     $attributes['cite'] = $cite;
     return self::content('q', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <samp>-Tag, dies zeichnet einen Text aus mit der Bedeutung "Dies ist ein Beispiel". Im engeren Sinne können auch Beispiel-Ausgaben von Programmen und Scripten auf diese Weise ausgezeichnet werden.
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function samp($content, $attributes=array()) {
     return self::content('samp', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <strong>-Tag, dies zeichnet einen Text aus mit der Bedeutung "stark betont" (Steigerung von "em")
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function strong($content, $attributes=array()) {
     return self::content('strong', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <var>-Tag, dies zeichnet einen Text aus mit der Bedeutung "dies ist eine Variable oder ein variabler Name"
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function variable($content, $attributes=array()) {
     return self::content('var', $content, $attributes);
-  } 
-  
-  
-  /**********************************************************************
-   * Headline-Tags ******************************************************
-   **********************************************************************/
+  }
 
+
+  // ==========================================================================
+  // = Headline-Tags ======================================================== =
+  // ==========================================================================
   /**
    * Erstellt in Abhängigkeit vom $type ein <h1>- bis <h6>-Tag.
-   * 
+   *
    * @param mixed $content
    * @param string $type
    * @param array $attributes
@@ -1108,169 +1090,166 @@ class Tag {
       default:
         throw new TagTypeException('Der angegebene Headline vom Type \''.$type.'\' existiert nicht! Nur \'<h1>\'- bis \'<h6>\'-Tags sind erlaubt!');
     }
-  } 
-  
+  }
+
   /**
    * Erstellt ein <h1>-Tag
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function h1($content, $attributes=array()) {
     return self::headline($content, 'h1', $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <h2>-Tag
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function h2($content, $attributes=array()) {
     return self::headline($content, 'h2', $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <h3>-Tag
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function h3($content, $attributes=array()) {
     return self::headline($content, 'h3', $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <h4>-Tag
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function h4($content, $attributes=array()) {
     return self::headline($content, 'h4', $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <h5>-Tag
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function h5($content, $attributes=array()) {
     return self::headline($content, 'h5', $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <h6>-Tag
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function h6($content, $attributes=array()) {
     return self::headline($content, 'h6', $attributes);
-  } 
-  
-  
-  /**********************************************************************
-   * Absatz-Tags (BLOCK) ************************************************
-   **********************************************************************/
-  
+  }
+
+
+  // ==========================================================================
+  // = Absatz-Tags (BLOCK) ================================================== =
+  // ==========================================================================
   /**
    * Erstellt ein <blockquote>-Tag
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function blockquote($content, $attributes=array()) {
     return self::content('blockquote', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <center>-Tag
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function center($content, $attributes=array()) {
     return self::content('center', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <div>-Tag
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function div($content, $attributes=array()) {
     return self::content('div', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <p>-Tag
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function p($content, $attributes=array()) {
     return self::content('p', $content, $attributes);
-  } 
+  }
 
   /**
    * Erstellt ein <param>-Tag
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function param($content, $attributes=array()) {
     return self::content('param', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <pre>-Tag
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function pre($content, $attributes=array()) {
     return self::content('pre', $content, $attributes);
-  } 
-  
-  
-  /**********************************************************************
-   * Absatz-Tags (INLINE) ***********************************************
-   **********************************************************************/
-  
+  }
+
+
+  // ==========================================================================
+  // = Absatz-Tags (INLINE) ================================================= =
+  // ==========================================================================
   /**
    * Erstellt ein <span>-Tag
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
   **/
   static public function span($content, $attributes=array()) {
     return self::content('span', $content, $attributes);
-  } 
-  
-  
-  /**********************************************************************
-   * Tabellen-Tags ******************************************************
-   **********************************************************************/
+  }
 
+
+  // ==========================================================================
+  // = Tabellen-Tags ======================================================== =
+  // ==========================================================================
   /**
    * Erstellt ein <table>-Tag
-   * 
+   *
    * @param mixed $content
    * @param array $attributes
    * @return Tag
@@ -1287,7 +1266,7 @@ class Tag {
           $theadContent    = isset($content['thead']['content'])    ? $content['thead']['content'] : $content['thead'];
           $theadAttributes = isset($content['thead']['attributes']) ? $content['thead']['attributes'] : array();
           $tableContent['thead'] = self::thead($theadContent, $theadAttributes);
-        } 
+        }
         if (isset($content['tfoot'])) {
           $tfootContent    = isset($content['tfoot']['content'])    ? $content['tfoot']['content'] : $content['tfoot'];
           $tfootAttributes = isset($content['tfoot']['attributes']) ? $content['tfoot']['attributes'] : array();
@@ -1302,49 +1281,46 @@ class Tag {
         $tableContent['tbody'] = self::tbody($tbodyContent, $tbodyAttributes);
       }
     }
-    
+
     return self::content('table', $tableContent, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <thead>-Tag.
-   * 
+   *
    * @param mixed $content Inhalt des Tags
    * @param array $attributes
    * @return Tag
   **/
   static public function thead($content, $attributes=array()) {
     return self::tablePart('thead', $content, $attributes);
-  } 
-  
-  
+  }
+
   /**
    * Erstellt ein <tbody>-Tag.
-   * 
+   *
    * @param mixed $content Inhalt des Tags
    * @param array $attributes
    * @return Tag
   **/
   static public function tbody($content, $attributes=array()) {
     return self::tablePart('tbody', $content, $attributes);
-  } 
-  
-  
+  }
+
   /**
    * Erstellt ein <tfoot>-Tag.
-   * 
+   *
    * @param mixed $content Inhalt des Tags
    * @param array $attributes
    * @return Tag
   **/
   static public function tfoot($content, $attributes=array()) {
     return self::tablePart('tfoot', $content, $attributes);
-  } 
-  
-  
+  }
+
   /**
    * Erstellt ein anhand des übergebenen $type, dass gleichnamige (<thead>-, <tfoot>- oder <tbody>-) Tag.
-   * 
+   *
    * @param mixed $content Inhalt des Tags
    * @param array $attributes
    * @return Tag
@@ -1352,11 +1328,11 @@ class Tag {
   static private function tablePart($type, $content, $attributes=array()) {
     $type = strtolower($type);
     $avaiableTableParts = array('thead', 'tfoot', 'tbody');
-    
+
     if (!in_array($type, $avaiableTableParts)) {
       throw new TagTypeException('Der angegebene Tabellenteil ($type=\''.$type.'\') ist innerhalb eines \'table\'-Tags nicht erlaubt!');
     }
-    
+
     $typeContent = array();
     if (is_array($content)) {
       foreach($content as $row) {
@@ -1364,24 +1340,24 @@ class Tag {
         $trAttributes = (is_array($row) && isset($row['attributes'])) ? $row['attributes'] : array();
         $typeContent[] = Tag::tr($trContent, $trAttributes);
       }
-    
+
     } else if ($content instanceof AbstractTag) {
       $typeContent[] = $content;
 
     } else {
       throw new TagTypeException('Der &uuml;bergebene \'$content\' (\''.gettype($content).'\') kann in dem \''.$type.'\'-Tags nicht verarbeitet werden!');
     }
-    
+
     if (empty($typeContent)) {
       throw new TagTypeException('In dem \''.$type.'\'-Tags muss mindestens ein \'tr\'-Tags enthalten sein!');
     }
-    
+
     return self::content($type, $typeContent, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein <tr>-Tag.
-   * 
+   *
    * @param mixed $content Inhalt des Tags
    * @param array $attributes
    * @return Tag
@@ -1405,37 +1381,35 @@ class Tag {
         }
       }
     }
-    
+
     return self::content('tr', $trContent, $attributes);
-  } 
-  
-  
+  }
+
   /**
    * Erstellt ein <td>-Tag.
-   * 
+   *
    * @param mixed $content Inhalt des Tags
    * @param array $attributes
    * @return Tag
   **/
   static public function td($content, $attributes=array()) {
     return self::tableCell('td', $content, $attributes);
-  } 
-  
-  
+  }
+
   /**
    * Erstellt ein <th>-Tag.
-   * 
+   *
    * @param mixed $content Inhalt des Tags
    * @param array $attributes
    * @return Tag
   **/
   static public function th($content, $attributes=array()) {
     return self::tableCell('th', $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt ein anhand des übergebenen $type, dass gleichnamige (<td>- oder <th>-) Tag.
-   * 
+   *
    * @param mixed $content Inhalt des Tags
    * @param array $attributes
    * @return Tag
@@ -1443,11 +1417,11 @@ class Tag {
   static public function tableCell($type, $content, $attributes=array()) {
     $availableTypes = array('td', 'th');
     $type = strtolower($type);
-    
+
     if (!in_array($type, $availableTypes)) {
       throw new TagTypeException('Der angegebene Tabellenzellen-Type ($type=\''.$type.'\') ist innerhalb eines \'tr\'-Tags nicht erlaubt!');
     }
-    
+
     $tag = NULL;
     if ($content instanceof AbstractTag) {
       if ($type == $content->getName()) {
@@ -1460,29 +1434,26 @@ class Tag {
     } else {
       $tag = self::content($type, $content);
     }
-    
+
     if (is_array($attributes) && !empty($attributes)) {
       $tag->addAttributes(AttributeFactory::createAttributes($tag->getName(), $attributes));
     }
-    
+
     return $tag;
-  } 
-  
-  
-  
-  
-  /**********************************************************************
-   * Hilfsfunktionen
-   **********************************************************************/
-  
+  }
+
+
+  // ==========================================================================
+  // = Hilfsfunktionen ====================================================== =
+  // ==========================================================================
   /**
    * Prüft, ob Prefix für diverse Attribute (z.B. 'id' oder 'name') gesetzt wurde.
    * @return boolean
   **/
   static protected function hasPrefixId() {
     return (is_string(self::$prefixId) && '' != self::$prefixId);
-  } 
-  
+  }
+
   /**
    * Durchsucht die übergebenen $attributes nach Attributen, die in $search in Form von Schlüsseln angegeben werden.
    *
@@ -1501,8 +1472,8 @@ class Tag {
       }
     }
     return $has;
-  } 
-  
+  }
+
   /**
    * Fügt das ID-Attribute den in $attributes übergebenen Attributen hinzu.
    *
@@ -1516,7 +1487,7 @@ class Tag {
     $id = preg_replace('/\[/', '_', $id);                               //
     $id = preg_replace('/\]/', '_', $id);                               //
     $attributes['id'] = ((self::hasPrefixId()) ? self::$prefixId.'_'  : '') . $id;
-  } 
+  }
 
   /**
    * Fügt das FOR-Attribute in den $attributes übergebenen Attributen hinzu.
@@ -1531,7 +1502,7 @@ class Tag {
     $for = preg_replace('/\[/', '_', $for);                             //
     $for = preg_replace('/\]/', '_', $for);                             //
     $attributes['for'] = ((self::hasPrefixId()) ? self::$prefixId.'_'  : '') . $for;
-  } 
+  }
 
   /**
    * Fügt das NAME-Attribute den in $attributes übergeben Attributen hinzu.
@@ -1542,9 +1513,8 @@ class Tag {
   **/
   static public function addNameAttribute(&$attributes, $value) {
     $attributes['name'] = (self::hasPrefixId()) ? self::$prefixId . '[' . $value . ']' : $value;
-  } 
+  }
 
-  
   /**
    * Setzen der PrefixId.
    * Wenn diese angegeben ist, wird z.B. bei createInputTag() das ID-Attribute automatisch gesetzt (sofern nicht schon in dem Attribute-Array aufgeführt) und die PrefixId vorangestellt.
@@ -1558,7 +1528,7 @@ class Tag {
     } else {
       throw new TagException('Die PrefixId muss ein String sein!');
     }
-  } 
+  }
 
   /**
    * Gibt die prefixId zurück.
@@ -1566,9 +1536,8 @@ class Tag {
   **/
   static public function getPrefixId() {
     return self::$prefixId;
-  } 
+  }
 
-  
   /**
    * Setzen die Default-Größe für das 'cols'-Attribute beim <textarea>-Tag.
    *
@@ -1582,7 +1551,7 @@ class Tag {
     } else {
       throw new TagException('Die angebenene Größe für \'TextareaCols\' muss vom Typ Integer und > 0 sein!');
     }
-  } 
+  }
 
   /**
    * Setzen die Default-Größe für das 'rows'-Attribute beim <textarea>-Tag.
@@ -1597,22 +1566,22 @@ class Tag {
     } else {
       throw new TagException('Die angebenene Größe für \'TextareaRows\' muss vom Typ Integer und > 0 sein!');
     }
-  } 
-  
+  }
+
   /**
    * Gibt den Pfad zu den Images zurück.
    * Default: 'images/'
-   * 
+   *
    * @return string
   **/
   static public function getImagePath() {
     return basename(self::$imagePath);
-  } 
-  
+  }
+
   /**
    * Setzt den Pfad zu dem Images.
    * Default: 'images/'
-   * 
+   *
    * @param sting $path
    * @return void
   **/
@@ -1622,22 +1591,22 @@ class Tag {
     } else {
       throw new TagException('Der angegebene Pfad zu dem Image-Verzeichnis muss vom Type String und nicht darf nicht leer sein!');
     }
-  } 
-  
+  }
+
   /**
    * Gibt den Pfad zu den CSS-Dateien zurück.
    * Default: 'css/'
-   * 
+   *
    * @return string
   **/
   static public function getCssPath() {
     return basename(self::$cssPath);
-  } 
-  
+  }
+
   /**
    * Setzt den Pfad zu dem CSS-Dateien.
    * Default: 'css/'
-   * 
+   *
    * @param sting $path
    * @return void
   **/
@@ -1647,15 +1616,12 @@ class Tag {
     } else {
       throw new TagException('Der angegebene Pfad zu dem CSS-Verzeichnis muss vom Type String und nicht darf nicht leer sein!');
     }
-  } 
-  
-  
-  
-  
-  /**********************************************************************
-   * Aus Kompatibilitäts-Gründen
-   **********************************************************************/
-  
+  }
+
+
+  // ==========================================================================
+  // = Aus Kompatibilitäts-Gründen ========================================= =
+  // ==========================================================================
   /**
    * Alias für create()
    *
@@ -1665,8 +1631,8 @@ class Tag {
   **/
   static public function createTag($name, $attributes=array()) {
     return self::create($name, $attributes);
-  } 
-  
+  }
+
   /**
    * Alias für content()
    *
@@ -1677,7 +1643,7 @@ class Tag {
   **/
   static public function createContentTag($tagName, $content, $attributes=array()) {
     return self::content($tagName, $content, $attributes);
-  } 
+  }
 
   /**
    * Alias für a()
@@ -1689,8 +1655,8 @@ class Tag {
   **/
   static public function createATag($href, $content, $attributes=array()) {
     return self::a($href, $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Alias für form()
    *
@@ -1701,8 +1667,8 @@ class Tag {
   **/
   static public function createFormTag($action, $content, $attributes=array()) {
     return self::form($action, $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Alias für input()
    *
@@ -1713,8 +1679,8 @@ class Tag {
   **/
   static public function createInputTag($type, $name, $value='', $attributes=array()) {
     return self::input($type, $name, $value, $attributes);
-  } 
-  
+  }
+
   /**
    * Alias für label()
    *
@@ -1725,8 +1691,8 @@ class Tag {
   **/
   static public function createLabelTag($for, $content, $attributes=array()) {
     return self::label($for, $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Alias für labeledInput()
    *
@@ -1741,8 +1707,7 @@ class Tag {
   **/
   static public function createLabeledInputTag($labelContent, $type, $name, $value, $inputAttributes=array(), $labelAttributes=array(), $inputBeforeLabel=TRUE) {
     return self::labeledInput($labelContent, $type, $name, $value, $inputAttributes, $labelAttributes, $inputBeforeLabel);
-  } 
-
+  }
 
   /**
    * Alias für textarea()
@@ -1754,8 +1719,8 @@ class Tag {
   **/
   static public function createTextareaTag($name, $content='', $attributes=array()) {
     return self::textarea($name, $content, $attributes);
-  } 
-  
+  }
+
   /**
    * Alias für fieldset()
    *
@@ -1767,7 +1732,7 @@ class Tag {
   **/
   static public function createFieldsetTag($fieldsetContent, $legendContent=NULL, $fieldsetAttributes=array(), $legendAttributes=array()) {
     return self::fieldset($fieldsetContent, $legendContent, $fieldsetAttributes, $legendAttributes);
-  } 
+  }
 
   /**
    * Alias für choices()
@@ -1780,7 +1745,7 @@ class Tag {
   **/
   static public function createChoiceTag($items, $name, $type='radio', $attributes=array()) {
     return self::choices($items, $name, $type, $attributes);
-  } 
+  }
 
   /**
    * Alias für lists()
@@ -1792,31 +1757,28 @@ class Tag {
   **/
   static public function createListTag($items, $type='ul', $attritbutes=array()) {
     return self::lists($items, $type, $attritbutes);
-  } 
-  
-  
-  
-  
-  /**********************************************************************
-   * MessageBox *********************************************************
-   **********************************************************************/
-  
+  }
+
+
+  // ==========================================================================
+  // = MessageBox =========================================================== =
+  // ==========================================================================
   /**
    * Erstellt für den übergebene $type eine MessageBox. Diese Box ist dem $type entsprechend farblich hervorgehoben.
-   * 
+   *
    * @param string  $type       Erlaubte Type 'notice', 'info', 'ok', 'warning', 'error'
    * @param mixed   $content    Entweder direkt ein Tag-Objekt, oder ein String
    * @param mixed   $headline   Entweder direkt ein Tag-Objekt, oder ein String
-   * @param array   $attributes 
+   * @param array   $attributes
    * @return Tag
   **/
   static public function abstractMessageBox($type, $content, $headline=NULL, $attributes=array()) {
     $type = strtolower($type);
-    
+
     if (!in_array($type, array('notice', 'info', 'ok', 'warning', 'error'))) {
       throw new TagTypeException('Dieser Typ ('.$type.') vom MessageBox ist nicht erlaubt!');
     }
-    
+
     $imagePath = self::getImagePath();
     $styleMessage = array(
       "base"      => "padding: 6px; padding-left: 26px; margin-bottom: 4px; background-repeat: no-repeat; background-position: 5px 7px; border: 1px solid;",
@@ -1828,22 +1790,22 @@ class Tag {
       "headline"  => "color: #000000; font-size: 1.2em;",
       "content"   => "color: #000000; font-size: 1.0em;",
     );
-    
+
       // *** Headline ***
     if (NULL !== $headline) {
       if ($headline instanceof AbstractTag) {
         $headline->appendAttribute('style', $styleMessage['headline'])
                  ->appendAttribute('class', "message_box_{$type}_headline");
-        
+
       } else if (is_string($headline)) {
         $headlineAttributes = array(
-          'style' => $styleMessage['headline'], 
+          'style' => $styleMessage['headline'],
           'class' => "message_box_{$type}_headline",
         );
         if (isset($attributes['headline'])) {
           $headlineAttributes = array_merge($headlineAttributes, $attributes);
         }
-        
+
         $headline = Tag::strong(Tag::span($headline, $headlineAttributes));
       } else {
         throw new TagTypeException('Die $headline muss entweder ein AbstractTag sein, oder eins String!');
@@ -1854,7 +1816,7 @@ class Tag {
     if ($content instanceof AbstractTag) {
       $content->appendAttribute('style', $styleMessage['content'])
               ->appendAttribute('class', "message_box_{$type}_content");
-              
+
     } else if (is_string($content)) {
       $contentAttributes = array(
         'style' => $styleMessage['content'],
@@ -1865,77 +1827,77 @@ class Tag {
       }
       $content = Tag::div($content, $contentAttributes);
     }
-    
+
     $boxAttributes = array(
       'style' => $styleMessage['base'] . $styleMessage[$type],
       'class' => "message_box_{$type}",
     );
     return Tag::div($headline . $content, $boxAttributes);
-  } 
+  }
 
   /**
    * Erstellt eine 'Notice'-MessageBox.
-   * 
+   *
    * @param mixed   $content    Entweder direkt ein Tag-Objekt, oder ein String
    * @param mixed   $headline   Entweder direkt ein Tag-Objekt, oder ein String
-   * @param array   $attributes 
+   * @param array   $attributes
    * @return Tag
   **/
   static public function notice($content, $headline=NULL, $attributes=array()) {
     return Tag::abstractMessageBox('notice', $content, $headline, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt eine 'Info'-MessageBox.
-   * 
+   *
    * @param mixed   $content    Entweder direkt ein Tag-Objekt, oder ein String
    * @param mixed   $headline   Entweder direkt ein Tag-Objekt, oder ein String
-   * @param array   $attributes 
+   * @param array   $attributes
    * @return Tag
   **/
   static public function info($content, $headline=NULL, $attributes=array()) {
     return Tag::abstractMessageBox('info', $content, $headline, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt eine 'Ok'-MessageBox.
-   * 
+   *
    * @param mixed   $content    Entweder direkt ein Tag-Objekt, oder ein String
    * @param mixed   $headline   Entweder direkt ein Tag-Objekt, oder ein String
-   * @param array   $attributes 
+   * @param array   $attributes
    * @return Tag
   **/
   static public function ok($content, $headline=NULL, $attributes=array()) {
     return Tag::abstractMessageBox('ok', $content, $headline, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt eine 'Warning'-MessageBox.
-   * 
+   *
    * @param mixed   $content    Entweder direkt ein Tag-Objekt, oder ein String
    * @param mixed   $headline   Entweder direkt ein Tag-Objekt, oder ein String
-   * @param array   $attributes 
+   * @param array   $attributes
    * @return Tag
   **/
   static public function warning($content, $headline=NULL, $attributes=array()) {
     return Tag::abstractMessageBox('warning', $content, $headline, $attributes);
-  } 
-  
+  }
+
   /**
    * Erstellt eine 'Error'-MessageBox.
-   * 
+   *
    * @param mixed   $content    Entweder direkt ein Tag-Objekt, oder ein String
    * @param mixed   $headline   Entweder direkt ein Tag-Objekt, oder ein String
-   * @param array   $attributes 
+   * @param array   $attributes
    * @return Tag
   **/
   static public function error($content, $headline=NULL, $attributes=array()) {
-    return Tag::abstractMessageBox('error', $content, $headline, $attributes); 
-  } 
-  
-  
-  
-  
+    return Tag::abstractMessageBox('error', $content, $headline, $attributes);
+  }
+
+
+
+
   static public function createTagsByArray($array) {
     /**
      * 1.) Gibt es für den Key eine Factory?
@@ -1952,12 +1914,12 @@ class Tag {
         if (in_array($factoryName, get_class_methods('Tag')) ) {
           // Es existiert eine passende Factory-Methode
           //          $content.= '<h3>Factory: '.$factoryName.'</h3>';
-            
+
           switch($factoryName) {
             case 'createATag':
               $content.= self::createATag($factoryData['href'], $factoryData['content'], $factoryData['attributes']);
               break;
-                
+
             case 'createFormTag':
               //            $content.= Tag::createFormTag($action, $factoryData['content'], $factoryData['attributes']);
               throw new TagException('Diese Factory (Tag::'.$factoryName.') wird mit dieser noch nicht unterstürzt!');
@@ -1997,13 +1959,13 @@ class Tag {
               foreach(self::createChoiceTag($factoryData['content'], $factoryData['name'], $factoryData['type'], $factoryData['attributes']) as $item) {
                 $content.= $item . $br;
               }
-                
+
               break;
-                
+
             default:
               throw new TagException('Diese Factory (Tag::'.$factoryName.') ist nicht vorhanden!');
           }
-            
+
         } else {
             // Keine Factory-Methode vorhanden.
           //$content.= '<h3>Self: '.$factory.'</h3>';
@@ -2019,5 +1981,5 @@ class Tag {
 
     return $content;
   }
-}
 
+}

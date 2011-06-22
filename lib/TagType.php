@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ *
  *
  * @author Timo Strotmann <timo@timo-strotmann.de>
  * @version $Id$
@@ -58,33 +58,32 @@ function viewArray($array)  {
 
       $tdValue = (is_array($array[$key])) ? viewArray($array[$key]) : Tag::createTag('span', array('style'=>'color:red;'))->setContent(nl2br(htmlspecialchars((string)$val)) . Tag::createTag('br'));
       $td2 = Tag::createTag('td', array('valign'=>'top'))->setContent($tdValue);
-       
+
       $tableContent.= Tag::createTag('tr')->setContent($td1 . $td2);
     }
   }
-   
+
   $tableAttr = array(
     'cellpadding' => '1',
     'cellspacing' => '0',
     'border'      => '1'
   );
-  
+
    return Tag::createTag('table', $tableAttr)->setContent($tableContent);
-} 
+}
 
 
 
-/**********************************************************************
- * Exception-Klassen
- **********************************************************************/
-
+// ============================================================================
+// = Exception-Klassen ====================================================== =
+// ============================================================================
 /**
  * Exception Klasse für AbstractTag-Fehler
  *
  * @author Timo Strotmann
 **/
 class AbstractTagException extends Exception {
-} 
+}
 
 /**
  * Exception Klasse für TagHtmlVariant-Fehler
@@ -92,7 +91,7 @@ class AbstractTagException extends Exception {
  * @author Timo Strotmann
 **/
 class TagHtmlVariantException extends Exception {
-} 
+}
 
 /**
  * Exception Klasse für TagInlineElement-Fehler
@@ -100,7 +99,7 @@ class TagHtmlVariantException extends Exception {
  * @author Timo Strotmann
 **/
 class TagInlineElementException extends Exception {
-} 
+}
 
 /**
  * Exception Klasse für UnknownTag-Fehler
@@ -108,7 +107,7 @@ class TagInlineElementException extends Exception {
  * @author Timo Strotmann
 **/
 class UnknownTagException extends Exception {
-} 
+}
 
 /**
  * Exception Klasse für TagFactory-Fehler
@@ -116,7 +115,7 @@ class UnknownTagException extends Exception {
  * @author Timo Strotmann
 **/
 class TagTypeException extends Exception {
-} 
+}
 
 /**
  * Exception Klasse für StandaloneTag-Fehler
@@ -124,7 +123,7 @@ class TagTypeException extends Exception {
  * @author Timo Strotmann
 **/
 class StandaloneTagException extends Exception {
-} 
+}
 
 
 
@@ -142,8 +141,7 @@ interface TagInterface {
   public function addAttributes($value);
   public function removeAttribute(Attribute $value);
   public function display();
-} 
-
+}
 
 
 /**
@@ -153,37 +151,37 @@ interface TagInterface {
 class AbstractTag implements TagInterface {
 
   /**
-   * 
+   *
    * @var string
   **/
   protected $name = NULL;
-  
+
   /**
-   * 
+   *
    * @var array
   **/
   protected $attributes = NULL;
-  
+
   /**
-   * 
+   *
    * @var boolean
   **/
   protected $isInlineTag = TRUE;
-  
+
   /**
-   * 
+   *
    * @var boolean
   **/
   protected $isBlockTag  = TRUE;
 
   /**
-   * 
+   *
    * @var boolean
   **/
   protected $displayContentWithHtmlEntities = FALSE;
 
   /**
-   * 
+   *
    * @var array
   **/
   protected $allowedParent = array(
@@ -216,7 +214,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('map'),
       'transitional'  => array('map'),
     ),
-    
+
     'b' =>  array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
@@ -261,7 +259,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
     ),
-    
+
     'caption' =>  array(
       'strict'        => array('table'),
       'frameset'      => array('table'),
@@ -291,7 +289,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('table'),
       'transitional'  => array('table'),
     ),
-    
+
     'dd' =>  array(
       'strict'        => array('dl'),
       'frameset'      => array('dl'),
@@ -326,13 +324,13 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('dl'),
       'transitional'  => array('dl'),
     ),
-    
+
     'em' =>  array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
     ),
-    
+
     'fieldset' =>  array(
       'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
       'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
@@ -353,7 +351,7 @@ class AbstractTag implements TagInterface {
     'frameset'      =>  array(
       'frameset'      => array('html'),
     ),
-    
+
     'h1' =>  array(
       'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
       'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
@@ -399,7 +397,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array(''),
       'transitional'  => array(''),
     ),
-    
+
     'i' =>  array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
@@ -428,13 +426,13 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('applet, blockquote, body, center, dd, del, div, fieldset, form, head, iframe, ins, li, map, noframes, noscript, object, td, th'),
       'transitional'  => array('applet, blockquote, body, center, dd, del, div, fieldset, form, head, iframe, ins, li, map, noframes, noscript, object, td, th'),
     ),
-    
+
     'kbd' =>  array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
     ),
-    
+
     'label' =>  array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
@@ -455,7 +453,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('head'),
       'transitional'  => array('head'),
     ),
-    
+
     'map' =>  array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
@@ -470,7 +468,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('head'),
       'transitional'  => array('head'),
     ),
-    
+
     'noframes' =>  array(
       'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, frameset, iframe, ins, li, map, noscript, object, td, th'),
       'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, frameset, iframe, ins, li, map, noscript, object, td, th'),
@@ -480,7 +478,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
       'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
     ),
-    
+
     'object' =>  array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var, head'),
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var, head'),
@@ -501,7 +499,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('select, optgroup'),
       'transitional'  => array('select, optgroup'),
     ),
-    
+
     'p' =>  array(
       'strict'        => array('address, applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
       'frameset'      => array('address, applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
@@ -517,13 +515,13 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
       'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
     ),
-    
+
     'q' =>  array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
     ),
-    
+
     's' =>  array(
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
@@ -577,7 +575,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
     ),
-    
+
     'table' =>  array(
       'strict'        => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
       'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
@@ -628,7 +626,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
     ),
-    
+
     'u' =>  array(
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
@@ -638,16 +636,16 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
       'transitional'  => array('applet, blockquote, body, button, center, dd, del, div, fieldset, form, iframe, ins, li, map, noframes, noscript, object, td, th'),
     ),
-    
+
     'var' =>  array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var, body'),
     ),
   );
-  
+
   /**
-   * 
+   *
    * @var array
   **/
   protected $allowedChild = array(
@@ -680,7 +678,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array(''),
       'transitional'  => array(''),
     ),
-    
+
     'b' => array(
       'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
@@ -725,7 +723,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('abbr, acronym, address, applet, b, basefont, bdo, big, blockquote, br, center, cite, code, dfn, dl, dir, div, em, font, h1-6, hr, i, img, kbd, map, menu, noframes, noscript, object, ol, p, pre, q, samp, script, small, span, strong, sub, sup, table, tt, ul, var'),
       'transitional'  => array('abbr, acronym, address, applet, b, basefont, bdo, big, blockquote, br, center, cite, code, dfn, dl, dir, div, em, font, h1-6, hr, i, img, kbd, map, menu, noframes, noscript, object, ol, p, pre, q, samp, script, small, span, strong, sub, sup, table, tt, ul, var'),
     ),
-    
+
     'caption' => array(
       'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
@@ -755,7 +753,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('col'),
       'transitional'  => array('col'),
     ),
-    
+
     'dd' => array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
@@ -773,7 +771,7 @@ class AbstractTag implements TagInterface {
     ),
     /****************************************************************************
      * :TODO:
-     * dir::childs(Muss (ein- oder mehrmal): li (Hinweis: li darf in diesem Zusammenhang keine Block-Elemente enthalten)) 
+     * dir::childs(Muss (ein- oder mehrmal): li (Hinweis: li darf in diesem Zusammenhang keine Block-Elemente enthalten))
     **/
     'dir' => array(
       'frameset'      => array('li'),
@@ -794,16 +792,16 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
     ),
-    
+
     'em' => array(
       'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
     ),
-    
+
     /****************************************************************************
      * :TODO:
-     * fieldset::childs(#PCDATA legend, gefolgt von: [Block-Elemente], [Inline-Elemente]) 
+     * fieldset::childs(#PCDATA legend, gefolgt von: [Block-Elemente], [Inline-Elemente])
     **/
     'fieldset' => array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
@@ -825,7 +823,7 @@ class AbstractTag implements TagInterface {
     'frameset' => array(
       'frameset'      => array('frame, frameset, noframes'),
     ),
-    
+
     'h1' => array(
       'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
@@ -861,7 +859,7 @@ class AbstractTag implements TagInterface {
      * head::childs(1. MUSS: title
                     2. KANN:
                     2.1. nach  HTML Strict: base, isindex, link, meta, object, script, style
-                    2.2. nach  HTML Transitional: isindex) 
+                    2.2. nach  HTML Transitional: isindex)
     **/
     'head' => array(
       'strict'        => array('title, base, isindex, link, meta, object, script, style'),
@@ -883,7 +881,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('head, frameset'),
       'transitional'  => array('head, body'),
     ),
-    
+
     'i' => array(
       'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
@@ -905,7 +903,7 @@ class AbstractTag implements TagInterface {
     ),
     /****************************************************************************
      * :TODO:
-     * ins::childs(#PCDATA [Block-Elemente] bei Verwendung als Block-Element, [Inline-Elemente]) 
+     * ins::childs(#PCDATA [Block-Elemente] bei Verwendung als Block-Element, [Inline-Elemente])
     **/
     'ins' => array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
@@ -916,13 +914,13 @@ class AbstractTag implements TagInterface {
       'frameset'      => array(''),
       'transitional'  => array(''),
     ),
-    
+
     'kbd' => array(
       'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
     ),
-    
+
     'label' => array(
       'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
@@ -937,7 +935,7 @@ class AbstractTag implements TagInterface {
      * :TODO:
      * li::childs(#PCDATA dir | menu | ol | ul
                   1. bei dir und menu: [Inline-Elemente]
-                  2. bei ol und ul:    [Block-Elemente] | [Inline-Elemente]) 
+                  2. bei ol und ul:    [Block-Elemente] | [Inline-Elemente])
     **/
     'li' => array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
@@ -949,7 +947,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array(''),
       'transitional'  => array(''),
     ),
-    
+
     'map' => array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, area'),
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, area'),
@@ -957,7 +955,7 @@ class AbstractTag implements TagInterface {
     ),
     /****************************************************************************
      * :TODO:
-     * menu::childs(li (Hinweis: li darf in diesem Zusammenhang keine Block-Elemente enthalten)) 
+     * menu::childs(li (Hinweis: li darf in diesem Zusammenhang keine Block-Elemente enthalten))
     **/
     'menu' => array(
       'frameset'      => array('li'),
@@ -968,7 +966,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array(''),
       'transitional'  => array(''),
     ),
-    
+
     'noframes' => array(
       'frameset'      => array('body'),
       'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
@@ -978,7 +976,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('address, blockquote, center, del, dir, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, isindex, menu, noframes, noscript, ol, p, pre, table, ul, a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
     ),
-    
+
     'object' => array(
       'strict'        => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var, param'),
       'frameset'      => array('address, blockquote, del, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, table, ul, a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var, param'),
@@ -999,7 +997,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array(''),
       'transitional'  => array(''),
     ),
-    
+
     'p' => array(
       'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
@@ -1015,13 +1013,13 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('a, abbr, acronym, applet, b, bdo, br, button, cite, code, dfn, em, i, input, iframe, kbd, label, map, q, samp, script, select, span, strong, textarea, tt, var'),
       'transitional'  => array('a, abbr, acronym, applet, b, bdo, br, button, cite, code, dfn, em, i, input, iframe, kbd, label, map, q, samp, script, select, span, strong, textarea, tt, var'),
     ),
-    
+
     'q' => array(
       'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
     ),
-    
+
     's' => array(
       'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
@@ -1075,10 +1073,10 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
     ),
-    
+
     /****************************************************************************
      * :TODO:
-     * table::childs(Darf folgende anderen HTML-Elemente (in dieser Reihenfolge) enthalten: caption (optional), col oder colgroup (optional), thead (optional), tfoot (optional), tbody (ein oder mehrere - wenn nur einmal benötigt, darf tbody auch entfallen, weshalb die herkömmliche Konstruktion, wonach table direkt aus tr-Elementen besteht, ebenfalls zulässig ist)) 
+     * table::childs(Darf folgende anderen HTML-Elemente (in dieser Reihenfolge) enthalten: caption (optional), col oder colgroup (optional), thead (optional), tfoot (optional), tbody (ein oder mehrere - wenn nur einmal benötigt, darf tbody auch entfallen, weshalb die herkömmliche Konstruktion, wonach table direkt aus tr-Elementen besteht, ebenfalls zulässig ist))
     **/
     'table' => array(
       'strict'        => array('caption, col, colgroup, thead, tfoot, tbody, tr'),
@@ -1130,7 +1128,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
     ),
-    
+
     'u' => array(
       'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
@@ -1140,16 +1138,16 @@ class AbstractTag implements TagInterface {
       'frameset'      => array('li'),
       'transitional'  => array('li'),
     ),
-    
+
     'var' => array(
       'strict'        => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'frameset'      => array('a, abbr, acronym, b, bdo, big, br, button, cite, code, del, dfn, em, i, img, ins, input, kbd, label, map, object, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var'),
       'transitional'  => array('a, abbr, acronym, applet, b, basefont, bdo, big, br, button, cite, code, del, dfn, em, font, i, img, ins, input, iframe, kbd, label, map, object, q, s, samp, script, select, small, span, strike, strong, sub, sup, textarea, tt, u, var'),
     ),
   );
-  
+
   /**
-   * 
+   *
    * @var array
   **/
   protected $allowedPCData = array(
@@ -1182,7 +1180,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => FALSE,
       'transitional'  => FALSE,
     ),
-    
+
     'b' =>  array(
       'strict'        => TRUE,
       'frameset'      => TRUE,
@@ -1227,7 +1225,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => TRUE,
       'transitional'  => TRUE,
     ),
-    
+
     'caption' =>  array(
       'strict'        => TRUE,
       'frameset'      => TRUE,
@@ -1257,7 +1255,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => FALSE,
       'transitional'  => FALSE,
     ),
-    
+
     'dd' =>  array(
       'strict'        => TRUE,
       'frameset'      => TRUE,
@@ -1292,13 +1290,13 @@ class AbstractTag implements TagInterface {
       'frameset'      => TRUE,
       'transitional'  => TRUE,
     ),
-    
+
     'em' =>  array(
       'strict'        => TRUE,
       'frameset'      => TRUE,
       'transitional'  => TRUE,
     ),
-    
+
     'fieldset' =>  array(
       'strict'        => TRUE,
       'frameset'      => TRUE,
@@ -1319,7 +1317,7 @@ class AbstractTag implements TagInterface {
     'frameset'      =>  array(
       'frameset'      => FALSE,
     ),
-    
+
     'h1' =>  array(
       'strict'        => TRUE,
       'frameset'      => TRUE,
@@ -1365,8 +1363,8 @@ class AbstractTag implements TagInterface {
       'frameset'      => FALSE,
       'transitional'  => FALSE,
     ),
-    
-    
+
+
     'i' =>  array(
       'strict'        => TRUE,
       'frameset'      => TRUE,
@@ -1395,13 +1393,13 @@ class AbstractTag implements TagInterface {
       'frameset'      => FALSE,
       'transitional'  => FALSE,
     ),
-    
+
     'kbd' =>  array(
       'strict'        => TRUE,
       'frameset'      => TRUE,
       'transitional'  => TRUE,
     ),
-    
+
     'label' =>  array(
       'strict'        => TRUE,
       'frameset'      => TRUE,
@@ -1422,7 +1420,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => FALSE,
       'transitional'  => FALSE,
     ),
-    
+
     'map' =>  array(
       'strict'        => FALSE,
       'frameset'      => FALSE,
@@ -1437,7 +1435,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => FALSE,
       'transitional'  => FALSE,
     ),
-    
+
     'noframes' =>  array(
       'frameset'      => TRUE,
       'transitional'  => TRUE,
@@ -1447,7 +1445,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => TRUE,
       'transitional'  => TRUE,
     ),
-    
+
     'object' =>  array(
       'strict'        => TRUE,
       'frameset'      => TRUE,
@@ -1468,7 +1466,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => TRUE,
       'transitional'  => TRUE,
     ),
-    
+
     'p' =>  array(
       'strict'        => TRUE,
       'frameset'      => TRUE,
@@ -1484,13 +1482,13 @@ class AbstractTag implements TagInterface {
       'frameset'      => TRUE,
       'transitional'  => TRUE,
     ),
-    
+
     'q' =>  array(
       'strict'        => TRUE,
       'frameset'      => TRUE,
       'transitional'  => TRUE,
     ),
-    
+
     's' => array(
       'frameset'      => TRUE,
       'transitional'  => TRUE,
@@ -1544,12 +1542,6 @@ class AbstractTag implements TagInterface {
       'frameset'      => TRUE,
       'transitional'  => TRUE,
     ),
-    
-    
-    
-    
-    
-    
 
     'table' =>  array(
       'strict'        => TRUE,
@@ -1601,7 +1593,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => TRUE,
       'transitional'  => TRUE,
     ),
-    
+
     'u' => array(
       'frameset'      => TRUE,
       'transitional'  => TRUE,
@@ -1611,7 +1603,7 @@ class AbstractTag implements TagInterface {
       'frameset'      => FALSE,
       'transitional'  => FALSE,
     ),
-    
+
     'var' => array(
       'strict'        => TRUE,
       'frameset'      => TRUE,
@@ -1619,7 +1611,7 @@ class AbstractTag implements TagInterface {
     ),
   );
 
-  
+
   /**
    * Konstruktor von AbstractTag.
    *
@@ -1650,7 +1642,7 @@ class AbstractTag implements TagInterface {
         $this->isBlockTag  = in_array($this->name, trimExplode(TRANSITIONAL_BLOCK_ELEMENTS));
         break;
     }
-  } 
+  }
 
   /**
    * __toString()-Methode zum ausgeben des Tags (siehe display()-Methode).
@@ -1659,7 +1651,7 @@ class AbstractTag implements TagInterface {
   **/
   public function __toString() {
     return $this->display();
-  } 
+  }
 
   /**
    * Gibt den Namen des Tags zurück.
@@ -1668,7 +1660,7 @@ class AbstractTag implements TagInterface {
   **/
   public function getName() {
     return $this->name;
-  } 
+  }
 
   // :TODO: Wenn man das Parent-Element (-Tag) mit abspeichert, kann man besser validieren, denn es ist ja nicht jedes Tag überall erlaubt!
   //  public function getParent() {
@@ -1682,7 +1674,7 @@ class AbstractTag implements TagInterface {
   **/
   public function getAttributes() {
     return $this->attributes;
-  } 
+  }
 
   /**
    * Gibt ein Array mit den Attributen zu diesem Tags zurück.
@@ -1694,7 +1686,7 @@ class AbstractTag implements TagInterface {
       return $this->attributes[$name];
     }
     return FALSE;
-  } 
+  }
 
   /**
    * Gibt TRUE zurück, wenn es sich bei dem Tag um ein "Inline-Tag", wie z.B. <br />, <hr />, <span> etc., zurück.
@@ -1703,7 +1695,7 @@ class AbstractTag implements TagInterface {
   **/
   public function isBlockTag() {
     return (boolean)$this->isBlockTag;
-  } 
+  }
 
   /**
    * Alias-Methode für isBlockTag()
@@ -1712,7 +1704,7 @@ class AbstractTag implements TagInterface {
   **/
   public function isBlockElement() {
     return $this->isBlockTag();
-  } 
+  }
 
   /**
    * Alias-Methode für isBlockTag()
@@ -1721,7 +1713,7 @@ class AbstractTag implements TagInterface {
   **/
   public function isBlock() {
     return $this->isBlockTag();
-  } 
+  }
 
   /**
    * Gibt TRUE zurück, wenn es sich bei dem Tag um ein "Inline-Tag", wie z.B. <br />, <hr />, <span> etc., zurück.
@@ -1730,7 +1722,7 @@ class AbstractTag implements TagInterface {
   **/
   public function isInlineTag() {
     return (boolean)$this->isInlineTag;
-  } 
+  }
 
   /**
    * Alias-Methode für isInlineTag()
@@ -1739,7 +1731,7 @@ class AbstractTag implements TagInterface {
   **/
   public function isInlineElement() {
     return $this->isInlineTag();
-  } 
+  }
 
   /**
    * Alias-Methode für isInlineTag()
@@ -1748,7 +1740,7 @@ class AbstractTag implements TagInterface {
   **/
   public function isInline() {
     return $this->isInlineTag();
-  } 
+  }
 
   /**
    * Setzt den Namen des Tags.
@@ -1758,22 +1750,22 @@ class AbstractTag implements TagInterface {
   public function setName($value) {
     $this->name = $value;
     return $this;
-  } 
+  }
 
   /**
    * Fügt dem Tag ein Attribute hinzu.
-   * 
+   *
    * @see lib/TagInterface#addAttribute($value)
    * @param Attribute $value
   **/
   public function addAttribute(Attribute $value) {
     $this->attributes[$value->getName()] = $value;
     return $this;
-  } 
+  }
 
   /**
    * Erstellt ein Attribute vom $type mit dem Wert $value und fügt dieses dem Tag hinzu.
-   * 
+   *
    * @param string  $type
    * @param mixed   $value
    * @return Tag    $this
@@ -1781,7 +1773,7 @@ class AbstractTag implements TagInterface {
   public function appendAttribute($type, $value) {
     $this->addAttribute(AttributeFactory::createAttribute($type, $value, $this->getName()));
     return $this;
-  } 
+  }
 
   /**
    * Fügt dem Tag die übergebenen Attribute hinzu.
@@ -1800,7 +1792,7 @@ class AbstractTag implements TagInterface {
     }
 
     return $this;
-  } 
+  }
 
   /**
    * Entfernt dem Tag das übergebene Attribute.
@@ -1811,9 +1803,9 @@ class AbstractTag implements TagInterface {
     if (array_key_exists($value->getName(), $this->attributes)) {
       unset($this->attributes[$value->getName()]);
     }
-    
+
     return $this;
-  } 
+  }
 
   /**
    * Ist dieser Wert gesetzt, so wird der Inhalt, der innerhalb eines ModularTags (z.B. <p>-Tag) steht, mit der htmlentities()-Funktion aufgerufen.
@@ -1823,7 +1815,7 @@ class AbstractTag implements TagInterface {
   public function setHtmlentities($value) {
     $this->displayContentWithHtmlEntities = (boolean)$value;
     return $this;
-  } 
+  }
 
   /**
    * Gibt TRUE zurück, wenn der Inhalt des Tags mit der htmlentities()-Funktion von PHP aufgerufen werden soll, andernfalls FALSE.
@@ -1832,7 +1824,7 @@ class AbstractTag implements TagInterface {
   **/
   public function getHtmlentities() {
     return $this->displayContentWithHtmlEntities;
-  } 
+  }
 
   /**
    * Rendern den Anfang des Tags.
@@ -1851,9 +1843,8 @@ class AbstractTag implements TagInterface {
 
     return $str;
   }
-  
-} 
 
+}
 
 
 /**
@@ -1873,7 +1864,7 @@ class StandaloneTag extends AbstractTag {
   **/
   public function getContent() {
     return $this->content;
-  } 
+  }
 
   /**
    * Setzt den "Content" (z.B. die "Beschriftung" eines <input>-Tags), der vor oder hinter dem Tag erscheinen soll.
@@ -1888,7 +1879,7 @@ class StandaloneTag extends AbstractTag {
       throw new StandaloneTagException('Der in $content hinterlegte Wert muss ein String sein!');
     }
     return $this;
-  } 
+  }
 
   /**
    * Bestimmt, ob der "Content" (z.B. die "Beschriftung" eines <input>-Tags) vor oder hinter dem Tag stehen soll.
@@ -1899,7 +1890,7 @@ class StandaloneTag extends AbstractTag {
   public function setContentAfter($value = TRUE) {
     $this->contentAfter = (boolean)$value;
     return $this;
-  } 
+  }
 
   /**
    * Bestimmt, ob der "Content" (z.B. die "Beschriftung" eines <input>-Tags) vor oder hinter dem Tag stehen soll.
@@ -1910,7 +1901,7 @@ class StandaloneTag extends AbstractTag {
   public function setContentBefore($value = FALSE) {
     $this->setContentAfter(!(boolean)$value);
     return $this;
-  } 
+  }
 
   /**
    * Vervollständigung der AbstragTag::display()-Methode
@@ -1934,12 +1925,11 @@ class StandaloneTag extends AbstractTag {
     } else {
       $str = $content . $tag;
     }
-    
-    return $str;
-  } 
-  
-} 
 
+    return $str;
+  }
+
+}
 
 
 /**
@@ -1958,7 +1948,7 @@ class ModularTag extends AbstractTag {
   **/
   public function getContent() {
     return $this->content;
-  } 
+  }
 
   /**
    * Setzt den "Content", der zwischen dem öffneden und schließendem Tag steht (z.B. 'Hello World!' für <p>Hello World!</p>).
@@ -1969,7 +1959,7 @@ class ModularTag extends AbstractTag {
   public function setContent($content) {
     $this->content = $content;
     return $this;
-  } 
+  }
 
   /**
    * Vervollständigung der AbstragTag::display()-Methode
@@ -1987,13 +1977,12 @@ class ModularTag extends AbstractTag {
     } else {
       $content = $this->content;
     }
-    
+
     if ($this->displayContentWithHtmlEntities) {
       $content = htmlentities($content, ENT_NOQUOTES, ENCODING);
     }
-    
+
     return "{$tag}>{$content}</{$this->name}>";
-  } 
-  
-  
-} 
+  }
+
+}

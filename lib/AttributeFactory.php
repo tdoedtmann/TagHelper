@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ *
  *
  * @author Timo Strotmann <timo@timo-strotmann.de>
  * @version $Id$
@@ -10,20 +10,19 @@
 
 require_once 'Attribute.php';
 
-/**********************************************************************
- * AttributeTypeFactory-Klasse
- * -> zum erstellen/ermitteln eines AttributeTypes
- **********************************************************************/
-
+// ============================================================================
+// = AttributeTypeFactory-Klasse ============================================ =
+// = -> zum erstellen/ermitteln eines AttributeTypes ======================== =
+// ============================================================================
 /**
- * 
+ *
  * @author Timo Strotmann
 **/
 class AttributeTypeFactory {
-  
+
   /**
    * Erstellt gegebenfalls eine AttributeType-Instanz und gibt diese zurück.
-   * 
+   *
    * @param $type
    * @param $name
    * @param $regExp
@@ -46,21 +45,21 @@ class AttributeTypeFactory {
       case 'idref':
         $attributeType = AttributeTypeIdref::getInstance();
         break;
-        
+
       case 'name':
         $attributeType = AttributeTypeName::getInstance();
         break;
-        
+
       case 'enum':
         $attributeType = AttributeTypeEnum::getInstance($name, $regExp);
         break;
-        
+
       default:
         throw new UnknownAttributeTypeException('Dieser AttributeType [AttributeType'.ucfirst(strtolower($type)).'($name='.$name.', $regExp='.$regExp.')] ist unbekannt!');
     }
     return $attributeType;
-  } 
-  
+  }
+
   /**
    * Ermittelt zu den $name (Attribute-Name) und den $tagName (Name des Tags) den passenden AttributeType und gibt diesen mittels 'AttributeTypeFactory::createAttributeType' zurück
    * @param $name
@@ -69,9 +68,9 @@ class AttributeTypeFactory {
   **/
   static public function getAttributeType($name, $tagName) {
     $attributeType = NULL;
-    
+
     $allTags = array('a', 'abbr', 'acronym', 'address', 'applet', 'area', 'b', 'base', 'basefont', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'dd', 'del', 'dfn', 'dir', 'div', 'dl', 'dt', 'em', 'fieldset', 'font', 'form', 'frame', 'frameset', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'isindex', 'kbd', 'label', 'legend', 'li', 'link', 'map', 'menu', 'meta', 'noframes', 'noscript', 'object', 'ol', 'optgroup', 'option', 'p', 'param', 'pre', 'q', 's', 'samp', 'script', 'select', 'small', 'span', 'strike', 'strong', 'style', 'sub', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'title', 'tr', 'tt', 'u', 'ul', 'var');
-    
+
     $cdataConfig = array(
       'abbr'            => array('td', 'th'),
       'accept'          => array('form', 'input'),
@@ -158,23 +157,23 @@ class AttributeTypeFactory {
       'vspace'          => array('applet', 'img', 'object'),
       'width'            => array('applet', 'col', 'colgroup', 'hr', 'iframe', 'img', 'object', 'table', 'td', 'th'),
     );
-    
+
     $idConfig = array(
       'id'              => array_diff($allTags, array('base', 'head', 'html', 'meta', 'script', 'style', 'title')),
     );
-    
+
     $idrefConfig = array(
       'for'              => array('label', 'script'),
         // :TODO: Hier ist zu beachten, dass mehrere IDREFs möglich sind!
       'headers'          => array('td', 'th'),
     );
-    
+
     $nameConfig = array(
       'http-equiv'      => array('meta'),
       'name'            => array('meta'),
       'schema'          => array('meta'),
     );
-    
+
     $numberConfig = array(
       'cols'            => array('textarea'),
       'maxlength'        => array('input'),
@@ -185,7 +184,7 @@ class AttributeTypeFactory {
       'value'            => array('li'),
       'width'            => array('pre'),
     );
-    
+
     $enumConfig = array(
       'align' => array(
         '(top|bottom|left|right|middle|center)'  => array('applet', 'input'),
@@ -195,7 +194,7 @@ class AttributeTypeFactory {
         '(left|center|right|justify)'            => array('div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'),
         '(left|center|right)'                    => array('hr', 'table'),
       ),
-      
+
       'checked' => array(
         '(checked)'                              => array('input'),
       ),
@@ -205,7 +204,7 @@ class AttributeTypeFactory {
       'compact' => array(
         '(compact)'                              => array('dir', 'dl', 'menu', 'ol', 'ul'),
       ),
-      
+
       'declare' => array(
         '(declare)'                              => array('object'),
       ),
@@ -218,25 +217,25 @@ class AttributeTypeFactory {
       'defer' => array(
         '(defer)'                                => array('script'),
       ),
-      
+
       'frame' => array(
         '(void|above|below|hsides|lhs|rhs|vsides|box|border)'  => array('table'),
       ),
       'frameborder' => array(
         '(1|0)'                                  => array('frame', 'iframe'),
       ),
-      
+
       'ismap' => array(
         '(ismap)'                                => array('img', 'input'),
       ),
-      
+
       'method' => array(
         '(get|post)'                            => array('form'),
       ),
       'multiple' => array(
         '(multiple)'                            => array('select'),
       ),
-      
+
       'noresize' => array(
         '(noresize)'                            => array('frame'),
       ),
@@ -246,14 +245,14 @@ class AttributeTypeFactory {
       'nowrap' => array(
         '(nowrap)'                              => array('td', 'th'),
       ),
-      
+
       'readonly' => array(
         '(readonly)'                            => array('input', 'textarea'),
       ),
       'rules' => array(
         '(none|groups|rows|cols|all)'            => array('table'),
       ),
-      
+
       'scope' => array(
         '(row|col|rowgroup|colgroup)'            => array('td', 'th'),
       ),
@@ -266,7 +265,7 @@ class AttributeTypeFactory {
       'shape' => array(
         '(rect|circle|poly|default)'            => array('a', 'area'),
       ),
-      
+
       'target' => array(
         '(_blank|_parent|_self|_top|.)'          => array('a', 'area', 'form', 'link'),
         '(.)'                                    => array('base'),
@@ -278,7 +277,7 @@ class AttributeTypeFactory {
         '(disc|square|circle)'                  => array('ul'),
         '(1|a|A|i|I)'                            => array('ol'),
       ),
-      
+
       'valuetype' => array(
         '(data|ref|object)'                      => array('param'),
       ),
@@ -301,7 +300,7 @@ class AttributeTypeFactory {
         }
       }
     }
-    
+
     if (array_key_exists($name, $enumConfig)) {
       foreach ($enumConfig[$name] as $regExp => $tags) {
         if (FALSE !== array_search($tagName, $tags)) {
@@ -309,17 +308,17 @@ class AttributeTypeFactory {
         }
       }
     }
-    
+
     throw new UnknownAttributeTypeException('Für das Tag \''.$tagName.'\' liegt kein Attribute mit dem Namen \''.$name.'\' vor!');
-  } 
-} 
+  }
+}
 
 
 
 class AttributeFactory {
-  
+
   /**
-   * 
+   *
    * @param $name
    * @param $value
    * @param $tagName
@@ -328,8 +327,8 @@ class AttributeFactory {
   **/
   static public function createAttribute($name, $value, $tagName, $options=array()) {
     return new Attribute($name, $value, $tagName, $options);
-  } 
-  
+  }
+
     /*
       $data = array(
         'id'      => 'importantID',
@@ -344,7 +343,7 @@ class AttributeFactory {
   static public function createAttributes($tagName, $data) {
     $attributes = array();
     foreach($data as $attrName => $attrValue) {
-      
+
       if (is_string($attrValue) || is_numeric($attrValue)) {
           // In '$attrValue' steckt schon der 'value'-Wert, Optionen sind nicht vorhanden!
         $attributes[] = AttributeFactory::createAttribute($attrName, (string)$attrValue, $tagName);
@@ -353,15 +352,15 @@ class AttributeFactory {
           // mit "array_shift($attrValue)" nehmen wir das erste Element aus dem Array (in dem hoffentlich der Value steht)
           // Nach den array_shift ist $attrValue um das erste Element verkürzt worden und übrig bleiben die $options
         $attributes[] = AttributeFactory::createAttribute($attrName, array_shift($attrValue), $tagName, array_shift($attrValue));
-      
+
       } else if (is_bool($attrValue) && $attrValue) {
           // Der 'value' ein boolean ist und 'TRUE', dann handelt es sich z.B. um "checked=TRUE" also soll daraus checked="chekced" werden ist
         $attributes[] = AttributeFactory::createAttribute($attrName, $attrName, $tagName);
-        
+
       }
     }
-    
+
     return $attributes;
-  } 
-    
-} 
+  }
+
+}
