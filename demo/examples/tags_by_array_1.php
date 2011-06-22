@@ -7,7 +7,7 @@ $tags = array(
       'content'    => array('Item A', 'Item B', 'Item C'),
     ),
   ),
-  
+
   1 => array('br' => ''),
   2 => array('hr' => ''),
   3 => array(
@@ -27,7 +27,7 @@ $tags = array(
       ),
     ),
   ),
-    
+
   4 => array('br' => ''),
   5 => array('hr' => ''),
   6 => array(
@@ -37,7 +37,7 @@ $tags = array(
     'value' => 'Submit this!'
     ),
   ),
-  
+
   7 => array('hr' => ''),
   8 => array(
     'p'      => array(
