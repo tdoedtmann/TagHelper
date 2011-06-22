@@ -209,12 +209,6 @@ $table_03 = array(
                 <h2>Examples</h2>
                 <?php include_once 'includeExampleMenu.php'?>
               </li>
-              <!--
-              <li>
-                <h2>That's me</h2>
-                <p>Framework um (X)HTML-Tags zu erstellen.</p>
-              </li>
-              -->
             </ul>
           </div>
           <!-- end #sidebar -->
