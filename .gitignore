@@ -16,3 +16,5 @@ temp
 ##eclipse
 .DS_Store
 .*.DS_Store
+
+*.tmproj
