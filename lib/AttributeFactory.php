@@ -32,33 +32,26 @@ class AttributeTypeFactory {
   static public function createAttributeType($type, $name='', $regExp='((.){1,})') {
     switch (strtolower($type)) {
       case 'cdata':
-        $attributeType = AttributeTypeCdata::getInstance();
-        break;
+        return AttributeTypeCdata::getInstance();
 
       case 'number':
-        $attributeType = AttributeTypeNumber::getInstance();
-        break;
+        return AttributeTypeNumber::getInstance();
 
       case 'id':
-        $attributeType = AttributeTypeId::getInstance();
-        break;
+        return AttributeTypeId::getInstance();
 
       case 'idref':
-        $attributeType = AttributeTypeIdref::getInstance();
-        break;
+        return AttributeTypeIdref::getInstance();
 
       case 'name':
-        $attributeType = AttributeTypeName::getInstance();
-        break;
+        return AttributeTypeName::getInstance();
 
       case 'enum':
-        $attributeType = AttributeTypeEnum::getInstance($name, $regExp);
-        break;
+        return AttributeTypeEnum::getInstance($name, $regExp);
 
       default:
         throw new UnknownAttributeTypeException('Dieser AttributeType [AttributeType'.ucfirst(strtolower($type)).'($name='.$name.', $regExp='.$regExp.')] ist unbekannt!');
     }
-    return $attributeType;
   }
 
   /**
