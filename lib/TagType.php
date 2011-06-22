@@ -1860,14 +1860,7 @@ class AbstractTag implements TagInterface {
    * @return string
   **/
   public function display() {
-    $str = '<'.$this->name;
-    if (!empty($this->attributes)) {
-      foreach($this->attributes as $attr) {
-        $str.= $attr;
-      }
-    }
-
-    return $str;
+    return '<'.$this->name . (!empty($this->attributes) ? implode('', $this->attributes) : '');
   }
 
 }
@@ -1934,24 +1927,9 @@ class StandaloneTag extends AbstractTag {
    * @return string
   **/
   public function display() {
-    $tag = parent::display() . ' />';
-
-    $content = '';
-    if (is_array($this->content)) {
-      foreach($this->content as $value) {
-        $content.=$value;
-      }
-    } else {
-      $content = $this->content;
-    }
-
-    if ($this->contentAfter) {
-      $str = $tag . $content;
-    } else {
-      $str = $content . $tag;
-    }
-
-    return $str;
+    $tag     = parent::display() . ' />';
+    $content = (is_array($this->content)) ? implode('', $this->content) : $this->content;
+    return ($this->contentAfter) ? $tag.$content : $content.$tag;
   }
 
 }
@@ -1993,22 +1971,13 @@ class ModularTag extends AbstractTag {
    * @return string
   **/
   public function display() {
-    $tag = parent::display();
-
-    $content = '';
-    if (is_array($this->content)) {
-      foreach($this->content as $value) {
-        $content.= $value;
-      }
-    } else {
-      $content = $this->content;
-    }
+    $content = (is_array($this->content)) ? implode('', $this->content) : $this->content;
 
     if ($this->displayContentWithHtmlEntities) {
       $content = htmlentities($content, ENT_NOQUOTES, ENCODING);
     }
 
-    return "{$tag}>{$content}</{$this->name}>";
+    return parent::display().">{$content}</{$this->name}>";
   }
 
 }
