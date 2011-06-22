@@ -29,18 +29,18 @@ define('STANDALONE_TAGS',               'area, base, basefont, br, col, frame, h
 define('ENCODING',                      'UTF-8');
 
 
-
-function trimExplode($string, $delim=',', $onlyNonEmptyValues=TRUE)    {
-  $temp = explode($delim,$string);
-  $newtemp = array();
-  while (list($key, $val) = each($temp))      {
-    if (!$onlyNonEmptyValues || strcmp('', trim($val)))      {
-      $newtemp[] = trim($val);
-    }
-  }
-  reset($newtemp);
-  return $newtemp;
-} 
+/**
+ * Führt ein "explode" auf den gegeben String aus, wobei alle leeren Array-Elemente entfernt werden.
+ * Anschließend werden alle Array-Elemente führenden und abschließenden Whitespaces entfernt.
+ *
+ * @param string $str   String to explode
+ * @param string $delim Pattern to explode
+ * @return array
+ * @author Timo Strotmann <timo@timo-strotmann.de>
+**/
+function trimExplode($str, $delim=',') {
+  return array_map('trim', preg_split("/{$delim}/", $str, -1, PREG_SPLIT_NO_EMPTY));
+}
 
 function viewArray($array)  {
   if (!is_array($array)) {
