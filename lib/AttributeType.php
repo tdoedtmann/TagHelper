@@ -123,8 +123,8 @@ class AbstractAttributeType implements AttributeTypeInterface {
   **/
   public function isValid($value) {
     $matches = array();
-    if ((boolean)preg_match($this->regExp, $value, $matches)) {
-      return (boolean)($matches[0] === $value);
+    if (preg_match($this->regExp, $value, $matches)) {
+      return ($matches[0] === $value);
     }
     return FALSE;
   }
