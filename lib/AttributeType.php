@@ -2,10 +2,9 @@
 /**
  *
  *
+ * @package TagHelper
  * @author Timo Strotmann <timo@timo-strotmann.de>
- * @version $Id$
  * @copyright Timo Strotmann, 18 October, 2010
- * @package default
 **/
 
 // ============================================================================
@@ -14,6 +13,7 @@
 /**
  * Exception Klasse für AttributeValue-Fehler
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class AttributeValueException extends Exception {
@@ -22,6 +22,7 @@ class AttributeValueException extends Exception {
 /**
  * Exception Klasse für Attribute-Fehler
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class UnknownAttributeException extends Exception {
@@ -30,6 +31,7 @@ class UnknownAttributeException extends Exception {
 /**
  * Exception Klasse für AttributeType-Fehler
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class AttributeTypeException extends Exception {
@@ -38,6 +40,7 @@ class AttributeTypeException extends Exception {
 /**
  * Exception Klasse für AttributeType-Fehler
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class UnknownAttributeTypeException extends Exception {
@@ -48,7 +51,9 @@ class UnknownAttributeTypeException extends Exception {
 // = AttributeType-Interface ================================================ =
 // ============================================================================
 /**
+ * AttributeTypeInterface
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 interface AttributeTypeInterface {
@@ -62,7 +67,9 @@ interface AttributeTypeInterface {
 // = AttributeType-Klassen ================================================== =
 // ============================================================================
 /**
+ * AbstractAttributeType
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class AbstractAttributeType implements AttributeTypeInterface {
@@ -79,14 +86,15 @@ class AbstractAttributeType implements AttributeTypeInterface {
   **/
   protected $regExp = NULL;
 
+
   /**
    * Konstuktor, zum definieren des Names und des regulären Ausdrucks
    *
    * @return void
   **/
   public function __construct() {
-    $this->name = '__ABSTRACT__';
-    $this->regExp = "((.){1,})";
+    $this->name   = '__ABSTRACT__';                                             // Kein echtes (darum __ABSTRACT__) Attribute
+    $this->regExp = "((.){1,})";                                                // Alle Zeichen, aber mind. 1 Zeichen
   }
 
   /**
@@ -125,7 +133,9 @@ class AbstractAttributeType implements AttributeTypeInterface {
 
 
 /**
+ * AttributeTypeCdata
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class AttributeTypeCdata extends AbstractAttributeType {
@@ -136,14 +146,15 @@ class AttributeTypeCdata extends AbstractAttributeType {
   **/
   private static $instance = NULL;
 
+
   /**
    * Konstuktor, zum definieren des Names und des regulären Ausdrucks
    *
    * @return void
   **/
   public function __construct() {
-    $this->name = 'CDATA';
-    $this->regExp = "((.){1,})";
+    $this->name   = 'CDATA';                                                    // CDATA, also Normaler Text (z.B. value bei <input>)                   
+    $this->regExp = "((.){1,})";                                                // Alle Zeichen, aber mind. ein Zeichen
   }
 
   /**
@@ -169,7 +180,9 @@ class AttributeTypeCdata extends AbstractAttributeType {
 
 
 /**
+ * AttributeTypeNumber
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class AttributeTypeNumber extends AbstractAttributeType {
@@ -180,13 +193,14 @@ class AttributeTypeNumber extends AbstractAttributeType {
   **/
   private static $instance = NULL;
 
+
   /**
    * Konstuktor, zum definieren des Names und des regulären Ausdrucks
    *
    * @return void
   **/
   public function __construct() {
-    $this->name = 'NUMBER';
+    $this->name   = 'NUMBER';
     $this->regExp = "[0-9]";
   }
 
@@ -209,18 +223,23 @@ class AttributeTypeNumber extends AbstractAttributeType {
     return self::$instance;
   }
 
+  /**
+   * Validiert die übergebene Zahl
+   *
+   * @param mixed $value 
+   * @return boolean
+  **/
   public function isValid($value) {
-    if (is_numeric($value) && intval($value) == $value) {
-      return TRUE;
-    }
-    return FALSE;
+    return (is_numeric($value) && intval($value) == $value);
   }
 
 }
 
 
 /**
+ * AttributeTypeId
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class AttributeTypeId extends AbstractAttributeType {
@@ -231,13 +250,15 @@ class AttributeTypeId extends AbstractAttributeType {
   **/
   private static $instance = NULL;
 
+
   /**
    * Konstuktor, zum definieren des Names und des regulären Ausdrucks
-   * @return unknown_type
+   *
+   * @return void
   **/
   public function __construct() {
-    $this->name = 'ID';
-    $this->regExp = "(^([A-Za-z]{1,1})+([a-zA-Z0-9\_\-\.\:]{1,}))";
+    $this->name   = 'ID';
+    $this->regExp = "(^([A-Za-z]{1,1})+([a-zA-Z0-9\_\-\.\:]{1,}))";             // Eine ID muss mind. mit einem Buchstaben anfangen und kann dann auch Zahlen und "_", "-", ".", ":" enthalten
   }
 
   /**
@@ -263,7 +284,9 @@ class AttributeTypeId extends AbstractAttributeType {
 
 
 /**
+ * AttributeTypeIdref
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class AttributeTypeIdref extends AbstractAttributeType {
@@ -274,14 +297,15 @@ class AttributeTypeIdref extends AbstractAttributeType {
   **/
   private static $instance = NULL;
 
+
   /**
    * Konstuktor, zum definieren des Names und des regulären Ausdrucks
    *
    * @return void
   **/
   public function __construct() {
-    $this->name = 'IDREF';
-    $this->regExp = "(^([A-Za-z]{1,1})+([a-zA-Z0-9\_\-\.\:]{1,}))";
+    $this->name   = 'IDREF';
+    $this->regExp = "(^([A-Za-z]{1,1})+([a-zA-Z0-9\_\-\.\:]{1,}))";             // Eine IDREF muss mind. mit einem Buchstaben anfangen und kann dann auch Zahlen und "_", "-", ".", ":" enthalten
   }
 
   /**
@@ -307,7 +331,9 @@ class AttributeTypeIdref extends AbstractAttributeType {
 
 
 /**
+ * AttributeTypeName
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class AttributeTypeName extends AbstractAttributeType {
@@ -318,14 +344,15 @@ class AttributeTypeName extends AbstractAttributeType {
   **/
   private static $instance = NULL;
 
+
   /**
    * Konstuktor, zum definieren des Names und des regulären Ausdrucks
    *
    * @return void
   **/
   public function __construct() {
-    $this->name = 'NAME';
-    $this->regExp = "(^([A-Za-z]{1,1})+([a-zA-Z0-9\_\-\.\:]{1,}))";
+    $this->name   = 'NAME';
+    $this->regExp = "(^([A-Za-z]{1,1})+([a-zA-Z0-9\_\-\.\:]{1,}))";             // Ein NAME muss mind. mit einem Buchstaben anfangen und kann dann auch Zahlen und "_", "-", ".", ":" enthalten
   }
 
   /**
@@ -351,7 +378,9 @@ class AttributeTypeName extends AbstractAttributeType {
 
 
 /**
+ * AttributeTypeEnum
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class AttributeTypeEnum extends AbstractAttributeType {
@@ -368,13 +397,15 @@ class AttributeTypeEnum extends AbstractAttributeType {
   **/
   private static $instances = array();
 
+
   /**
    * Konstuktor, zum definieren des Names und des regulären Ausdrucks
    *
    * @return void
+   * @author Timo Strotmann
   **/
   public function __construct($name, $regExp) {
-    $this->name = 'ENUM';
+    $this->name   = 'ENUM';
     $this->regExp = $regExp;
   }
 
@@ -382,6 +413,7 @@ class AttributeTypeEnum extends AbstractAttributeType {
    * Da es sich hier um ein Singleton handelt, muss die __clone()-Methode eliminiert werden, um das Klonen zu verhindern
    *
    * @return void
+   * @author Timo Strotmann
   **/
   private function __clone() {}
 
@@ -389,6 +421,7 @@ class AttributeTypeEnum extends AbstractAttributeType {
    * Stellt sicher das es ein Singleton ist!
    *
    * @return AttributeTypeId
+   * @author Timo Strotmann
   **/
   public static function getInstance($name, $regExp) {
     $identifier = strtoupper($name).self::$delim.$regExp;

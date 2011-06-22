@@ -2,10 +2,9 @@
 /**
  *
  *
+ * @package TagHelper
  * @author Timo Strotmann <timo@timo-strotmann.de>
- * @version $Id$
  * @copyright Timo Strotmann, 18 October, 2010
- * @package default
 **/
 
 require_once 'AttributeType.php';
@@ -16,18 +15,20 @@ require_once 'AttributeType.php';
 /**
  * Exception Klasse für Attribute-Fehler
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class AttributeException extends Exception {
 }
 
 
-
 // ============================================================================
 // = Attribute-Klasse ======================================================= =
 // ============================================================================
 /**
+ * Attribute
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class Attribute {
@@ -40,7 +41,7 @@ class Attribute {
 
   /**
    * AttributeType, der bestimmt, ob der Wert ($value) des Attributes auch korrekt ist.
-   * @var unknown_type
+   * @var AbstractAttributeType
   **/
   protected $type = NULL;
 
@@ -76,12 +77,11 @@ class Attribute {
 
   /**
    *
-   * @param $name z.B. 'href'
-   * @param $value z.B. 'http://www.saltation.de'
-   * @param $type z.B. Objekt von der Klasse AttributeTypeCdata
-   * @param $requried z.B. TRUE
-   * @param $default z.B. NULL
-   * @return $this
+   * @param string                $name z.B. 'href'
+   * @param string                $value z.B. 'http://www.saltation.de'
+   * @param AbstractAttributeType $type z.B. Objekt von der Klasse AttributeTypeCdata
+   * @param array                 $options
+   * @return void
   **/
   public function __construct($name, $value, $tagName, $options = array()) {
     if (is_string($name)) {
@@ -118,40 +118,45 @@ class Attribute {
   }
 
   /**
+   * Gibt den Namen des Attributes zurück.
    *
-   * @return unknown_type
+   * @return string
   **/
   public function getName() {
     return $this->name;
   }
 
   /**
+   * Gibt den Typ des Attributes zurück.
    *
-   * @return unknown_type
+   * @return AbstractAttributeType
   **/
   public function getType() {
     return $this->type;
   }
 
   /**
+   * Gibt den Value-Wert zurück.
    *
-   * @return unknown_type
+   * @return string
   **/
   public function getValue() {
     return $this->value;
   }
 
   /**
+   * Gitb TRUE zurück, wenn es eine Pflichtangabe ist, sosnt FALSE.
    *
-   * @return unknown_type
+   * @return boolean
   **/
   public function isRequired() {
     return (boolean)$this->requried;
   }
 
   /**
+   * GIbt TRUE zurück, wenn der Value-Wert valide ist, sonst FALSE.
    *
-   * @return unknown_type
+   * @return boolean
   **/
   public function isValid() {
     return $this->type->isValid($this->value);
@@ -159,8 +164,8 @@ class Attribute {
 
   /**
    *
-   * @param $value
-   * @return unknown_type
+   * @param string $value
+   * @return Attribute
   **/
   private function setValue_Private($value) {
     if ($this->type->isValid($value)) {
@@ -171,9 +176,10 @@ class Attribute {
   }
 
   /**
+   * Setzt den Valiue-Wert.
    *
-   * @param $value
-   * @return unknown_type
+   * @param string $value
+   * @return Attribute
   **/
   public function setValue($value) {
     $this->setValue_Private($value);
@@ -182,24 +188,29 @@ class Attribute {
 
   /**
    *
-   * @param $defaultValue
-   * @return unknown_type
+   * @param string $defaultValue (Default: NULL)
+   * @return Attribute
   **/
-  public function setDefault($defaultValue = NULL) {
+  public function setDefault($defaultValue=NULL) {
     $this->default = $defaultValue;
     return $this;
   }
 
   /**
    *
-   * @param $requiredValue
-   * @return unknown_type
+   * @param boolean $requiredValue (Default: FALSE)
+   * @return Attribute
   **/
-  public function setRequired($requiredValue = FALSE) {
+  public function setRequired($requiredValue=FALSE) {
     $this->requried = (boolean)$requiredValue;
     return $this;
   }
 
+  /**
+   * Gitb TRUE zurück, wenn 'addSlashes' gesetzt ist.
+   *
+   * @return boolean
+  **/
   public function hasAddSlashes() {
     return $this->addSlashes;
   }

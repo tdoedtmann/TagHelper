@@ -2,10 +2,9 @@
 /**
  *
  *
+ * @package TagHelper
  * @author Timo Strotmann <timo@timo-strotmann.de>
- * @version $Id$
  * @copyright Timo Strotmann, 18 October, 2010
- * @package default
 **/
 
 require_once 'AttributeFactory.php';
@@ -42,34 +41,42 @@ function trimExplode($str, $delim=',') {
   return array_map('trim', preg_split("/{$delim}/", $str, -1, PREG_SPLIT_NO_EMPTY));
 }
 
+/**
+ * Gibt das übergeben Array in Form einer Tabelle aus.
+ * Das Array wird rekursive bearbeitet, somit kein ein Mehrdimensionales Array übergeben werden.
+ *
+ * @param array $array 
+ * @return Tag
+ * @author Timo Strotmann
+**/
 function viewArray($array)  {
   if (!is_array($array)) {
     return FALSE;
   }
-
+ 
   $tableContent = '';
   if (!count($array)) {
     $tableContent.= Tag::createTag('tr')->setContent(
     Tag::createTag('td')->setContent(
     Tag::createTag('strong')->setContent(htmlspecialchars("EMPTY!"))));
-
+ 
   } else {
     while (list($key, $val) = each($array)) {
       $td1 = Tag::createTag('td', array('valign'=>'top'))->setContent(htmlspecialchars((string)$key));
-
+ 
       $tdValue = (is_array($array[$key])) ? viewArray($array[$key]) : Tag::createTag('span', array('style'=>'color:red;'))->setContent(nl2br(htmlspecialchars((string)$val)) . Tag::createTag('br'));
       $td2 = Tag::createTag('td', array('valign'=>'top'))->setContent($tdValue);
-
+ 
       $tableContent.= Tag::createTag('tr')->setContent($td1 . $td2);
     }
   }
-
+ 
   $tableAttr = array(
     'cellpadding' => '1',
     'cellspacing' => '0',
     'border'      => '1'
   );
-
+ 
    return Tag::createTag('table', $tableAttr)->setContent($tableContent);
 }
 
@@ -81,6 +88,7 @@ function viewArray($array)  {
 /**
  * Exception Klasse für AbstractTag-Fehler
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class AbstractTagException extends Exception {
@@ -89,6 +97,7 @@ class AbstractTagException extends Exception {
 /**
  * Exception Klasse für TagHtmlVariant-Fehler
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class TagHtmlVariantException extends Exception {
@@ -97,6 +106,7 @@ class TagHtmlVariantException extends Exception {
 /**
  * Exception Klasse für TagInlineElement-Fehler
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class TagInlineElementException extends Exception {
@@ -105,6 +115,7 @@ class TagInlineElementException extends Exception {
 /**
  * Exception Klasse für UnknownTag-Fehler
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class UnknownTagException extends Exception {
@@ -113,6 +124,7 @@ class UnknownTagException extends Exception {
 /**
  * Exception Klasse für TagFactory-Fehler
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class TagTypeException extends Exception {
@@ -121,6 +133,7 @@ class TagTypeException extends Exception {
 /**
  * Exception Klasse für StandaloneTag-Fehler
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class StandaloneTagException extends Exception {
@@ -130,6 +143,7 @@ class StandaloneTagException extends Exception {
 
 /**
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 interface TagInterface {
@@ -146,7 +160,9 @@ interface TagInterface {
 
 
 /**
+ * AbstractTag
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class AbstractTag implements TagInterface {
@@ -181,6 +197,11 @@ class AbstractTag implements TagInterface {
   **/
   protected $displayContentWithHtmlEntities = FALSE;
 
+
+  // =========================================================
+  // = TODO: Der Inhalt von Tags muss noch validiert werden! =
+  // =       Also ob z.B. in einem <h1> noch ein <h2> darf.  =
+  // =========================================================
   /**
    *
    * @var array
@@ -1663,7 +1684,10 @@ class AbstractTag implements TagInterface {
     return $this->name;
   }
 
-  // :TODO: Wenn man das Parent-Element (-Tag) mit abspeichert, kann man besser validieren, denn es ist ja nicht jedes Tag überall erlaubt!
+  // =============================================================================
+  // = TODO: Wenn man das Parent-Element (-Tag) mit abspeichert, kann man besser =
+  // =       validieren, denn es ist ja nicht jedes Tag überall erlaubt!         =
+  // =============================================================================
   //  public function getParent() {
   //    return $this->parent;
   //  }
@@ -1746,7 +1770,7 @@ class AbstractTag implements TagInterface {
   /**
    * Setzt den Namen des Tags.
    *
-   * @return Tag $this
+   * @return AbstractTag
   **/
   public function setName($value) {
     $this->name = $value;
@@ -1758,6 +1782,7 @@ class AbstractTag implements TagInterface {
    *
    * @see lib/TagInterface#addAttribute($value)
    * @param Attribute $value
+   * @return AbstractTag
   **/
   public function addAttribute(Attribute $value) {
     $this->attributes[$value->getName()] = $value;
@@ -1769,7 +1794,7 @@ class AbstractTag implements TagInterface {
    *
    * @param string  $type
    * @param mixed   $value
-   * @return Tag    $this
+   * @return AbstractTag
   **/
   public function appendAttribute($type, $value) {
     $this->addAttribute(AttributeFactory::createAttribute($type, $value, $this->getName()));
@@ -1779,7 +1804,7 @@ class AbstractTag implements TagInterface {
   /**
    * Fügt dem Tag die übergebenen Attribute hinzu.
    *
-   * @return Tag $this
+   * @return AbstractTag
   **/
   public function addAttributes($value) {
     if (is_array($value) && !empty($value)) {
@@ -1798,7 +1823,7 @@ class AbstractTag implements TagInterface {
   /**
    * Entfernt dem Tag das übergebene Attribute.
    *
-   * @return Tag $this
+   * @return AbstractTag
   **/
   public function removeAttribute(Attribute $value) {
     if (array_key_exists($value->getName(), $this->attributes)) {
@@ -1811,7 +1836,7 @@ class AbstractTag implements TagInterface {
   /**
    * Ist dieser Wert gesetzt, so wird der Inhalt, der innerhalb eines ModularTags (z.B. <p>-Tag) steht, mit der htmlentities()-Funktion aufgerufen.
    *
-   * @return Tag $this
+   * @return AbstractTag
   **/
   public function setHtmlentities($value) {
     $this->displayContentWithHtmlEntities = (boolean)$value;
@@ -1855,13 +1880,13 @@ class AbstractTag implements TagInterface {
 **/
 class StandaloneTag extends AbstractTag {
 
-  protected $content = '';
+  protected $content      = '';
   protected $contentAfter = TRUE;
 
   /**
    * Gibt den "Content", der für diesen Tag hinterlegt ist, zurück.
    *
-   * @return mixed $content
+   * @return string
   **/
   public function getContent() {
     return $this->content;
@@ -1871,7 +1896,7 @@ class StandaloneTag extends AbstractTag {
    * Setzt den "Content" (z.B. die "Beschriftung" eines <input>-Tags), der vor oder hinter dem Tag erscheinen soll.
    *
    * @param string $content
-   * @return Tag $this
+   * @return Tag
   **/
   public function setContent($content) {
     if (is_string($content)) {
@@ -1885,10 +1910,10 @@ class StandaloneTag extends AbstractTag {
   /**
    * Bestimmt, ob der "Content" (z.B. die "Beschriftung" eines <input>-Tags) vor oder hinter dem Tag stehen soll.
    *
-   * @param boolean $value
-   * @return Tag $this
+   * @param boolean $value (Optional, Default: TRUE)
+   * @return Tag
   **/
-  public function setContentAfter($value = TRUE) {
+  public function setContentAfter($value=TRUE) {
     $this->contentAfter = (boolean)$value;
     return $this;
   }
@@ -1896,10 +1921,10 @@ class StandaloneTag extends AbstractTag {
   /**
    * Bestimmt, ob der "Content" (z.B. die "Beschriftung" eines <input>-Tags) vor oder hinter dem Tag stehen soll.
    *
-   * @param boolean $value
-   * @return Tag $htis
+   * @param boolean $value (Optional, Default: FALSE)
+   * @return Tag
   **/
-  public function setContentBefore($value = FALSE) {
+  public function setContentBefore($value=FALSE) {
     $this->setContentAfter(!(boolean)$value);
     return $this;
   }
@@ -1936,6 +1961,7 @@ class StandaloneTag extends AbstractTag {
 /**
  * Hierbei handelt es sich um Tags, die sowhol aus einem öffnedem und schließendem Tag bestehen, wie z.B. <p>, <span>, <textarea> etc.
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class ModularTag extends AbstractTag {
@@ -1945,7 +1971,7 @@ class ModularTag extends AbstractTag {
   /**
    * Gibt den "Content", der z.B. zwischen dem öffneden und schließendem Tag steht (z.B. 'Hello World!' für <p>Hello World!</p>) zurück.
    *
-   * @return mixed $content
+   * @return mixed Kann ein Tag oder ein String sein.
   **/
   public function getContent() {
     return $this->content;
@@ -1954,8 +1980,8 @@ class ModularTag extends AbstractTag {
   /**
    * Setzt den "Content", der zwischen dem öffneden und schließendem Tag steht (z.B. 'Hello World!' für <p>Hello World!</p>).
    *
-   * @param string $content
-   * @return Tag $this
+   * @param mixed $content Content kann ein Tag oder ein String sein.
+   * @return Tag
   **/
   public function setContent($content) {
     $this->content = $content;

@@ -2,10 +2,9 @@
 /**
  *
  *
+ * @package TagHelper
  * @author Timo Strotmann <timo@timo-strotmann.de>
- * @version $Id$
  * @copyright Timo Strotmann, 18 October, 2010
- * @package default
 **/
 
 require_once 'AttributeFactory.php';
@@ -17,6 +16,7 @@ require_once 'TagType.php';
 /**
  * Exception Klasse für Tag-Fehler
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class TagException extends Exception {
@@ -28,7 +28,9 @@ class TagException extends Exception {
 // = -> zum erstellen/ermitteln eines Tags ================================== =
 // ============================================================================
 /**
+ * Tag
  *
+ * @package TagHelper
  * @author Timo Strotmann
 **/
 class Tag {
@@ -233,11 +235,11 @@ class Tag {
   /**
    * Erstellt ein <fieldset>-Tag. Bei Angabe eines $legendContent, wird zudem noch ein <legend>-Tag (in Form des Fieldset-Content) hinzugefügt.
    *
-   * @param $legendContent
-   * @param $fieldsetContent
-   * @param $fieldsetAttributes
-   * @param $legendAttributes
-   * @return unknown_type
+   * @param mixed $legendContent
+   * @param mixed $fieldsetContent
+   * @param array $fieldsetAttributes
+   * @param array $legendAttributes
+   * @return Tag
   **/
   static public function fieldset($fieldsetContent, $legendContent=NULL, $fieldsetAttributes=array(), $legendAttributes=array()) {
     $searchAttributes = array('class'=>FALSE);
@@ -281,7 +283,7 @@ class Tag {
    * @param string $action URL an der das <form> versendet wird
    * @param string $formContent Content zwischen dem <form>- und </form>-Tag
    * @param array $params Additional parameter like 'class'
-   * @return unknown
+   * @return Tag
   **/
   static public function form($action, $content, $attributes=array()) {
     $searchAttributes = array('method'=>FALSE);
@@ -398,7 +400,7 @@ class Tag {
    * @param string $name Name des Tags, über dem der Inhalt ausgelesen werden kann (name-Attribute)
    * @param string $content Content zwischen dem <textarea>- und </textarea>-Tag
    * @param array $params Additional parameter like 'class'
-   * @return unknown
+   * @return Tag
   **/
   static public function textarea($name, $content='', $attributes=array()) {
     $searchAttributes = array('id'=>FALSE, 'class'=>FALSE, 'cols'=>FALSE, 'rows'=>FALSE);
@@ -446,11 +448,11 @@ class Tag {
   /**
    * Erstellt ein <button>-Tag
    *
-   * @param unknown_type $type
-   * @param unknown_type $name
-   * @param unknown_type $value
-   * @param unknown_type $attributes
-   * @return unknown_type
+   * @param string $name
+   * @param string $value
+   * @param string $type
+   * @param array $attributes
+   * @return Tag
   **/
   static public function button($name, $value, $type='button', $attributes=array()) {
     $searchAttributes = array('id'=>FALSE, 'class'=>FALSE);
@@ -510,6 +512,7 @@ class Tag {
           if (isset($itemValue['value'])) {                       // Inhalt des <label>-Tags
             $label = $itemValue['value'];
             unset($itemValue['value']);
+
           } else {
             $label = array_shift($itemValue);
           }
@@ -518,9 +521,11 @@ class Tag {
             if (isset($itemValue['attribute'])) {
               $inputAttributes = $itemValue['attribute'];
               unset($itemValue['attribute']);
+
             } else if (isset($itemValue['attributes'])) {
               $inputAttributes = $itemValue['attributes'];
               unset($itemValue['attributes']);
+
             } else {
               $inputAttributes = array_shift($itemValue);
             }
@@ -567,9 +572,11 @@ class Tag {
           if (isset($optionData['content'])) {
             $optionContent = $optionData['content'];
             unset($optionData['content']);
+
           } else if (isset($optionData['optionContent'])) {
             $optionContent = $optionData['optionContent'];
             unset($optionData['optionContent']);
+
           } else {
             $optionContent = array_shift($optionData);
           }
@@ -578,9 +585,11 @@ class Tag {
             if (isset($optionData['attribute'])) {
               $optionAttributes = $optionData['attribute'];
               unset($itemValue['attribute']);
+
             } else if (isset($optionData['attributes'])) {
               $optionAttributes = $optionData['attributes'];
               unset($optionData['attributes']);
+
             } else {
               $optionAttributes = array_shift($optionData);
             }
@@ -1448,6 +1457,7 @@ class Tag {
   // ==========================================================================
   /**
    * Prüft, ob Prefix für diverse Attribute (z.B. 'id' oder 'name') gesetzt wurde.
+   *
    * @return boolean
   **/
   static protected function hasPrefixId() {
@@ -1715,7 +1725,7 @@ class Tag {
    * @param string $name Name des Tags, über dem der Inhalt ausgelesen werden kann (name-Attribute)
    * @param string $content Content zwischen dem <textarea>- und </textarea>-Tag
    * @param array $params Additional parameter like 'class'
-   * @return unknown
+   * @return Tag
   **/
   static public function createTextareaTag($name, $content='', $attributes=array()) {
     return self::textarea($name, $content, $attributes);
@@ -1724,11 +1734,11 @@ class Tag {
   /**
    * Alias für fieldset()
    *
-   * @param $legendContent
-   * @param $fieldsetContent
-   * @param $fieldsetAttributes
-   * @param $legendAttributes
-   * @return unknown_type
+   * @param mixed $legendContent
+   * @param mixed $fieldsetContent
+   * @param array $fieldsetAttributes
+   * @param array $legendAttributes
+   * @return Tag
   **/
   static public function createFieldsetTag($fieldsetContent, $legendContent=NULL, $fieldsetAttributes=array(), $legendAttributes=array()) {
     return self::fieldset($fieldsetContent, $legendContent, $fieldsetAttributes, $legendAttributes);
